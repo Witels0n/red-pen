@@ -130,3 +130,18 @@ button:hover {
   position: absolute;
   inset: 0;
 }
+
+.page-overlay {
+  cursor: crosshair;
+}
+
+.annotation-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.annotation {
+  position: absolute;
+  pointer-events: auto;
+}
