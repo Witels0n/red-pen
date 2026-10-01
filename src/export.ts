@@ -60,6 +60,11 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
   },
 }
 
+/** "learner-12.pdf" -> "learner-12-marked.pdf". */
+export function markedFileName(originalName: string): string {
+  return `${originalName.replace(/\.pdf$/i, '')}-marked.pdf`
+}
+
 export async function exportMarkedPdf(
   originalBytes: Uint8Array,
   annotations: readonly Annotation[],

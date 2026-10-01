@@ -1,7 +1,7 @@
 import { PDFArray, PDFDocument, PDFRawStream, PDFStream, decodePDFRawStream, degrees, type PDFPage } from 'pdf-lib'
 import { describe, expect, it } from 'vitest'
 import { createMarkingModel } from '../src/marking-model'
-import { exportMarkedPdf, toPageSpace } from '../src/export'
+import { exportMarkedPdf, markedFileName, toPageSpace } from '../src/export'
 
 async function fixture(): Promise<Uint8Array> {
   const doc = await PDFDocument.create()
@@ -111,3 +111,14 @@ describe('toPageSpace (top-left page units to PDF user space)', () => {
   })
 })
 
+
+describe('markedFileName', () => {
+  it('replaces the .pdf extension with -marked.pdf', () => {
+    expect(markedFileName('learner-12.pdf')).toBe('learner-12-marked.pdf')
+    expect(markedFileName('Learner 12.PDF')).toBe('Learner 12-marked.pdf')
+  })
+
+  it('appends -marked.pdf when there is no .pdf extension', () => {
+    expect(markedFileName('scan')).toBe('scan-marked.pdf')
+  })
+})
