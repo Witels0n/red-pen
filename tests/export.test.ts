@@ -54,6 +54,21 @@ describe('exportMarkedPdf', () => {
     expect(after.getPage(0).getSize()).toEqual(before.getPage(0).getSize())
   })
 
+  it('draws a Cross as red vector strokes on its page only', async () => {
+    const original = await fixture()
+    const model = createMarkingModel()
+    model.placeCross(2, 100, 100)
+
+    const marked = await exportMarkedPdf(original, model.getAnnotations())
+
+    const before = await PDFDocument.load(original)
+    const after = await PDFDocument.load(marked)
+    expect(after.getPageCount()).toBe(3)
+    expect(contentOf(after.getPage(1)).length).toBeGreaterThan(contentOf(before.getPage(1)).length)
+    expect(text(contentOf(after.getPage(1)))).toMatch(/0.85 0.1 0.1 RG/)
+    expect(contentOf(after.getPage(0))).toEqual(contentOf(before.getPage(0)))
+  })
+
   it('with no annotations still returns a valid PDF with the same pages', async () => {
     const marked = await exportMarkedPdf(await fixture(), [])
     expect((await PDFDocument.load(marked)).getPageCount()).toBe(3)

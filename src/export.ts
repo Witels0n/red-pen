@@ -1,5 +1,5 @@
 import { LineCapStyle, PDFDocument, PDFPage, rgb } from 'pdf-lib'
-import { INK, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
+import { CROSS_STROKES, INK, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
 import type { Annotation } from './marking-model'
 
 // Export: draws the Annotations in red as flattened vector graphics over the original pages.
@@ -49,6 +49,17 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
     for (let i = 0; i < TICK_POINTS.length - 1; i++) {
       const [x1, y1] = TICK_POINTS[i]
       const [x2, y2] = TICK_POINTS[i + 1]
+      c.page.drawLine({
+        start: c.at(a.x + x1, a.y + y1),
+        end: c.at(a.x + x2, a.y + y2),
+        thickness: STROKE_WIDTH,
+        color,
+        lineCap: LineCapStyle.Round,
+      })
+    }
+  },
+  cross(a, c) {
+    for (const [[x1, y1], [x2, y2]] of CROSS_STROKES) {
       c.page.drawLine({
         start: c.at(a.x + x1, a.y + y1),
         end: c.at(a.x + x2, a.y + y2),

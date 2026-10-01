@@ -1,4 +1,4 @@
-import { INK_CSS, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
+import { CROSS_STROKES, INK_CSS, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
 import type { Annotation, MarkingModel } from './marking-model'
 import type { PageView, Viewer } from './viewer'
 
@@ -53,6 +53,24 @@ const renderers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T 
     )
     return root
   },
+  cross(a, scale) {
+    const root = anchor(a, scale)
+    root.append(svg('circle', { r: String(10 * scale), fill: 'transparent' }))
+    for (const [[x1, y1], [x2, y2]] of CROSS_STROKES) {
+      root.append(
+        svg('line', {
+          x1: String(x1 * scale),
+          y1: String(y1 * scale),
+          x2: String(x2 * scale),
+          y2: String(y2 * scale),
+          stroke: INK_CSS,
+          'stroke-width': String(STROKE_WIDTH * scale),
+          'stroke-linecap': 'round',
+        }),
+      )
+    }
+    return root
+  },
 }
 
 function renderAnnotation(a: Annotation, scale: number): SVGSVGElement {
@@ -71,6 +89,17 @@ export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): Anno
     page.overlay.append(layer)
     layers.set(page.pageNumber, layer)
     page.overlay.addEventListener('click', onClick(page))
+    page.overlay.addEventListener('contextmenu', onContextMenu(page))
+  }
+
+  // Right-click places a Cross (blank page only); the browser menu never shows over a page.
+  function onContextMenu(page: PageView) {
+    return (e: MouseEvent) => {
+      e.preventDefault()
+      if ((e.target as Element).closest('[data-annotation-id]')) return
+      const rect = page.overlay.getBoundingClientRect()
+      model.placeCross(page.pageNumber, (e.clientX - rect.left) / page.scale, (e.clientY - rect.top) / page.scale)
+    }
   }
 
   function onClick(page: PageView) {
