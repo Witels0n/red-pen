@@ -5,12 +5,10 @@ import type { ReasonsList } from './reasons'
 // focus and never swallows page clicks, so marking carries on as normal. Dismissing it (Escape,
 // any pointer press elsewhere, scrolling) leaves the Cross as it is, bare or with its Reason.
 //
-// Isolated on purpose. Two spots will need re-hooking when ticket #5 (selection) lands:
-//   1. `onModelChange` opens the pop-up for a newly placed Cross (keep: it is independent of
-//      selection).
-//   2. The click listener on `root` re-opens the pop-up for any clicked Cross. With selection,
-//      replace it with "open when the selected Annotation is a Cross" (call `open(id)` from
-//      the selection change handler) and drop this listener.
+// Isolated on purpose, and independent of selection (src/selection.ts): `onModelChange` opens
+// the pop-up for a newly placed Cross, and the click listener on `root` re-opens it for a
+// clicked Cross (the same click also selects it; a drag-move swallows its click, so moving a
+// Cross never opens the pop-up). Deleting the Cross closes the pop-up.
 
 export interface ReasonPopup {
   /** Open the pop-up for a Cross (no-op if it does not exist or is not a Cross). */
@@ -30,11 +28,13 @@ export interface ReasonPopupOptions {
 
 export function attachReasonPopup({ root, model, reasons, onEditReasons }: ReasonPopupOptions): ReasonPopup {
   let popup: HTMLElement | null = null
+  let popupFor: string | null = null
   let knownIds = new Set(model.getAnnotations().map((a) => a.id))
 
   function close(): void {
     popup?.remove()
     popup = null
+    popupFor = null
   }
 
   function button(label: string, className: string, onClick: () => void): HTMLButtonElement {
@@ -80,6 +80,7 @@ export function attachReasonPopup({ root, model, reasons, onEditReasons }: Reaso
     )
     document.body.append(panel)
     popup = panel
+    popupFor = crossId
     position(panel, crossId)
   }
 
@@ -107,8 +108,8 @@ export function attachReasonPopup({ root, model, reasons, onEditReasons }: Reaso
     if (added.length === 1 && added[0].type === 'cross') {
       const id = added[0].id
       queueMicrotask(() => open(id))
-    } else if (annotations.length === 0) {
-      close()
+    } else if (popupFor && !knownIds.has(popupFor)) {
+      close() // its Cross was deleted (or the Test was replaced)
     }
   }
   const offModel = model.onChange(onModelChange)

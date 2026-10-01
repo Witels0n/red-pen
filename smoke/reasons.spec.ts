@@ -161,3 +161,25 @@ test('exporting includes the Reason tag as text in the marked PDF', async ({ pag
   const fonts = doc.getPage(0).node.Resources()?.lookup(PDFName.of('Font'))
   expect(fonts).toBeDefined()
 })
+
+test('deleting a Cross with Delete closes its pop-up; dragging a Cross carries its tag and opens no pop-up', async ({ page }) => {
+  await openTest(page)
+  await placeCross(page)
+  await popup(page).getByRole('button', { name: 'RTQ', exact: true }).click()
+  const b = (await page.locator('.annotation-cross circle').boundingBox())!
+  const from = { x: b.x + b.width / 2, y: b.y + b.height / 2 }
+  await page.mouse.move(from.x, from.y)
+  await page.mouse.down()
+  await page.mouse.move(from.x + 40, from.y + 80, { steps: 6 })
+  await page.mouse.up()
+  await expect(popup(page)).toHaveCount(0)
+  await expect(page.locator('.annotation-cross .reason-tag')).toHaveText('RTQ')
+  const moved = (await page.locator('.annotation-cross circle').boundingBox())!
+  expect(moved.y).toBeGreaterThan(b.y + 60)
+
+  await clickCross(page)
+  await expect(popup(page)).toBeVisible()
+  await page.keyboard.press('Delete')
+  await expect(page.locator('.annotation-cross')).toHaveCount(0)
+  await expect(popup(page)).toHaveCount(0)
+})

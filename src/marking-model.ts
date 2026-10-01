@@ -38,6 +38,10 @@ export interface MarkingModel {
   placeCross(page: number, x: number, y: number): CrossAnnotation
   /** Set, change or (with undefined or blank text) clear a Cross's Reason. Other ids are ignored. */
   setReason(id: string, reason: string | undefined): void
+  /** Move any Annotation (optionally to another page). Unknown ids are ignored. */
+  moveAnnotation(id: string, x: number, y: number, page?: number): void
+  /** Remove any Annotation. Unknown ids are ignored. */
+  deleteAnnotation(id: string): void
   /** Total Marks awarded: one per Tick; Crosses count for nothing. */
   getMarks(): number
   /** Remove every Annotation (used when another Test is opened). */
@@ -75,6 +79,14 @@ export function createMarkingModel(): MarkingModel {
       const text = reason?.trim()
       const { reason: _old, ...rest } = target
       apply(annotations.map((a) => (a === target ? (text ? { ...rest, reason: text } : rest) : a)))
+    },
+    moveAnnotation(id, x, y, page) {
+      if (!annotations.some((a) => a.id === id)) return
+      apply(annotations.map((a) => (a.id === id ? { ...a, x, y, page: page ?? a.page } : a)))
+    },
+    deleteAnnotation(id) {
+      if (!annotations.some((a) => a.id === id)) return
+      apply(annotations.filter((a) => a.id !== id))
     },
     getMarks: () => annotations.filter((a) => a.type === 'tick').length,
     reset: () => apply([]),

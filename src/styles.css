@@ -206,3 +206,15 @@ button:hover {
 .dialog-actions .spacer {
   flex: 1;
 }
+
+.annotation {
+  cursor: grab;
+  touch-action: none;
+}
+
+.annotation.selected circle {
+  fill: rgba(42, 91, 215, 0.12);
+  stroke: #2a5bd7;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}

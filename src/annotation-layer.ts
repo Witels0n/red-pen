@@ -90,11 +90,14 @@ function renderAnnotation(a: Annotation, scale: number): SVGSVGElement {
 }
 
 export interface AnnotationLayer {
+  /** Called after every (re)render; selection uses it to restyle the freshly built elements. */
+  onRender(listener: () => void): void
   destroy(): void
 }
 
 export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): AnnotationLayer {
   const layers = new Map<number, HTMLElement>()
+  const renderListeners: Array<() => void> = []
   for (const page of viewer.pages) {
     const layer = document.createElement('div')
     layer.className = 'annotation-layer'
@@ -132,6 +135,7 @@ export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): Anno
         ...(byPage.get(page.pageNumber) ?? []).map((a) => renderAnnotation(a, page.scale)),
       )
     }
+    renderListeners.forEach((l) => l())
   }
 
   const off = model.onChange(render)
@@ -139,6 +143,7 @@ export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): Anno
   render()
 
   return {
+    onRender: (listener) => void renderListeners.push(listener),
     destroy() {
       off()
       layers.forEach((l) => l.remove())
