@@ -1,18 +1,18 @@
-import { degrees, LineCapStyle, PDFDocument, PDFFont, PDFPage, rgb, StandardFonts } from 'pdf-lib'
+import { degrees, LineCapStyle, PDFDocument, PDFFont, PDFPage, rgb, StandardFonts, type RGB } from 'pdf-lib'
 import {
   BOX_HEIGHT,
   boxWidth,
   CROSS_STROKES,
   FONT_SIZE,
-  INK,
   REASON_TAG,
   STROKE_WIDTH,
   SUBTOTAL_RADIUS,
   TICK_POINTS,
 } from './annotation-geometry'
+import { INK_PRESETS, type InkRgb } from './ink'
 import { createMarkingModel, type Annotation, type MarkingModel } from './marking-model'
 
-// Export: draws the Annotations in red as flattened vector graphics over the original pages.
+// Export: draws the Annotations in the Ink colour as flattened vector graphics over the original pages.
 // Extending: add a drawer for the new type to `drawers`; the compiler enforces completeness.
 
 export interface PageBox {
@@ -53,6 +53,8 @@ interface DrawContext {
   /** The page's /Rotate in degrees, normalised to 0, 90, 180 or 270. */
   rotation: number
   font: PDFFont
+  /** The Ink colour every Annotation is drawn in. */
+  color: RGB
   /** Derived values (Subtotal counts, the Total) for the Annotations being exported. */
   model: Pick<MarkingModel, 'getSubtotalCount' | 'getTotal'>
 }
@@ -71,10 +73,8 @@ function drawText(c: DrawContext, text: string, x: number, y: number, align: 'st
   const origin = c.at(startX, y + FONT_SIZE * 0.35) // baseline sits a little below the centre
   const along = c.at(startX + 1, y + FONT_SIZE * 0.35)
   const angle = Math.atan2(along.y - origin.y, along.x - origin.x) * (180 / Math.PI)
-  c.page.drawText(safe, { x: origin.x, y: origin.y, size: FONT_SIZE, font: c.font, color, rotate: degrees(angle) })
+  c.page.drawText(safe, { x: origin.x, y: origin.y, size: FONT_SIZE, font: c.font, color: c.color, rotate: degrees(angle) })
 }
-
-const color = rgb(INK.r, INK.g, INK.b)
 
 const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>, c: DrawContext) => void } = {
   tick(a, c) {
@@ -85,7 +85,7 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
         start: c.at(a.x + x1, a.y + y1),
         end: c.at(a.x + x2, a.y + y2),
         thickness: STROKE_WIDTH,
-        color,
+        color: c.color,
         lineCap: LineCapStyle.Round,
       })
     }
@@ -96,7 +96,7 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
         start: c.at(a.x + x1, a.y + y1),
         end: c.at(a.x + x2, a.y + y2),
         thickness: STROKE_WIDTH,
-        color,
+        color: c.color,
         lineCap: LineCapStyle.Round,
       })
     }
@@ -106,14 +106,14 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
         ...c.at(a.x + REASON_TAG.dx, a.y + REASON_TAG.dy),
         size: REASON_TAG.fontSize,
         font: c.font,
-        color,
+        color: c.color,
         rotate: degrees(c.rotation),
       })
     }
   },
   subtotal(a, c) {
     const centre = c.at(a.x, a.y)
-    c.page.drawCircle({ x: centre.x, y: centre.y, size: SUBTOTAL_RADIUS, borderColor: color, borderWidth: STROKE_WIDTH })
+    c.page.drawCircle({ x: centre.x, y: centre.y, size: SUBTOTAL_RADIUS, borderColor: c.color, borderWidth: STROKE_WIDTH })
     drawText(c, String(c.model.getSubtotalCount(a.id) ?? 0), a.x, a.y, 'middle')
   },
   total(a, c) {
@@ -127,7 +127,7 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
       c.at(a.x - w / 2, a.y + h / 2),
     ]
     corners.forEach((start, i) =>
-      c.page.drawLine({ start, end: corners[(i + 1) % 4], thickness: STROKE_WIDTH, color, lineCap: LineCapStyle.Projecting }),
+      c.page.drawLine({ start, end: corners[(i + 1) % 4], thickness: STROKE_WIDTH, color: c.color, lineCap: LineCapStyle.Projecting }),
     )
     drawText(c, label, a.x, a.y, 'middle')
   },
@@ -144,10 +144,12 @@ export function markedFileName(originalName: string): string {
 export async function exportMarkedPdf(
   originalBytes: Uint8Array,
   annotations: readonly Annotation[],
+  ink: InkRgb = INK_PRESETS.red,
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.load(originalBytes)
   const font = await doc.embedFont(StandardFonts.Helvetica)
   const pages = doc.getPages()
+  const color = rgb(ink.r, ink.g, ink.b)
   const model = createMarkingModel(annotations)
   for (const a of annotations) {
     const page = pages[a.page - 1]
@@ -157,6 +159,7 @@ export async function exportMarkedPdf(
     const context: DrawContext = {
       page,
       font,
+      color,
       model,
       rotation: (((Math.round(rotation / 90) * 90) % 360) + 360) % 360,
       at: (x, y) => toPageSpace(box, rotation, x, y),

@@ -43,3 +43,7 @@ _Avoid_: Grand total, final score
 **Text note**:
 A free-text annotation the teacher drags onto a page and types into.
 _Avoid_: Comment, label
+
+**Ink colour**:
+The single colour in which every annotation of a test is drawn, on screen and in the exported copy. Chosen by the teacher from a fixed set (red by default); changing it recolours all annotations, including those already placed. Remembered in the browser between tests.
+_Avoid_: Pen colour, marker colour, annotation colour

@@ -44,7 +44,7 @@ test('clicking blank page places a red Tick exactly where clicked, at every zoom
     const c = await tickCentre(page, before)
     expect(Math.abs(c.x - at.x)).toBeLessThan(1.5)
     expect(Math.abs(c.y - at.y)).toBeLessThan(1.5)
-    expect(await page.locator('.annotation-tick polyline').last().getAttribute('stroke')).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
+    expect(await page.locator('.annotation-tick polyline').last().evaluate((e) => getComputedStyle(e).stroke)).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
   }
 
   // Existing ticks follow zoom: same page position, new pixel position.

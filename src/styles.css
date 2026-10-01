@@ -223,6 +223,27 @@ button:hover {
   stroke-width: 1.5;
 }
 
+#ink-swatches {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.swatch {
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: 0 0 0 1px #8a8a93;
+  cursor: pointer;
+}
+
+.swatch[aria-checked='true'] {
+  box-shadow: 0 0 0 2px #1d1d20;
+}
+
 #toolbar .tool {
   cursor: grab;
   touch-action: none;
@@ -239,10 +260,10 @@ button:hover {
   z-index: 20;
   pointer-events: none;
   padding: 0.2rem 0.6rem;
-  border: 1px solid #d91a1a;
+  border: 1px solid var(--ink);
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.9);
-  color: #d91a1a;
+  color: var(--ink);
   transform: translate(-50%, -50%);
 }
 
@@ -252,7 +273,7 @@ button:hover {
   min-width: 8em;
   padding: 0 2px;
   font: 14px Helvetica, Arial, sans-serif;
-  color: #d91a1a;
+  color: var(--ink);
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #2a5bd7;
   transform: translateY(-50%);
