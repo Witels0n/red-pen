@@ -1,4 +1,5 @@
 import { attachAnnotationLayer, type AnnotationLayer } from './annotation-layer'
+import { attachSelection, type Selection } from './selection'
 import { exportMarkedPdf, markedFileName } from './export'
 import { createMarkingModel } from './marking-model'
 import { looksLikePdf } from './pdf-file'
@@ -22,6 +23,7 @@ const viewerEl = el('viewer')
 
 let viewer: Viewer | null = null
 let annotationLayer: AnnotationLayer | null = null
+let selection: Selection | null = null
 const model = createMarkingModel()
 /** True when the model has changed since the last export (or since the Test was opened). */
 let unexported = false
@@ -72,9 +74,11 @@ async function openFile(file: File): Promise<void> {
   }
 
   viewer?.destroy()
+  selection?.destroy()
   annotationLayer?.destroy()
   viewer = null
   annotationLayer = null
+  selection = null
   openScreen.hidden = true
   viewerScreen.hidden = false
   fileName.textContent = file.name
@@ -86,6 +90,7 @@ async function openFile(file: File): Promise<void> {
   updateZoomLabel(next.scale)
   viewer = next
   annotationLayer = attachAnnotationLayer(next, model)
+  selection = attachSelection(next, model, annotationLayer)
 }
 
 async function exportMarked(): Promise<void> {
