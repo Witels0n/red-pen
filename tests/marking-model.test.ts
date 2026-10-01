@@ -35,6 +35,35 @@ describe('marking model: placing Ticks', () => {
   })
 })
 
+describe('marking model: placing Crosses', () => {
+  it('placing a Cross adds a Cross Annotation at the given page position', () => {
+    const model = createMarkingModel()
+    const cross = model.placeCross(3, 42, 77.5)
+    expect(cross).toMatchObject({ type: 'cross', page: 3, x: 42, y: 77.5 })
+    expect(model.getAnnotations()).toEqual([cross])
+  })
+
+  it('a Cross is worth no Marks, and does not change the count of Ticks', () => {
+    const model = createMarkingModel()
+    model.placeCross(1, 5, 5)
+    expect(model.getMarks()).toBe(0)
+    model.placeTick(1, 10, 10)
+    model.placeCross(2, 20, 20)
+    expect(model.getMarks()).toBe(1)
+    expect(model.getAnnotations()).toHaveLength(3)
+  })
+
+  it('notifies subscribers and gives distinct ids', () => {
+    const model = createMarkingModel()
+    let calls = 0
+    model.onChange(() => calls++)
+    const a = model.placeCross(1, 1, 1)
+    const b = model.placeTick(1, 1, 1)
+    expect(calls).toBe(2)
+    expect(a.id).not.toBe(b.id)
+  })
+})
+
 describe('marking model: change notification', () => {
   it('notifies subscribers after a change, until they unsubscribe', () => {
     const model = createMarkingModel()

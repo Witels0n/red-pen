@@ -18,8 +18,13 @@ export interface TickAnnotation extends AnnotationBase {
   readonly type: 'tick'
 }
 
-/** Discriminated by `type`. Later tickets add 'cross' | 'subtotal' | 'total' | 'text'. */
-export type Annotation = TickAnnotation
+/** Worth no Marks. A Reason is attached to Crosses in a later ticket. */
+export interface CrossAnnotation extends AnnotationBase {
+  readonly type: 'cross'
+}
+
+/** Discriminated by `type`. Later tickets add 'subtotal' | 'total' | 'text'. */
+export type Annotation = TickAnnotation | CrossAnnotation
 
 export type AnnotationType = Annotation['type']
 
@@ -28,7 +33,9 @@ export interface MarkingModel {
   getAnnotations(): readonly Annotation[]
   /** Place a Tick (one Mark) on a page. */
   placeTick(page: number, x: number, y: number): TickAnnotation
-  /** Total Marks awarded: one per Tick. */
+  /** Place a Cross (no Marks) on a page. */
+  placeCross(page: number, x: number, y: number): CrossAnnotation
+  /** Total Marks awarded: one per Tick; Crosses count for nothing. */
   getMarks(): number
   /** Remove every Annotation (used when another Test is opened). */
   reset(): void
@@ -53,6 +60,11 @@ export function createMarkingModel(): MarkingModel {
       const tick: TickAnnotation = { id: `a${nextId++}`, type: 'tick', page, x, y }
       apply([...annotations, tick])
       return tick
+    },
+    placeCross(page, x, y) {
+      const cross: CrossAnnotation = { id: `a${nextId++}`, type: 'cross', page, x, y }
+      apply([...annotations, cross])
+      return cross
     },
     getMarks: () => annotations.filter((a) => a.type === 'tick').length,
     reset: () => apply([]),
