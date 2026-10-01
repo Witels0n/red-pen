@@ -1,5 +1,5 @@
-import { LineCapStyle, PDFDocument, PDFPage, rgb } from 'pdf-lib'
-import { CROSS_STROKES, INK, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
+import { LineCapStyle, PDFDocument, PDFFont, PDFPage, StandardFonts, degrees, rgb } from 'pdf-lib'
+import { CROSS_STROKES, INK, REASON_TAG, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
 import type { Annotation } from './marking-model'
 
 // Export: draws the Annotations in red as flattened vector graphics over the original pages.
@@ -40,6 +40,16 @@ interface DrawContext {
   page: PDFPage
   /** Map a displayed-space point to user space for this page. */
   at(x: number, y: number): { x: number; y: number }
+  /** The page's /Rotate in degrees, normalised to 0, 90, 180 or 270. */
+  rotation: number
+  /** Standard Helvetica for text; embedded only when some annotation needs it. */
+  font: PDFFont
+}
+
+/** Drop characters the standard (WinAnsi) font cannot encode, so odd Reasons never fail export. */
+function encodable(font: PDFFont, s: string): string {
+  const supported = new Set(font.getCharacterSet())
+  return [...s].filter((ch) => supported.has(ch.codePointAt(0)!)).join('')
 }
 
 const color = rgb(INK.r, INK.g, INK.b)
@@ -68,6 +78,16 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
         lineCap: LineCapStyle.Round,
       })
     }
+    const label = a.reason ? encodable(c.font, a.reason) : ''
+    if (label) {
+      c.page.drawText(label, {
+        ...c.at(a.x + REASON_TAG.dx, a.y + REASON_TAG.dy),
+        size: REASON_TAG.fontSize,
+        font: c.font,
+        color,
+        rotate: degrees(c.rotation),
+      })
+    }
   },
 }
 
@@ -82,12 +102,19 @@ export async function exportMarkedPdf(
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.load(originalBytes)
   const pages = doc.getPages()
+  let helvetica: PDFFont | undefined
   for (const a of annotations) {
     const page = pages[a.page - 1]
     if (!page) continue
     const box = page.getCropBox()
     const rotation = page.getRotation().angle
-    const context: DrawContext = { page, at: (x, y) => toPageSpace(box, rotation, x, y) }
+    if (a.type === 'cross' && a.reason) helvetica ??= await doc.embedFont(StandardFonts.Helvetica)
+    const context: DrawContext = {
+      page,
+      at: (x, y) => toPageSpace(box, rotation, x, y),
+      rotation: (((Math.round(rotation / 90) * 90) % 360) + 360) % 360,
+      font: helvetica as PDFFont, // set whenever a drawer needs it (only Reasons do)
+    }
     const draw = drawers[a.type] as (a: Annotation, c: DrawContext) => void
     draw(a, context)
   }

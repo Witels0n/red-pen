@@ -21,3 +21,6 @@ export const TICK_POINTS: ReadonlyArray<readonly [number, number]> = [
   [-2, 6],
   [8, -8],
 ]
+
+/** The Reason tag beside a Cross: baseline-left offset from the Cross and font size, PDF units. */
+export const REASON_TAG = { dx: 11, dy: 4, fontSize: 11 }
