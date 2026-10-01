@@ -4,6 +4,7 @@ import {
   CROSS_STROKES,
   FONT_SIZE,
   INK_CSS,
+  REASON_TAG,
   STROKE_WIDTH,
   SUBTOTAL_RADIUS,
   TICK_POINTS,
@@ -95,6 +96,18 @@ const renderers: { [T in Annotation['type']]: Renderer<T> } = {
           'stroke-linecap': 'round',
         }),
       )
+    }
+    if (a.reason) {
+      const tag = svg('text', {
+        class: 'reason-tag',
+        x: String(REASON_TAG.dx * scale),
+        y: String(REASON_TAG.dy * scale),
+        fill: INK_CSS,
+        'font-size': String(REASON_TAG.fontSize * scale),
+        'font-family': 'Helvetica, Arial, sans-serif',
+      })
+      tag.textContent = a.reason
+      root.append(tag)
     }
     return root
   },

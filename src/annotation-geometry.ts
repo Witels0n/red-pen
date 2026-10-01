@@ -39,3 +39,5 @@ export function boxWidth(label: string): number {
 
 /** Colour of a Total with more Ticks than its out-of value (on screen only). */
 export const WARNING_CSS = 'rgb(217, 119, 6)'
+/** The Reason tag beside a Cross: baseline-left offset from the Cross and font size, PDF units. */
+export const REASON_TAG = { dx: 11, dy: 4, fontSize: 11 }

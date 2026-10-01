@@ -5,6 +5,7 @@ import {
   CROSS_STROKES,
   FONT_SIZE,
   INK,
+  REASON_TAG,
   STROKE_WIDTH,
   SUBTOTAL_RADIUS,
   TICK_POINTS,
@@ -49,16 +50,22 @@ interface DrawContext {
   page: PDFPage
   /** Map a displayed-space point to user space for this page. */
   at(x: number, y: number): { x: number; y: number }
+  /** The page's /Rotate in degrees, normalised to 0, 90, 180 or 270. */
+  rotation: number
   font: PDFFont
   /** Derived values (Subtotal counts, the Total) for the Annotations being exported. */
   model: Pick<MarkingModel, 'getSubtotalCount' | 'getTotal'>
 }
 
+/** Drop characters the standard (WinAnsi) font cannot encode, so odd Reasons never fail export. */
+function encodable(font: PDFFont, s: string): string {
+  const supported = new Set(font.getCharacterSet())
+  return [...s].filter((ch) => supported.has(ch.codePointAt(0)!)).join('')
+}
+
 /** Draw text with its baseline starting at a displayed-space point, following the page rotation. */
 function drawText(c: DrawContext, text: string, x: number, y: number, align: 'start' | 'middle'): void {
-  // Helvetica only encodes WinAnsi; anything else becomes '?' rather than failing the export.
-  const supported = new Set(c.font.getCharacterSet())
-  const safe = Array.from(text, (ch) => (supported.has(ch.codePointAt(0)!) ? ch : '?')).join('')
+  const safe = encodable(c.font, text)
   const width = c.font.widthOfTextAtSize(safe, FONT_SIZE)
   const startX = align === 'middle' ? x - width / 2 : x
   const origin = c.at(startX, y + FONT_SIZE * 0.35) // baseline sits a little below the centre
@@ -91,6 +98,16 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
         thickness: STROKE_WIDTH,
         color,
         lineCap: LineCapStyle.Round,
+      })
+    }
+    const label = a.reason ? encodable(c.font, a.reason) : ''
+    if (label) {
+      c.page.drawText(label, {
+        ...c.at(a.x + REASON_TAG.dx, a.y + REASON_TAG.dy),
+        size: REASON_TAG.fontSize,
+        font: c.font,
+        color,
+        rotate: degrees(c.rotation),
       })
     }
   },
@@ -137,7 +154,13 @@ export async function exportMarkedPdf(
     if (!page) continue
     const box = page.getCropBox()
     const rotation = page.getRotation().angle
-    const context: DrawContext = { page, font, model, at: (x, y) => toPageSpace(box, rotation, x, y) }
+    const context: DrawContext = {
+      page,
+      font,
+      model,
+      rotation: (((Math.round(rotation / 90) * 90) % 360) + 360) % 360,
+      at: (x, y) => toPageSpace(box, rotation, x, y),
+    }
     const draw = drawers[a.type] as (a: Annotation, c: DrawContext) => void
     draw(a, context)
   }

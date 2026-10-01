@@ -146,6 +146,67 @@ button:hover {
   pointer-events: auto;
 }
 
+.reason-tag {
+  pointer-events: none;
+  user-select: none;
+}
+
+.reason-popup {
+  position: fixed;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-width: 18rem;
+  padding: 0.4rem;
+  border: 1px solid #8a8a93;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.reason-popup button {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+.reason-popup button[aria-pressed='true'] {
+  border-color: #c0262d;
+  background: #fdf0f0;
+}
+
+.reason-popup .reason-clear,
+.reason-popup .reason-edit {
+  border-style: dashed;
+}
+
+#reasons-editor {
+  width: min(28rem, 92vw);
+  border: 1px solid #8a8a93;
+  border-radius: 8px;
+}
+
+#reasons-editor h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+#reasons-editor textarea {
+  display: block;
+  width: 100%;
+  font: inherit;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.dialog-actions .spacer {
+  flex: 1;
+}
+
 .annotation {
   cursor: grab;
   touch-action: none;

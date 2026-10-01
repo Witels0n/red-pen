@@ -90,6 +90,30 @@ describe('exportMarkedPdf', () => {
     expect(contentOf(after.getPage(2))).toEqual(contentOf(before.getPage(2)))
   })
 
+  it('draws a Cross\'s Reason as red text on its page; a bare Cross gets no text', async () => {
+    const original = await fixture()
+    const model = createMarkingModel()
+    const withReason = model.placeCross(2, 100, 100)
+    model.setReason(withReason.id, 'RTQ')
+    model.placeCross(3, 100, 100)
+
+    const after = await PDFDocument.load(await exportMarkedPdf(original, model.getAnnotations()))
+
+    const page2 = text(contentOf(after.getPage(1)))
+    expect(page2).toMatch(/Tj/)
+    expect(page2).toMatch(/<525451>/) // "RTQ"
+    expect(page2).toMatch(/0.85 0.1 0.1 rg/) // red fill for text
+    expect(text(contentOf(after.getPage(2)))).not.toMatch(/Tj/)
+  })
+
+  it('exports a Reason with characters the standard font cannot show without failing', async () => {
+    const model = createMarkingModel()
+    const cross = model.placeCross(1, 100, 100)
+    model.setReason(cross.id, 'Wrong ✗ units')
+    const marked = await exportMarkedPdf(await fixture(), model.getAnnotations())
+    expect((await PDFDocument.load(marked)).getPageCount()).toBe(3)
+  })
+
   it('with no annotations still returns a valid PDF with the same pages', async () => {
     const marked = await exportMarkedPdf(await fixture(), [])
     expect((await PDFDocument.load(marked)).getPageCount()).toBe(3)

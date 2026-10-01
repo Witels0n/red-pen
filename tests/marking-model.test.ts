@@ -98,6 +98,71 @@ describe('marking model: reset', () => {
   })
 })
 
+describe('marking model: Reasons on Crosses', () => {
+  it('a new Cross has no Reason', () => {
+    const cross = createMarkingModel().placeCross(1, 5, 5)
+    expect(cross).not.toHaveProperty('reason')
+  })
+
+  it('setting a Reason attaches it to that Cross only, and notifies', () => {
+    const model = createMarkingModel()
+    const a = model.placeCross(1, 5, 5)
+    const b = model.placeCross(1, 50, 50)
+    let calls = 0
+    model.onChange(() => calls++)
+    model.setReason(a.id, 'RTQ')
+    expect(model.getAnnotations()).toEqual([{ ...a, reason: 'RTQ' }, b])
+    expect(calls).toBe(1)
+  })
+
+  it('a Reason can be changed and then cleared', () => {
+    const model = createMarkingModel()
+    const cross = model.placeCross(2, 9, 9)
+    model.setReason(cross.id, 'RTQ')
+    model.setReason(cross.id, 'Factual error')
+    expect(model.getAnnotations()[0]).toMatchObject({ reason: 'Factual error' })
+    model.setReason(cross.id, undefined)
+    expect(model.getAnnotations()[0]).toEqual(cross)
+    expect(model.getAnnotations()[0]).not.toHaveProperty('reason')
+  })
+
+  it('setting a Reason never changes position or Marks', () => {
+    const model = createMarkingModel()
+    const cross = model.placeCross(2, 9, 9)
+    model.placeTick(1, 1, 1)
+    model.setReason(cross.id, 'RTQ')
+    expect(model.getAnnotations()[0]).toMatchObject({ type: 'cross', page: 2, x: 9, y: 9 })
+    expect(model.getMarks()).toBe(1)
+  })
+
+  it('ignores unknown ids and Annotations that are not Crosses', () => {
+    const model = createMarkingModel()
+    const tick = model.placeTick(1, 1, 1)
+    let calls = 0
+    model.onChange(() => calls++)
+    model.setReason(tick.id, 'RTQ')
+    model.setReason('nope', 'RTQ')
+    expect(model.getAnnotations()).toEqual([tick])
+    expect(calls).toBe(0)
+  })
+
+  it('a Cross keeps its Reason when moved', () => {
+    const model = createMarkingModel()
+    const cross = model.placeCross(1, 1, 1)
+    model.setReason(cross.id, 'RTQ')
+    model.moveAnnotation(cross.id, 30, 40, 2)
+    expect(model.getAnnotations()[0]).toMatchObject({ page: 2, x: 30, y: 40, reason: 'RTQ' })
+  })
+
+  it('a blank Reason clears it', () => {
+    const model = createMarkingModel()
+    const cross = model.placeCross(1, 1, 1)
+    model.setReason(cross.id, 'RTQ')
+    model.setReason(cross.id, '   ')
+    expect(model.getAnnotations()[0]).not.toHaveProperty('reason')
+  })
+})
+
 describe('marking model: move', () => {
   it('moves an Annotation to a new position, keeping its identity and page', () => {
     const model = createMarkingModel()
