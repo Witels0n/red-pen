@@ -21,3 +21,21 @@ export const TICK_POINTS: ReadonlyArray<readonly [number, number]> = [
   [-2, 6],
   [8, -8],
 ]
+
+/** Text size, in PDF units, for Subtotals, the Total and Text notes. */
+export const FONT_SIZE = 14
+
+/** Subtotals are a bare number inside a circle of this radius. */
+export const SUBTOTAL_RADIUS = 13
+
+/** The Total is a box around "count / outOf"; Text notes are drawn without a box. */
+export const BOX_HEIGHT = 22
+export const BOX_PADDING = 7
+
+/** Width of the Total's box. An estimate shared by screen and export (Helvetica averages ~0.56 em). */
+export function boxWidth(label: string): number {
+  return label.length * FONT_SIZE * 0.56 + 2 * BOX_PADDING
+}
+
+/** Colour of a Total with more Ticks than its out-of value (on screen only). */
+export const WARNING_CSS = 'rgb(217, 119, 6)'

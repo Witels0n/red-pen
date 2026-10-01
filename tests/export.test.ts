@@ -69,6 +69,27 @@ describe('exportMarkedPdf', () => {
     expect(contentOf(after.getPage(0))).toEqual(contentOf(before.getPage(0)))
   })
 
+  it('draws Subtotals, the Total and Text notes in red with text, on their pages only', async () => {
+    const original = await fixture()
+    const model = createMarkingModel()
+    model.placeTick(1, 100, 100)
+    model.placeSubtotal(1, 20, 120)
+    model.placeTotal(2, 100, 100, 40)
+    model.placeText(2, 100, 200, 'units ✓ -1')
+
+    const marked = await exportMarkedPdf(original, model.getAnnotations())
+
+    const before = await PDFDocument.load(original)
+    const after = await PDFDocument.load(marked)
+    expect(after.getPageCount()).toBe(3)
+    for (const i of [0, 1]) {
+      expect(contentOf(after.getPage(i)).length).toBeGreaterThan(contentOf(before.getPage(i)).length)
+      expect(text(contentOf(after.getPage(i)))).toMatch(/Tj/)
+      expect(text(contentOf(after.getPage(i)))).toMatch(/0.85 0.1 0.1 rg/)
+    }
+    expect(contentOf(after.getPage(2))).toEqual(contentOf(before.getPage(2)))
+  })
+
   it('with no annotations still returns a valid PDF with the same pages', async () => {
     const marked = await exportMarkedPdf(await fixture(), [])
     expect((await PDFDocument.load(marked)).getPageCount()).toBe(3)

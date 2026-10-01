@@ -1,6 +1,15 @@
-import { LineCapStyle, PDFDocument, PDFPage, rgb } from 'pdf-lib'
-import { CROSS_STROKES, INK, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
-import type { Annotation } from './marking-model'
+import { degrees, LineCapStyle, PDFDocument, PDFFont, PDFPage, rgb, StandardFonts } from 'pdf-lib'
+import {
+  BOX_HEIGHT,
+  boxWidth,
+  CROSS_STROKES,
+  FONT_SIZE,
+  INK,
+  STROKE_WIDTH,
+  SUBTOTAL_RADIUS,
+  TICK_POINTS,
+} from './annotation-geometry'
+import { createMarkingModel, type Annotation, type MarkingModel } from './marking-model'
 
 // Export: draws the Annotations in red as flattened vector graphics over the original pages.
 // Extending: add a drawer for the new type to `drawers`; the compiler enforces completeness.
@@ -40,6 +49,22 @@ interface DrawContext {
   page: PDFPage
   /** Map a displayed-space point to user space for this page. */
   at(x: number, y: number): { x: number; y: number }
+  font: PDFFont
+  /** Derived values (Subtotal counts, the Total) for the Annotations being exported. */
+  model: Pick<MarkingModel, 'getSubtotalCount' | 'getTotal'>
+}
+
+/** Draw text with its baseline starting at a displayed-space point, following the page rotation. */
+function drawText(c: DrawContext, text: string, x: number, y: number, align: 'start' | 'middle'): void {
+  // Helvetica only encodes WinAnsi; anything else becomes '?' rather than failing the export.
+  const supported = new Set(c.font.getCharacterSet())
+  const safe = Array.from(text, (ch) => (supported.has(ch.codePointAt(0)!) ? ch : '?')).join('')
+  const width = c.font.widthOfTextAtSize(safe, FONT_SIZE)
+  const startX = align === 'middle' ? x - width / 2 : x
+  const origin = c.at(startX, y + FONT_SIZE * 0.35) // baseline sits a little below the centre
+  const along = c.at(startX + 1, y + FONT_SIZE * 0.35)
+  const angle = Math.atan2(along.y - origin.y, along.x - origin.x) * (180 / Math.PI)
+  c.page.drawText(safe, { x: origin.x, y: origin.y, size: FONT_SIZE, font: c.font, color, rotate: degrees(angle) })
 }
 
 const color = rgb(INK.r, INK.g, INK.b)
@@ -69,6 +94,29 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
       })
     }
   },
+  subtotal(a, c) {
+    const centre = c.at(a.x, a.y)
+    c.page.drawCircle({ x: centre.x, y: centre.y, size: SUBTOTAL_RADIUS, borderColor: color, borderWidth: STROKE_WIDTH })
+    drawText(c, String(c.model.getSubtotalCount(a.id) ?? 0), a.x, a.y, 'middle')
+  },
+  total(a, c) {
+    const label = `${c.model.getTotal()?.count ?? 0} / ${a.outOf}`
+    const w = boxWidth(label)
+    const h = BOX_HEIGHT
+    const corners = [
+      c.at(a.x - w / 2, a.y - h / 2),
+      c.at(a.x + w / 2, a.y - h / 2),
+      c.at(a.x + w / 2, a.y + h / 2),
+      c.at(a.x - w / 2, a.y + h / 2),
+    ]
+    corners.forEach((start, i) =>
+      c.page.drawLine({ start, end: corners[(i + 1) % 4], thickness: STROKE_WIDTH, color, lineCap: LineCapStyle.Projecting }),
+    )
+    drawText(c, label, a.x, a.y, 'middle')
+  },
+  text(a, c) {
+    drawText(c, a.text, a.x, a.y, 'start')
+  },
 }
 
 /** "learner-12.pdf" -> "learner-12-marked.pdf". */
@@ -81,13 +129,15 @@ export async function exportMarkedPdf(
   annotations: readonly Annotation[],
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.load(originalBytes)
+  const font = await doc.embedFont(StandardFonts.Helvetica)
   const pages = doc.getPages()
+  const model = createMarkingModel(annotations)
   for (const a of annotations) {
     const page = pages[a.page - 1]
     if (!page) continue
     const box = page.getCropBox()
     const rotation = page.getRotation().angle
-    const context: DrawContext = { page, at: (x, y) => toPageSpace(box, rotation, x, y) }
+    const context: DrawContext = { page, font, model, at: (x, y) => toPageSpace(box, rotation, x, y) }
     const draw = drawers[a.type] as (a: Annotation, c: DrawContext) => void
     draw(a, context)
   }

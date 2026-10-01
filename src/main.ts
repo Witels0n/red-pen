@@ -1,5 +1,8 @@
 import { attachAnnotationLayer, type AnnotationLayer } from './annotation-layer'
 import { attachSelection, type Selection } from './selection'
+import { attachHistoryKeys } from './history-keys'
+import { attachNoteEditing, editTextAt, placeTotalWithPrompt } from './note-editing'
+import { attachToolbarDrag } from './toolbar-drag'
 import { exportMarkedPdf, markedFileName } from './export'
 import { createMarkingModel } from './marking-model'
 import { looksLikePdf } from './pdf-file'
@@ -24,6 +27,7 @@ const viewerEl = el('viewer')
 let viewer: Viewer | null = null
 let annotationLayer: AnnotationLayer | null = null
 let selection: Selection | null = null
+let detachNoteEditing: (() => void) | null = null
 const model = createMarkingModel()
 /** True when the model has changed since the last export (or since the Test was opened). */
 let unexported = false
@@ -75,6 +79,7 @@ async function openFile(file: File): Promise<void> {
 
   viewer?.destroy()
   selection?.destroy()
+  detachNoteEditing?.()
   annotationLayer?.destroy()
   viewer = null
   annotationLayer = null
@@ -91,6 +96,7 @@ async function openFile(file: File): Promise<void> {
   viewer = next
   annotationLayer = attachAnnotationLayer(next, model)
   selection = attachSelection(next, model, annotationLayer)
+  detachNoteEditing = attachNoteEditing(next, model)
 }
 
 async function exportMarked(): Promise<void> {
@@ -113,6 +119,28 @@ async function exportMarked(): Promise<void> {
   setTimeout(() => URL.revokeObjectURL(url), 10_000)
   unexported = false
 }
+
+attachHistoryKeys(model)
+
+// A Test has at most one Total: grey out its tool once placed.
+const totalTool = el('tool-total')
+const syncTotalTool = () => totalTool.setAttribute('aria-disabled', String(model.getTotal() !== undefined))
+model.onChange(syncTotalTool)
+syncTotalTool()
+
+attachToolbarDrag(
+  el('toolbar'),
+  () => viewer,
+  (tool, page, x, y) => {
+    if (tool === 'subtotal') model.placeSubtotal(page.pageNumber, x, y)
+    else if (tool === 'total') void placeTotalWithPrompt(model, page, x, y)
+    else if (tool === 'text') {
+      editTextAt(page, x, y, '', (text) => {
+        if (text !== '') model.placeText(page.pageNumber, x, y, text)
+      })
+    }
+  },
+)
 
 el('export').addEventListener('click', () => void exportMarked())
 

@@ -1,4 +1,14 @@
-import { CROSS_STROKES, INK_CSS, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
+import {
+  BOX_HEIGHT,
+  boxWidth,
+  CROSS_STROKES,
+  FONT_SIZE,
+  INK_CSS,
+  STROKE_WIDTH,
+  SUBTOTAL_RADIUS,
+  TICK_POINTS,
+  WARNING_CSS,
+} from './annotation-geometry'
 import type { Annotation, MarkingModel } from './marking-model'
 import type { PageView, Viewer } from './viewer'
 
@@ -36,11 +46,28 @@ function anchor(a: Annotation, scale: number): SVGSVGElement {
   return root
 }
 
-const renderers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>, scale: number) => SVGSVGElement } = {
+function label(text: string, scale: number, attrs: Record<string, string>): SVGTextElement {
+  const t = svg('text', {
+    'font-family': 'Helvetica, Arial, sans-serif',
+    'font-size': String(FONT_SIZE * scale),
+    'dominant-baseline': 'central',
+    ...attrs,
+  })
+  t.textContent = text
+  return t
+}
+
+type Renderer<T extends Annotation['type']> = (
+  a: Extract<Annotation, { type: T }>,
+  scale: number,
+  model: MarkingModel,
+) => SVGSVGElement
+
+const renderers: { [T in Annotation['type']]: Renderer<T> } = {
   tick(a, scale) {
     const root = anchor(a, scale)
     // Transparent hit area so the mark is easy to target later (select/move/delete).
-    root.append(svg('circle', { r: String(10 * scale), fill: 'transparent' }))
+    root.append(svg('circle', { class: 'hit', r: String(10 * scale), fill: 'transparent' }))
     root.append(
       svg('polyline', {
         points: TICK_POINTS.map(([dx, dy]) => `${dx * scale},${dy * scale}`).join(' '),
@@ -55,7 +82,7 @@ const renderers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T 
   },
   cross(a, scale) {
     const root = anchor(a, scale)
-    root.append(svg('circle', { r: String(10 * scale), fill: 'transparent' }))
+    root.append(svg('circle', { class: 'hit', r: String(10 * scale), fill: 'transparent' }))
     for (const [[x1, y1], [x2, y2]] of CROSS_STROKES) {
       root.append(
         svg('line', {
@@ -71,10 +98,52 @@ const renderers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T 
     }
     return root
   },
+  subtotal(a, scale, model) {
+    const root = anchor(a, scale)
+    const r = SUBTOTAL_RADIUS * scale
+    root.append(svg('circle', { class: 'hit', r: String(r + 3 * scale), fill: 'transparent' }))
+    root.append(
+      svg('circle', { r: String(r), fill: 'none', stroke: INK_CSS, 'stroke-width': String(STROKE_WIDTH * scale) }),
+    )
+    root.append(label(String(model.getSubtotalCount(a.id) ?? 0), scale, { 'text-anchor': 'middle', fill: INK_CSS }))
+    return root
+  },
+  total(a, scale, model) {
+    const root = anchor(a, scale)
+    const summary = model.getTotal()
+    const text = `${summary?.count ?? 0} / ${a.outOf}`
+    const colour = summary?.over ? WARNING_CSS : INK_CSS
+    const w = boxWidth(text) * scale
+    const h = BOX_HEIGHT * scale
+    root.append(
+      svg('rect', {
+        class: 'hit',
+        x: String(-w / 2),
+        y: String(-h / 2),
+        width: String(w),
+        height: String(h),
+        fill: 'transparent',
+        stroke: colour,
+        'stroke-width': String(STROKE_WIDTH * scale),
+      }),
+    )
+    root.append(label(text, scale, { 'text-anchor': 'middle', fill: colour, 'font-weight': summary?.over ? 'bold' : 'normal' }))
+    return root
+  },
+  text(a, scale) {
+    const root = anchor(a, scale)
+    const w = (a.text.length * FONT_SIZE * 0.56 + 4) * scale
+    const h = BOX_HEIGHT * scale
+    root.append(
+      svg('rect', { class: 'hit', x: String(-2 * scale), y: String(-h / 2), width: String(w), height: String(h), fill: 'transparent' }),
+    )
+    root.append(label(a.text, scale, { 'text-anchor': 'start', fill: INK_CSS }))
+    return root
+  },
 }
 
-function renderAnnotation(a: Annotation, scale: number): SVGSVGElement {
-  return (renderers[a.type] as (a: Annotation, s: number) => SVGSVGElement)(a, scale)
+function renderAnnotation(a: Annotation, scale: number, model: MarkingModel): SVGSVGElement {
+  return (renderers[a.type] as Renderer<Annotation['type']>)(a, scale, model)
 }
 
 export interface AnnotationLayer {
@@ -120,7 +189,7 @@ export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): Anno
     }
     for (const page of viewer.pages) {
       layers.get(page.pageNumber)!.replaceChildren(
-        ...(byPage.get(page.pageNumber) ?? []).map((a) => renderAnnotation(a, page.scale)),
+        ...(byPage.get(page.pageNumber) ?? []).map((a) => renderAnnotation(a, page.scale, model)),
       )
     }
     renderListeners.forEach((l) => l())

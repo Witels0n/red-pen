@@ -151,9 +151,74 @@ button:hover {
   touch-action: none;
 }
 
-.annotation.selected circle {
+.annotation.selected .hit {
   fill: rgba(42, 91, 215, 0.12);
   stroke: #2a5bd7;
   stroke-width: 1.5;
   stroke-dasharray: 4 3;
+}
+
+.annotation.selected rect.hit {
+  stroke-width: 1.5;
+}
+
+#toolbar .tool {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+#toolbar .tool[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tool-ghost {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #d91a1a;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #d91a1a;
+  transform: translate(-50%, -50%);
+}
+
+.note-editor {
+  position: absolute;
+  z-index: 10;
+  min-width: 8em;
+  padding: 0 2px;
+  font: 14px Helvetica, Arial, sans-serif;
+  color: #d91a1a;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #2a5bd7;
+  transform: translateY(-50%);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.dialog .row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
