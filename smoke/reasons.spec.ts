@@ -41,7 +41,7 @@ test('placing a Cross offers the default Reasons; choosing one shows a red tag b
   await expect(popup(page)).toHaveCount(0)
   const tag = page.locator('.annotation-cross .reason-tag')
   await expect(tag).toHaveText('RTQ')
-  expect(await tag.getAttribute('fill')).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
+  expect(await tag.evaluate((e) => getComputedStyle(e).fill)).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
   // The tag sits beside (to the right of) the Cross.
   const cross = (await page.locator('.annotation-cross circle').boundingBox())!
   const tagBox = (await tag.boundingBox())!

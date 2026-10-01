@@ -44,7 +44,7 @@ test('right-click places a red Cross exactly where clicked at every zoom, with n
     const c = await crossCentre(page, i)
     expect(Math.abs(c.x - at.x)).toBeLessThan(1.5)
     expect(Math.abs(c.y - at.y)).toBeLessThan(1.5)
-    expect(await page.locator('.annotation-cross line').last().getAttribute('stroke')).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
+    expect(await page.locator('.annotation-cross line').last().evaluate((e) => getComputedStyle(e).stroke)).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
   }
 
   const menus = await page.evaluate(() => (window as unknown as { __menus: boolean[] }).__menus)

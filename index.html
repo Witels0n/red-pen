@@ -11,8 +11,10 @@
       <section id="open-screen">
         <h1>PDF Marker</h1>
         <p id="privacy-note">
-          Your PDF is not uploaded and not stored on any server. It never leaves this computer and
-          is processed only in your browser.
+          Your PDF is not uploaded and not stored on any server. It never leaves your computer and
+          is processed only in your browser. This is called client-side processing. You can verify
+          this by disconnecting from the internet and opening a PDF. Now that you have loaded the page
+          you can run this app offline.
         </p>
         <div id="drop-zone">
           <p>Drag a scanned test (PDF) here, or</p>
@@ -28,6 +30,7 @@
           <span class="tool" id="tool-subtotal" data-tool="subtotal" data-ghost="Subtotal" role="button" tabindex="0" title="Drag onto the page">Subtotal</span>
           <span class="tool" id="tool-total" data-tool="total" data-ghost="Total" role="button" tabindex="0" title="Drag onto the page">Total</span>
           <span class="tool" id="tool-text" data-tool="text" data-ghost="Text note" role="button" tabindex="0" title="Drag onto the page">Text note</span>
+          <span id="ink-swatches" role="radiogroup" aria-label="Ink colour"></span>
           <span class="spacer"></span>
           <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>
           <span id="zoom-level">100%</span>
