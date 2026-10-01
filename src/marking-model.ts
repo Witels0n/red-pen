@@ -28,6 +28,10 @@ export interface MarkingModel {
   getAnnotations(): readonly Annotation[]
   /** Place a Tick (one Mark) on a page. */
   placeTick(page: number, x: number, y: number): TickAnnotation
+  /** Move any Annotation (optionally to another page). Unknown ids are ignored. */
+  moveAnnotation(id: string, x: number, y: number, page?: number): void
+  /** Remove any Annotation. Unknown ids are ignored. */
+  deleteAnnotation(id: string): void
   /** Total Marks awarded: one per Tick. */
   getMarks(): number
   /** Remove every Annotation (used when another Test is opened). */
@@ -53,6 +57,14 @@ export function createMarkingModel(): MarkingModel {
       const tick: TickAnnotation = { id: `a${nextId++}`, type: 'tick', page, x, y }
       apply([...annotations, tick])
       return tick
+    },
+    moveAnnotation(id, x, y, page) {
+      if (!annotations.some((a) => a.id === id)) return
+      apply(annotations.map((a) => (a.id === id ? { ...a, x, y, page: page ?? a.page } : a)))
+    },
+    deleteAnnotation(id) {
+      if (!annotations.some((a) => a.id === id)) return
+      apply(annotations.filter((a) => a.id !== id))
     },
     getMarks: () => annotations.filter((a) => a.type === 'tick').length,
     reset: () => apply([]),

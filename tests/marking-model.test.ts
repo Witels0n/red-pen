@@ -68,3 +68,60 @@ describe('marking model: reset', () => {
     expect(calls).toBe(1)
   })
 })
+
+describe('marking model: move', () => {
+  it('moves an Annotation to a new position, keeping its identity and page', () => {
+    const model = createMarkingModel()
+    const tick = model.placeTick(2, 10, 20)
+    model.moveAnnotation(tick.id, 55, 66)
+    expect(model.getAnnotations()).toEqual([{ id: tick.id, type: 'tick', page: 2, x: 55, y: 66 }])
+  })
+
+  it('can move an Annotation onto another page', () => {
+    const model = createMarkingModel()
+    const tick = model.placeTick(1, 10, 20)
+    model.moveAnnotation(tick.id, 5, 6, 3)
+    expect(model.getAnnotations()[0]).toMatchObject({ page: 3, x: 5, y: 6 })
+  })
+
+  it('leaves the Marks unchanged and notifies once', () => {
+    const model = createMarkingModel()
+    const tick = model.placeTick(1, 10, 20)
+    let calls = 0
+    model.onChange(() => calls++)
+    model.moveAnnotation(tick.id, 1, 1)
+    expect(model.getMarks()).toBe(1)
+    expect(calls).toBe(1)
+  })
+
+  it('ignores an unknown id without notifying', () => {
+    const model = createMarkingModel()
+    model.placeTick(1, 10, 20)
+    let calls = 0
+    model.onChange(() => calls++)
+    model.moveAnnotation('nope', 1, 1)
+    expect(model.getAnnotations()[0]).toMatchObject({ x: 10, y: 20 })
+    expect(calls).toBe(0)
+  })
+})
+
+describe('marking model: delete', () => {
+  it('removes only that Annotation and its Mark', () => {
+    const model = createMarkingModel()
+    const a = model.placeTick(1, 10, 20)
+    const b = model.placeTick(1, 30, 40)
+    model.deleteAnnotation(a.id)
+    expect(model.getAnnotations().map((x) => x.id)).toEqual([b.id])
+    expect(model.getMarks()).toBe(1)
+  })
+
+  it('ignores an unknown id without notifying', () => {
+    const model = createMarkingModel()
+    model.placeTick(1, 10, 20)
+    let calls = 0
+    model.onChange(() => calls++)
+    model.deleteAnnotation('nope')
+    expect(model.getAnnotations()).toHaveLength(1)
+    expect(calls).toBe(0)
+  })
+})
