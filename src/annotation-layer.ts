@@ -1,4 +1,4 @@
-import { CROSS_STROKES, INK_CSS, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
+import { CROSS_STROKES, INK_CSS, REASON_TAG, STROKE_WIDTH, TICK_POINTS } from './annotation-geometry'
 import type { Annotation, MarkingModel } from './marking-model'
 import type { PageView, Viewer } from './viewer'
 
@@ -68,6 +68,18 @@ const renderers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T 
           'stroke-linecap': 'round',
         }),
       )
+    }
+    if (a.reason) {
+      const tag = svg('text', {
+        class: 'reason-tag',
+        x: String(REASON_TAG.dx * scale),
+        y: String(REASON_TAG.dy * scale),
+        fill: INK_CSS,
+        'font-size': String(REASON_TAG.fontSize * scale),
+        'font-family': 'Helvetica, Arial, sans-serif',
+      })
+      tag.textContent = a.reason
+      root.append(tag)
     }
     return root
   },

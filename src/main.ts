@@ -1,6 +1,9 @@
 import { attachAnnotationLayer, type AnnotationLayer } from './annotation-layer'
 import { exportMarkedPdf, markedFileName } from './export'
 import { createMarkingModel } from './marking-model'
+import { attachReasonPopup } from './reason-popup'
+import { createBrowserReasonsList } from './reasons'
+import { openReasonsEditor } from './reasons-editor'
 import { looksLikePdf } from './pdf-file'
 import { loadPdf } from './pdf-worker'
 import { getOpenedTest, setOpenedTest } from './session'
@@ -28,6 +31,10 @@ let unexported = false
 model.onChange(() => {
   unexported = true
 })
+
+const reasons = createBrowserReasonsList()
+attachReasonPopup({ root: viewerEl, model, reasons, onEditReasons: () => openReasonsEditor(reasons) })
+el('edit-reasons').addEventListener('click', () => openReasonsEditor(reasons))
 
 function showError(message: string): void {
   // Errors never replace what is on screen: a previously opened Test stays usable.
