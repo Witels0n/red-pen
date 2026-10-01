@@ -1,5 +1,6 @@
 import { PDFArray, PDFDocument, PDFRawStream, PDFStream, decodePDFRawStream, degrees, type PDFPage } from 'pdf-lib'
 import { describe, expect, it } from 'vitest'
+import { INK_PRESETS } from '../src/ink'
 import { createMarkingModel } from '../src/marking-model'
 import { exportMarkedPdf, markedFileName, toPageSpace } from '../src/export'
 
@@ -180,5 +181,22 @@ describe('markedFileName', () => {
 
   it('appends -marked.pdf when there is no .pdf extension', () => {
     expect(markedFileName('scan')).toBe('scan-marked.pdf')
+  })
+})
+
+describe('exportMarkedPdf Ink colour', () => {
+  it('draws every Annotation in the chosen Ink colour instead of red', async () => {
+    const model = createMarkingModel()
+    model.placeTick(1, 100, 100)
+    model.placeCross(1, 200, 100)
+    model.placeSubtotal(1, 300, 100)
+    model.placeText(1, 100, 200, 'hi')
+
+    const marked = await exportMarkedPdf(await fixture(), model.getAnnotations(), INK_PRESETS.blue)
+
+    const content = text(contentOf((await PDFDocument.load(marked)).getPage(0)))
+    expect(content).toMatch(/0\.1 0\.25 0\.85 RG/) // blue strokes
+    expect(content).toMatch(/0\.1 0\.25 0\.85 rg/) // blue text
+    expect(content).not.toMatch(/0\.85 0\.1 0\.1 (RG|rg)/) // no red left
   })
 })

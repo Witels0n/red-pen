@@ -2,9 +2,8 @@
 // is what the Learner gets. Pure data: points are offsets in PDF page units from the
 // annotation's (x, y), top-left origin, y down.
 
-/** Annotation ink colour (red only; see spec). */
-export const INK = { r: 0.85, g: 0.1, b: 0.1 }
-export const INK_CSS = `rgb(${Math.round(INK.r * 255)}, ${Math.round(INK.g * 255)}, ${Math.round(INK.b * 255)})`
+/** On-screen Annotation ink: the CSS variable `--ink`, kept in step with the Ink colour (ink-swatches.ts). */
+export const INK_CSS = 'var(--ink)'
 
 /** Stroke width in PDF units. */
 export const STROKE_WIDTH = 2

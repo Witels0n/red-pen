@@ -4,6 +4,8 @@ import { attachHistoryKeys } from './history-keys'
 import { attachNoteEditing, editTextAt, placeTotalWithPrompt } from './note-editing'
 import { attachToolbarDrag } from './toolbar-drag'
 import { exportMarkedPdf, markedFileName } from './export'
+import { createBrowserInk } from './ink'
+import { attachInkSwatches } from './ink-swatches'
 import { createMarkingModel } from './marking-model'
 import { attachReasonPopup } from './reason-popup'
 import { createBrowserReasonsList } from './reasons'
@@ -32,6 +34,8 @@ let annotationLayer: AnnotationLayer | null = null
 let selection: Selection | null = null
 let detachNoteEditing: (() => void) | null = null
 const model = createMarkingModel()
+const ink = createBrowserInk()
+attachInkSwatches(el('ink-swatches'), ink)
 /** True when the model has changed since the last export (or since the Test was opened). */
 let unexported = false
 model.onChange(() => {
@@ -111,7 +115,7 @@ async function exportMarked(): Promise<void> {
   if (!test) return
   let marked: Uint8Array
   try {
-    marked = await exportMarkedPdf(test.bytes, model.getAnnotations())
+    marked = await exportMarkedPdf(test.bytes, model.getAnnotations(), ink.rgb())
   } catch {
     showError('The marked PDF could not be created.')
     return
