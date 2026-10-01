@@ -178,9 +178,12 @@ export function createMarkingModel(initial: readonly Annotation[] = []): Marking
     getSubtotalCount(id) {
       const subtotal = annotations.find((a) => a.id === id)
       if (!subtotal || subtotal.type !== 'subtotal') return undefined
+      // Subtotals at the same spot are ordered by placement, so each still counts a distinct set.
+      const order = (a: Annotation, b: Annotation) =>
+        compareReadingOrder(a, b) || annotations.indexOf(a) - annotations.indexOf(b)
       const before = annotations
-        .filter((a) => a.type === 'subtotal' && compareReadingOrder(a, subtotal) < 0)
-        .sort(compareReadingOrder)
+        .filter((a) => a.type === 'subtotal' && order(a, subtotal) < 0)
+        .sort(order)
         .pop()
       const upTo = (marker: Annotation) => ticks().filter((t) => atOrBefore(t, marker)).length
       return upTo(subtotal) - (before ? upTo(before) : 0)

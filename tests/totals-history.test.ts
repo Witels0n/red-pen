@@ -88,6 +88,15 @@ describe('Subtotals', () => {
     expect(m.getSubtotalCount(s2.id)).toBe(0)
   })
 
+  it('two Subtotals at the same spot do not both count the same Ticks', () => {
+    const m = createMarkingModel()
+    m.placeTick(1, 100, 100)
+    const a = m.placeSubtotal(1, 20, 200)
+    const b = m.placeSubtotal(1, 20, 200)
+    expect(m.getSubtotalCount(a.id)).toBe(1)
+    expect(m.getSubtotalCount(b.id)).toBe(0)
+  })
+
   it('has no count for unknown ids or other annotations', () => {
     const m = createMarkingModel()
     const t = m.placeTick(1, 1, 1)
