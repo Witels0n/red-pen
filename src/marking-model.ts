@@ -18,9 +18,10 @@ export interface TickAnnotation extends AnnotationBase {
   readonly type: 'tick'
 }
 
-/** Worth no Marks. A Reason is attached to Crosses in a later ticket. */
+/** Worth no Marks. May carry a Reason (a short label saying why the answer was wrong). */
 export interface CrossAnnotation extends AnnotationBase {
   readonly type: 'cross'
+  readonly reason?: string
 }
 
 /** Discriminated by `type`. Later tickets add 'subtotal' | 'total' | 'text'. */
@@ -35,6 +36,8 @@ export interface MarkingModel {
   placeTick(page: number, x: number, y: number): TickAnnotation
   /** Place a Cross (no Marks) on a page. */
   placeCross(page: number, x: number, y: number): CrossAnnotation
+  /** Set, change or (with undefined or blank text) clear a Cross's Reason. Other ids are ignored. */
+  setReason(id: string, reason: string | undefined): void
   /** Total Marks awarded: one per Tick; Crosses count for nothing. */
   getMarks(): number
   /** Remove every Annotation (used when another Test is opened). */
@@ -65,6 +68,13 @@ export function createMarkingModel(): MarkingModel {
       const cross: CrossAnnotation = { id: `a${nextId++}`, type: 'cross', page, x, y }
       apply([...annotations, cross])
       return cross
+    },
+    setReason(id, reason) {
+      const target = annotations.find((a) => a.id === id)
+      if (target?.type !== 'cross') return
+      const text = reason?.trim()
+      const { reason: _old, ...rest } = target
+      apply(annotations.map((a) => (a === target ? (text ? { ...rest, reason: text } : rest) : a)))
     },
     getMarks: () => annotations.filter((a) => a.type === 'tick').length,
     reset: () => apply([]),
