@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Cover sheets · Red Pen</title>
+    <meta
+      name="description"
+      content="Print a QR cover sheet for each learner, scan the whole class at once, and split the scan into one PDF per learner."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section class="intro paper" aria-labelledby="covers-title">
+        <div class="intro-inner">
+          <h1 id="covers-title">Cover sheets</h1>
+          <p class="intro-hint handwritten">
+            One scan for the class, one file per <span class="nowrap">learner ✓</span>
+          </p>
+          <p class="privacy-note">
+            Names stay in this browser and are never uploaded. The QR code on a cover holds only the Learner ID, never a
+            name.
+          </p>
+          <ol class="steps">
+            <li>Print a Cover sheet for each learner from one of your Class lists.</li>
+            <li>Staple each learner's Cover sheet to the front of their test.</li>
+            <li>Scan the whole class in one batch, Cover sheets and all.</li>
+            <li>
+              Open the scan in <a href="../split/">Split a PDF</a> and choose <strong>At cover sheets</strong>. You get
+              one PDF per learner, named after the learner.
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <p id="storage-error" class="error" role="alert" hidden></p>
+
+        <section id="no-classes" class="panel empty-state" aria-labelledby="no-classes-title" hidden>
+          <h2 id="no-classes-title">Make a Class list first</h2>
+          <p>Cover sheets are printed from a Class list, so each learner gets their own Learner ID.</p>
+          <a class="button primary" href="../classes/#new">Go to Class lists</a>
+        </section>
+
+        <div id="covers-form" class="layout" hidden>
+          <form id="settings" class="panel settings" autocomplete="off" novalidate>
+            <h2>Print Cover sheets</h2>
+            <label class="field">
+              <span>Class list</span>
+              <select id="class-select"></select>
+            </label>
+            <p id="class-summary" class="help"></p>
+            <label class="field">
+              <span>Test title (optional)</span>
+              <input id="test-title" type="text" maxlength="80" placeholder="For example Term 3 test" />
+            </label>
+            <label class="field">
+              <span>Subject (optional)</span>
+              <input id="subject" type="text" maxlength="60" placeholder="For example Natural Sciences" />
+            </label>
+            <label class="check">
+              <input id="include-names" type="checkbox" checked />
+              Print learners' names
+            </label>
+            <p class="help">
+              Turn this off to print only the Learner ID, for classes that use numbers instead of names.
+            </p>
+            <p id="form-error" class="error" role="alert" hidden></p>
+            <div class="actions">
+              <button type="submit" id="download" class="primary">Download Cover sheets</button>
+            </div>
+            <p class="help">Print on A4 at actual size (100%), one page per learner.</p>
+          </form>
+
+          <section class="panel preview-panel" aria-labelledby="preview-title">
+            <h2 id="preview-title">Preview</h2>
+            <p id="preview-caption" class="help"></p>
+            <div class="sheet-preview">
+              <canvas id="preview-canvas" role="img" aria-label="The first Cover sheet"></canvas>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/covers/main.ts"></script>
+  </body>
+</html>

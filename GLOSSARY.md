@@ -63,7 +63,7 @@ _Avoid_: Pen colour, marker colour, annotation colour
 ### PDF tools
 
 **Part**:
-One of the PDFs a split produces, named after the original with a number (for example `class-part-03.pdf`). All parts download together in one .zip.
+One of the PDFs a split produces, named after the original with a number (for example `class-part-03.pdf`), or after the learner when split at Cover sheets (for example `Thandi Mokoena.pdf`). All parts download together in one .zip.
 _Avoid_: Chunk, piece, segment
 
 **Range**:
@@ -123,3 +123,7 @@ _Avoid_: Roster, register, class (on its own, in UI text about the list)
 **Learner ID**:
 A short number (1 to 4 digits, chosen per Class list) that identifies a learner without a name, always written with leading zeros to the list's digit count (for example `07`). A QR on paper holds the Learner ID, never a name. It stays with the learner when the list is reordered or sorted.
 _Avoid_: Student number, learner number, index
+
+**Cover sheet**:
+An A4 page with a learner's name (optional), Learner ID and a QR code holding only the Learner ID, stapled to the front of a written test. A class's tests are scanned in one batch, and Split a PDF starts a new part at each Cover sheet, named after the learner when the Class list is on the device. Printed by the Cover sheets Tool.
+_Avoid_: Title page, front page, separator sheet

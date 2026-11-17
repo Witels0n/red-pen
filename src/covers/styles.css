@@ -1,0 +1,281 @@
+/* Cover sheets: a ruled-paper intro with the steps, then calm panels. Colours come from the design tokens. */
+
+:root {
+  --ok: #2a7a3b;
+  --ok-soft: #f1f8f3;
+  --error-text: #8a1a20;
+  --sheet-shadow: rgba(27, 35, 48, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ok: #6cc584;
+    --ok-soft: #1f2b25;
+    --error-text: #ffb3b8;
+    --sheet-shadow: rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme='dark'] {
+  --ok: #6cc584;
+  --ok-soft: #1f2b25;
+  --error-text: #ffb3b8;
+  --sheet-shadow: rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--focus);
+}
+
+h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+/* ---------- Intro band ---------- */
+
+.intro {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.intro-inner {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem max(24px, env(safe-area-inset-right, 0px)) 1.5rem max(72px, env(safe-area-inset-left, 0px));
+}
+
+.intro h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.intro-hint {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 1.4rem;
+  transform: rotate(-2deg);
+  transform-origin: left;
+}
+
+.privacy-note {
+  max-width: 40rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--ok);
+  background: var(--ok-soft);
+}
+
+.steps {
+  max-width: 40rem;
+  margin: 1.25rem 0 0;
+  padding-left: 1.4rem;
+}
+
+.steps li {
+  padding-left: 0.25rem;
+  line-height: var(--rule-gap);
+}
+
+.steps li::marker {
+  color: var(--red);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .intro-inner {
+    padding-left: max(40px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* ---------- Workspace ---------- */
+
+.workspace {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.5rem max(16px, env(safe-area-inset-right, 0px)) 3rem max(16px, env(safe-area-inset-left, 0px));
+}
+
+.panel {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.empty-state p {
+  margin: 0 0 1rem;
+}
+
+.help {
+  margin: -0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.preview-panel .help {
+  margin: -0.5rem 0 0.75rem;
+}
+
+/* ---------- Controls ---------- */
+
+.button,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover,
+button:hover:not(:disabled) {
+  border-color: var(--text-muted);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.button.primary,
+button.primary {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.field > span {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+input[type='text'],
+select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text);
+  font: inherit;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  cursor: pointer;
+}
+
+.check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--red);
+  flex-shrink: 0;
+}
+
+.error {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border-left: 4px solid var(--red);
+  border-radius: 4px;
+  background: var(--red-soft);
+  color: var(--error-text);
+  overflow-wrap: anywhere;
+}
+
+.settings .error {
+  margin: 0;
+}
+
+/* ---------- Preview ---------- */
+
+.sheet-preview {
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
+.sheet-preview canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 210 / 297;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  box-shadow: 0 2px 10px var(--sheet-shadow);
+}

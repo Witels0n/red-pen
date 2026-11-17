@@ -21,6 +21,12 @@ export const TOOLS: readonly Tool[] = [
     group: 'Marking',
   },
   {
+    name: 'Cover sheets',
+    blurb: 'A QR cover sheet for each learner, so one batch scan of the class splits into a PDF per learner.',
+    path: 'covers/',
+    group: 'Marking',
+  },
+  {
     name: 'Combine PDFs',
     blurb: 'Join several PDFs into one, in the order you choose.',
     path: 'combine/',
@@ -28,7 +34,8 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     name: 'Split a PDF',
-    blurb: 'Cut one PDF into smaller files: per page, every few pages (one per learner) or custom ranges.',
+    blurb:
+      'Cut one PDF into smaller files: per page, every few pages, at cover sheets (one per learner) or custom ranges.',
     path: 'split/',
     group: 'PDF',
   },

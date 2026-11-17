@@ -19,6 +19,7 @@ export const PAGES = {
   qr: 'qr/index.html',
   sign: 'sign/index.html',
   classes: 'classes/index.html',
+  covers: 'covers/index.html',
 } as const
 
 /**

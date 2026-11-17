@@ -70,7 +70,36 @@
                 />
               </span>
             </label>
+            <label class="mode">
+              <input type="radio" name="mode" value="covers" />
+              <span>
+                At cover sheets
+                <small>A new file at each Cover sheet, named after the learner, when every test has one on top.</small>
+              </span>
+            </label>
           </fieldset>
+
+          <div id="cover-options" class="cover-options" hidden>
+            <div class="cover-scan">
+              <span id="cover-status" class="cover-status" role="status"></span>
+              <progress id="cover-progress" max="1" value="0" aria-label="Pages checked" hidden></progress>
+              <button type="button" id="cover-cancel" hidden>Cancel</button>
+              <button type="button" id="cover-rescan" hidden>Look again</button>
+            </div>
+            <label id="cover-class-field" class="cover-field" hidden>
+              <span>Names from</span>
+              <select id="cover-class"></select>
+            </label>
+            <p id="cover-no-classes" class="help" hidden>
+              There are no Class lists on this device, so the files are named by Learner ID. Add the class in
+              <a href="../classes/">Class lists</a> to name them after the learners.
+            </p>
+            <label class="check">
+              <input id="cover-exclude" type="checkbox" />
+              Leave the Cover sheets out of the files
+            </label>
+            <p class="help">Print a Cover sheet for each learner with <a href="../covers/">Cover sheets</a>.</p>
+          </div>
         </form>
 
         <section class="panel" aria-labelledby="preview-title">
@@ -80,6 +109,7 @@
             <button type="button" id="download" class="primary">Download .zip</button>
           </div>
           <p id="plan-error" class="error" aria-live="polite" hidden></p>
+          <ul id="plan-warnings" class="warnings" hidden></ul>
           <p id="preview-count" class="summary"></p>
           <ol id="preview" class="preview"></ol>
         </section>

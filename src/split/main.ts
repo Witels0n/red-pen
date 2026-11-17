@@ -2,7 +2,9 @@ import { byId, pages, startPdfTool } from '../shared/pdf/tool-page'
 import { downloadFile } from '../shared/pdf/download'
 import { attachFileIntake } from '../shared/pdf/file-intake'
 import { openErrorMessage, openPdfFile, type OpenedPdf } from '../shared/pdf/open-pdf'
-import { planSplit, zipFileName, type PlanResult, type SplitMode } from './plan'
+import { createCoverMode } from './cover-mode'
+import type { CoverPart } from './cover-plan'
+import { planSplit, zipFileName, type PlanResult, type PlannedPart, type SplitMode } from './plan'
 import { describeRange } from './ranges'
 import { splitToZip } from './split'
 import './styles.css'
@@ -21,6 +23,8 @@ const rangesText = byId<HTMLInputElement>('ranges-text')
 const preview = byId<HTMLOListElement>('preview')
 const previewCount = byId('preview-count')
 const downloadButton = byId<HTMLButtonElement>('download')
+const planWarnings = byId<HTMLUListElement>('plan-warnings')
+const coverMode = createCoverMode(() => updatePlan())
 
 let opened: OpenedPdf | null = null
 let plan: PlanResult = { ok: false, error: '' }
@@ -36,8 +40,12 @@ function clearErrors(): void {
   workError.hidden = true
 }
 
+function selectedKind(): SplitMode['kind'] | 'covers' {
+  return (form.elements.namedItem('mode') as RadioNodeList).value as SplitMode['kind'] | 'covers'
+}
+
 function currentMode(): SplitMode {
-  const kind = (form.elements.namedItem('mode') as RadioNodeList).value
+  const kind = selectedKind()
   if (kind === 'each') return { kind: 'each' }
   if (kind === 'ranges') return { kind: 'ranges', text: rangesText.value }
   return { kind: 'every', size: everySize.value.trim() === '' ? NaN : Number(everySize.value) }
@@ -48,10 +56,61 @@ function selectMode(kind: SplitMode['kind']): void {
   if (radio) radio.checked = true
 }
 
+function span(className: string, text: string): HTMLSpanElement {
+  const el = document.createElement('span')
+  el.className = className
+  el.textContent = text
+  return el
+}
+
+function previewItem(part: PlannedPart | CoverPart): HTMLLIElement {
+  const li = document.createElement('li')
+  const label = span('part-label', '')
+  label.append(span('part-name', part.fileName))
+  if ('unassigned' in part && part.unassigned) {
+    li.className = 'unassigned'
+    label.append(' ', span('part-flag', 'Unassigned'))
+  } else if ('learnerId' in part && part.learnerId) {
+    label.append(' ', span('part-id', `Learner ID ${part.learnerId}`))
+  }
+  li.append(label, span('part-range', describeRange(part)))
+  return li
+}
+
+function showWarnings(warnings: readonly string[]): void {
+  planWarnings.replaceChildren(
+    ...warnings.map((w) => {
+      const li = document.createElement('li')
+      li.textContent = w
+      return li
+    }),
+  )
+  planWarnings.hidden = warnings.length === 0
+}
+
 function updatePlan(): void {
   if (!opened) return
-  plan = planSplit(currentMode(), opened.pageCount, opened.name)
+  const covers = selectedKind() === 'covers'
+  coverMode.setActive(covers)
+  let warnings: readonly string[] = []
+  if (covers) {
+    const view = coverMode.view(opened.bytes)
+    if (view.kind === 'waiting') {
+      plan = { ok: false, error: '' }
+      downloadButton.disabled = true
+      planError.hidden = true
+      showWarnings([])
+      previewCount.textContent = ''
+      preview.replaceChildren()
+      return
+    }
+    plan = view.result
+    if (view.result.ok) warnings = view.result.warnings
+  } else {
+    plan = planSplit(currentMode(), opened.pageCount, opened.name)
+  }
   downloadButton.disabled = !plan.ok
+  showWarnings(warnings)
   if (!plan.ok) {
     planError.textContent = plan.error
     planError.hidden = false
@@ -62,19 +121,7 @@ function updatePlan(): void {
   planError.hidden = true
   const n = plan.parts.length
   previewCount.textContent = `${n} ${n === 1 ? 'PDF' : 'PDFs'} in ${zipFileName(opened.name)}`
-  preview.replaceChildren(
-    ...plan.parts.map((part) => {
-      const li = document.createElement('li')
-      const name = document.createElement('span')
-      name.className = 'part-name'
-      name.textContent = part.fileName
-      const range = document.createElement('span')
-      range.className = 'part-range'
-      range.textContent = describeRange(part)
-      li.append(name, range)
-      return li
-    }),
-  )
+  preview.replaceChildren(...plan.parts.map(previewItem))
 }
 
 async function openFile(file: File): Promise<void> {
@@ -87,6 +134,7 @@ async function openFile(file: File): Promise<void> {
     return
   }
   opened = next
+  coverMode.reset()
   openScreen.hidden = true
   workScreen.hidden = false
   summary.textContent = `${next.name}, ${pages(next.pageCount)}`

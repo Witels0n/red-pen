@@ -15,15 +15,16 @@ site works offline and can be installed as an app.
 
 ## Tools
 
-| Tool               | What it does                                                                                       |
-| ------------------ | -------------------------------------------------------------------------------------------------- |
-| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.      |
-| **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                    |
-| **Split a PDF**    | Splits by page, every N pages (one file per learner) or custom ranges; downloads a zip.            |
-| **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.      |
-| **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.   |
-| **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export. |
-| **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.         |
+| Tool               | What it does                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.         |
+| **Cover sheets**   | A QR cover sheet per learner from a class list, so a batch scan splits into one PDF per learner.      |
+| **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                       |
+| **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
+| **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |
+| **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.      |
+| **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
+| **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
 
 ## Privacy by design
 
