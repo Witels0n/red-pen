@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Question paper grid · Red Pen</title>
+    <meta
+      name="description"
+      content="The analysis grid for a test or exam paper: marks per cognitive level and topic against targets, with a one-page PDF for your HoD. Nothing is uploaded."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="grid-app">
+      <p id="storage-error" class="banner error" role="alert" hidden></p>
+
+      <!-- Home: the saved grids -->
+      <div id="home-view">
+        <section class="intro paper" aria-labelledby="grid-title">
+          <div class="intro-inner">
+            <h1 id="grid-title">Question paper grid</h1>
+            <p class="intro-hint handwritten">Balanced paper, happy <span class="nowrap">HoD ✓</span></p>
+            <p class="intro-text">
+              Type each question's marks, cognitive level and topic, and see straight away whether the paper matches
+              your targets. Download a one-page PDF or an Excel file for moderation.
+            </p>
+            <p class="privacy-note">Grids are saved only in this browser and never uploaded.</p>
+            <div class="intro-actions">
+              <button type="button" class="primary" id="new-grid">New grid</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="workspace" aria-labelledby="saved-title">
+          <h2 id="saved-title">Your grids</h2>
+          <p id="home-error" class="error" role="alert" hidden></p>
+          <p id="no-grids" class="empty" hidden>No grids yet. Start one with New grid.</p>
+          <ul id="grid-list" class="grid-list"></ul>
+        </section>
+      </div>
+
+      <!-- Editing one grid -->
+      <div id="edit-view" class="edit" hidden>
+        <div class="edit-head">
+          <p class="back"><a href="#">&larr; All grids</a></p>
+          <h2 id="edit-title"></h2>
+          <div class="toolbar">
+            <span id="save-status" class="summary" role="status"></span>
+            <span class="spacer"></span>
+            <button type="button" id="duplicate-grid">Duplicate</button>
+            <button type="button" id="download-xlsx">Download Excel</button>
+            <button type="button" id="download-pdf" class="primary">Download PDF</button>
+          </div>
+          <p id="edit-error" class="error" role="alert" hidden></p>
+        </div>
+
+        <div class="edit-body">
+          <div class="edit-main">
+            <fieldset class="panel">
+              <legend>Paper</legend>
+              <div class="detail-fields">
+                <label class="field"><span>Subject</span><input id="d-subject" type="text" /></label>
+                <label class="field"><span>Grade</span><input id="d-grade" type="text" /></label>
+                <label class="field"><span>Paper</span><input id="d-paper" type="text" placeholder="Paper 1" /></label>
+                <label class="field"><span>Date</span><input id="d-date" type="date" /></label>
+                <label class="field"><span>Examiner</span><input id="d-examiner" type="text" /></label>
+                <label class="field"><span>Moderator</span><input id="d-moderator" type="text" /></label>
+                <label class="field"
+                  ><span>Paper total (marks)</span
+                  ><input id="d-total" type="text" inputmode="decimal" placeholder="For example 100"
+                /></label>
+                <label class="field"
+                  ><span>Tolerance (percentage points)</span><input id="d-tolerance" type="text" inputmode="decimal"
+                /></label>
+              </div>
+            </fieldset>
+
+            <section class="panel" aria-labelledby="questions-title">
+              <div class="panel-head">
+                <h3 id="questions-title">Questions</h3>
+                <label class="check"
+                  ><input id="show-extra" type="checkbox" /> Content area, difficulty and notes</label
+                >
+              </div>
+              <p class="help">
+                Number sub-questions 1.1, 1.2, 1.2.1 and each section is subtotalled for you. Enter moves down a row
+                (and adds one at the end). Paste cells straight from Excel into any box.
+              </p>
+              <div class="table-wrap">
+                <table id="question-table" class="question-table">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="c-number">No.</th>
+                      <th scope="col" class="c-marks">Marks</th>
+                      <th scope="col" class="c-level">Cognitive level</th>
+                      <th scope="col" class="c-topic">Topic</th>
+                      <th scope="col" class="c-extra c-area">Content area</th>
+                      <th scope="col" class="c-extra c-difficulty">Difficulty</th>
+                      <th scope="col" class="c-extra c-notes">Notes</th>
+                      <th scope="col" class="c-actions"><span class="visually-hidden">Actions</span></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <datalist id="topic-options"></datalist>
+              <div class="actions add-actions">
+                <button type="button" id="add-row">Add question</button>
+              </div>
+              <details class="paste-box">
+                <summary>Paste many rows</summary>
+                <label class="field">
+                  <span>Rows copied from a spreadsheet</span>
+                  <textarea
+                    id="paste-text"
+                    rows="5"
+                    spellcheck="false"
+                    placeholder="1.1&#9;3&#9;1&#9;Algebra&#10;1.2&#9;5&#9;2&#9;Algebra"
+                  ></textarea>
+                </label>
+                <p class="help">
+                  Columns in this order: number, marks, level (1, 2, L3 or its name), topic, content area, difficulty,
+                  notes. A header row is skipped.
+                </p>
+                <div class="actions">
+                  <button type="button" id="paste-add">Add these rows</button>
+                </div>
+                <p id="paste-status" class="help" role="status"></p>
+              </details>
+            </section>
+
+            <fieldset class="panel">
+              <legend>Cognitive levels</legend>
+              <label class="field">
+                <span>Taxonomy</span>
+                <select id="taxonomy">
+                  <option value="caps">CAPS cognitive levels</option>
+                  <option value="bloom">Bloom's revised taxonomy</option>
+                  <option value="barrett">Barrett's taxonomy (comprehension)</option>
+                  <option value="custom">Custom levels</option>
+                </select>
+              </label>
+              <p class="help">Targets are a percentage of the paper. Your targets are remembered for your next grid.</p>
+              <ol id="level-list" class="level-list"></ol>
+              <p id="level-sum" class="help"></p>
+              <div class="actions">
+                <button type="button" id="add-level" class="small" hidden>Add level</button>
+                <button type="button" id="reset-levels" class="small">Reset targets</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="panel">
+              <legend>Topics</legend>
+              <p class="help">Optional target percentage per topic. Topics typed in the table are added here too.</p>
+              <ul id="topic-list" class="topic-list"></ul>
+              <p id="no-topics" class="empty">No topics yet.</p>
+              <form id="add-topic-form" class="add-row" autocomplete="off">
+                <label class="field grow"><span>New topic</span><input id="new-topic" type="text" /></label>
+                <button type="submit">Add topic</button>
+              </form>
+            </fieldset>
+          </div>
+
+          <aside class="edit-summary" aria-labelledby="summary-title">
+            <section class="panel summary-panel">
+              <h3 id="summary-title">Summary</h3>
+              <p id="total-line" class="total-line" role="status"></p>
+              <ul id="warnings" class="warnings"></ul>
+              <h4>Cognitive levels</h4>
+              <div class="table-scroll"><table id="level-summary" class="summary-table"></table></div>
+              <div id="level-chart" class="chart"></div>
+              <h4>Topics</h4>
+              <div class="table-scroll"><table id="topic-summary" class="summary-table"></table></div>
+              <div id="topic-chart" class="chart"></div>
+              <h4>Level by topic (marks)</h4>
+              <div class="table-scroll"><table id="matrix" class="summary-table matrix"></table></div>
+              <h4>Question totals</h4>
+              <ul id="question-totals" class="question-totals"></ul>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/grid/main.ts"></script>
+  </body>
+</html>

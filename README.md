@@ -21,6 +21,7 @@ site works offline and can be installed as an app.
 | **MCQ assessments** | Builds a multiple-choice test (with optional pictures), prints one shared shuffled paper and answer sheets for a class list or pasted names, reads scans, and gives a marksheet and item analysis. |
 | **Cover sheets**   | A QR cover sheet per learner from a class list, so a batch scan splits into one PDF per learner.      |
 | **Markbook builder** | Designs a markbook (assessments, weights, Categories, CAPS levels, class summary) and downloads an .xlsx with live Excel formulas. |
+| **Question paper grid** | Analysis grid for a paper: marks per cognitive level (CAPS, Bloom's, Barrett's or custom) and topic against targets, a level by topic matrix, and a one-page PDF or Excel file for the HoD. |
 | **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                       |
 | **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
 | **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |
@@ -39,8 +40,8 @@ site works offline and can be installed as an app.
 - **Enforced, not promised.** The CSP blocks every connection, remote script, stylesheet and font.
   Build tests fail if any page loses the policy or references a remote host.
 - **Self-hosted everything.** Fonts, pdf.js and its worker, and all libraries are bundled.
-- **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists
-  and MCQ assessments (with their results, never the scans) live in IndexedDB on the device. A signature is stored only if the teacher opts in.
+- **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists,
+  MCQ assessments (with their results, never the scans) and question paper grids live in IndexedDB on the device. A signature is stored only if the teacher opts in.
 
 Details and trade-offs: [ADR 0001](docs/adr/0001-client-only-processing.md).
 

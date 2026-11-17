@@ -26,6 +26,7 @@ export const PAGES = {
   booklet: 'booklet/index.html',
   compress: 'compress/index.html',
   picker: 'picker/index.html',
+  grid: 'grid/index.html',
 } as const
 
 /**

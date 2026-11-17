@@ -38,6 +38,10 @@ export const TOOLS: readonly Tool[] = [
     blurb:
       'Design a markbook with weights, Categories and CAPS levels, then download an Excel file with live formulas.',
     path: 'markbook/',
+    name: 'Question paper grid',
+    blurb:
+      'The analysis grid for a test or exam: marks per cognitive level and topic against your targets, with a one-page PDF for your HoD.',
+    path: 'grid/',
     group: 'Assessments and marking',
   },
   {

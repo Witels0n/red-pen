@@ -115,6 +115,19 @@ _Avoid_: Mark sheet, gradebook, register
 **Category**:
 A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or ABS is left out and the other weights share its place.
 _Avoid_: Section, component (Topic is the MCQ term for a question tag)
+### Question paper grids
+
+**Grid**:
+The analysis of one test or exam paper that an HoD asks for: each question's marks, Cognitive level and topic, with totals and shares against targets. Saved in the browser and exported as a one-page PDF or an Excel file.
+_Avoid_: Analysis grid (in UI text), blueprint, spec
+
+**Cognitive level**:
+How demanding a question is, from a chosen taxonomy (CAPS levels, Bloom's revised, Barrett's, or the teacher's own levels). Each level has a target percentage of the paper, remembered per teacher.
+_Avoid_: Bloom level (unless the taxonomy is Bloom's), difficulty (a separate, optional column)
+
+**Tolerance**:
+How many percentage points a level's or topic's share may be off its target before the Grid flags it as over or under (5 by default).
+_Avoid_: Margin, allowance
 
 ### PDF tools
 
