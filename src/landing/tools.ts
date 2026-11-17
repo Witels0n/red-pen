@@ -50,6 +50,12 @@ export const TOOLS: readonly Tool[] = [
     path: 'qr/',
     group: 'Classroom',
   },
+  {
+    name: 'Class lists',
+    blurb: 'Keep your classes with a Learner ID for each learner, ready for answer sheets. Names stay on this device.',
+    path: 'classes/',
+    group: 'Classroom',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */

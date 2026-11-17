@@ -1,0 +1,649 @@
+/* Class lists: a ruled-paper intro, then calm panels. Colours come from the design tokens. */
+
+:root {
+  --ok: #2a7a3b;
+  --ok-soft: #f1f8f3;
+  --error-text: #8a1a20;
+  --warn-soft: #fff6e0;
+  --warn-edge: #c88a00;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ok: #6cc584;
+    --ok-soft: #1f2b25;
+    --error-text: #ffb3b8;
+    --warn-soft: #33291a;
+    --warn-edge: #e0a832;
+  }
+}
+
+:root[data-theme='dark'] {
+  --ok: #6cc584;
+  --ok-soft: #1f2b25;
+  --error-text: #ffb3b8;
+  --warn-soft: #33291a;
+  --warn-edge: #e0a832;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--focus);
+}
+
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
+
+/* ---------- Intro band ---------- */
+
+.intro {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.intro-inner {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem max(24px, env(safe-area-inset-right, 0px)) 1.5rem max(72px, env(safe-area-inset-left, 0px));
+}
+
+.intro h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.intro-hint {
+  margin: 0.25rem 0 0.75rem;
+  font-size: 1.4rem;
+  transform: rotate(-2deg);
+  transform-origin: left;
+}
+
+.privacy-note {
+  max-width: 40rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--ok);
+  background: var(--ok-soft);
+}
+
+.intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.intro .help {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .intro-inner {
+    padding-left: max(40px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* ---------- Workspace ---------- */
+
+.workspace {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.5rem max(16px, env(safe-area-inset-right, 0px)) 3rem max(16px, env(safe-area-inset-left, 0px));
+}
+
+.back {
+  margin: 0 0 0.5rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panel {
+  min-width: 0;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.stack > .panel {
+  margin: 0;
+}
+
+fieldset.panel legend {
+  padding: 0 0.35rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.toolbar .spacer {
+  flex: 1;
+}
+
+.summary {
+  color: var(--text-muted);
+}
+
+.summary.has-problems {
+  color: var(--error-text);
+}
+
+.help,
+.empty {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+/* ---------- Controls ---------- */
+
+.button,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover,
+button:hover:not(:disabled) {
+  border-color: var(--text-muted);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.button.primary,
+button.primary {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+  font-weight: 700;
+}
+
+button.danger {
+  border-color: var(--red);
+  color: var(--red);
+  font-weight: 700;
+}
+
+.button.small,
+button.small {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.95rem;
+}
+
+button.icon {
+  min-width: 2.25rem;
+  padding: 0.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.field > span {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.field.grow {
+  flex: 1 1 14rem;
+}
+
+.field.narrow input {
+  max-width: 10rem;
+}
+
+.row-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+input[type='text'],
+input[type='number'],
+select,
+textarea {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text);
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  cursor: pointer;
+}
+
+.check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--red);
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.25rem 0 1rem;
+}
+
+.segmented label {
+  position: relative;
+  cursor: pointer;
+}
+
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmented span {
+  display: inline-block;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 0.95rem;
+}
+
+.segmented input:checked + span {
+  border-color: var(--red);
+  background: var(--red-soft);
+  font-weight: 700;
+}
+
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- Messages ---------- */
+
+.error,
+.warning,
+.banner {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.9rem;
+  border-left: 4px solid var(--red);
+  border-radius: 4px;
+  background: var(--red-soft);
+  color: var(--error-text);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.warning {
+  border-left-color: var(--warn-edge);
+  background: var(--warn-soft);
+  color: var(--text);
+}
+
+.banner {
+  max-width: 60rem;
+  margin: 1rem auto 0;
+}
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+}
+
+/* ---------- Saved classes ---------- */
+
+.class-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.class-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.class-main {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.class-name {
+  margin: 0;
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.class-name a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.class-name a:hover {
+  text-decoration: underline;
+}
+
+.meta {
+  margin: 0.15rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.class-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1 1 18rem;
+}
+
+.inline-form input {
+  flex: 1 1 10rem;
+  width: auto;
+}
+
+.confirm {
+  flex: 1 1 18rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 4px solid var(--red);
+  border-radius: 4px;
+  background: var(--red-soft);
+}
+
+.confirm p {
+  margin: 0 0 0.5rem;
+}
+
+/* ---------- Spreadsheet import ---------- */
+
+.file-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-name {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+#import-options {
+  margin-top: 1rem;
+}
+
+.columns {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.columns legend {
+  padding: 0;
+  font-weight: 700;
+}
+
+.column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.6rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.column.chosen {
+  border-color: var(--red);
+}
+
+.column-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.column-title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.column-sample {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.column-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.order {
+  color: var(--red);
+  font-weight: 700;
+}
+
+/* ---------- Learner tables ---------- */
+
+.table-wrap {
+  max-height: 24rem;
+  overflow: auto;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+}
+
+.learner-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.learner-table th,
+.learner-table td {
+  padding: 0.35rem 0.7rem;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.learner-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.learner-table th:first-child,
+.learner-table td.id {
+  width: 7rem;
+}
+
+.id {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.learner-table tr.problem td {
+  background: var(--red-soft);
+}
+
+.problem-text {
+  display: block;
+  color: var(--error-text);
+  font-size: 0.9rem;
+}
+
+.learner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learner-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.learner-row .id {
+  flex: 0 0 3.5rem;
+}
+
+.learner-row .learner-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.add-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--hairline);
+}
+
+@media (max-width: 480px) {
+  .learner-row .id {
+    flex-basis: 2.75rem;
+  }
+
+  .row-actions {
+    gap: 0.15rem;
+  }
+}

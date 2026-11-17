@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Class lists · Red Pen</title>
+    <meta name="description" content="Keep your class lists with Learner IDs, ready for answer sheets and cover sheets. Names stay in your browser." />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="classes-app">
+      <p id="storage-error" class="banner error" role="alert" hidden></p>
+
+      <!-- Home: the saved classes -->
+      <div id="home-view">
+        <section class="intro paper" aria-labelledby="classes-title">
+          <div class="intro-inner">
+            <h1 id="classes-title">Class lists</h1>
+            <p class="intro-hint handwritten">Set up a class once, use it for every <span class="nowrap">test ✓</span></p>
+            <p class="privacy-note">
+              Names are stored only in this browser and never uploaded. You can use numbers instead of names.
+            </p>
+            <div class="intro-actions">
+              <a class="button primary" href="#new" id="new-class">New class</a>
+              <label class="button" for="class-file-input">Import class file</label>
+            </div>
+            <p class="help">A class file is the CSV that Export CSV makes (columns Learner ID and Name).</p>
+          </div>
+        </section>
+
+        <section class="workspace" aria-labelledby="saved-title">
+          <h2 id="saved-title">Your classes</h2>
+          <p id="home-error" class="error" role="alert" hidden></p>
+          <p id="no-classes" class="empty" hidden>No classes yet. Make one with New class, or import a class file.</p>
+          <ul id="class-list" class="class-list"></ul>
+        </section>
+      </div>
+
+      <!-- A new class -->
+      <section id="new-view" class="workspace" aria-labelledby="new-title" hidden>
+        <p class="back"><a href="#">&larr; All classes</a></p>
+        <h2 id="new-title">New class</h2>
+        <form id="new-form" class="stack" autocomplete="off" novalidate>
+          <div class="panel row-fields">
+            <label class="field grow">
+              <span>Class name</span>
+              <input id="new-name" type="text" placeholder="For example Grade 8A Maths" />
+            </label>
+            <label class="field">
+              <span>Learner ID digits</span>
+              <select id="new-digits">
+                <option value="1">1 (up to 9 learners)</option>
+                <option value="2" selected>2 (up to 99)</option>
+                <option value="3">3 (up to 999)</option>
+                <option value="4">4 (up to 9999)</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class="panel">
+            <legend>Add learners</legend>
+            <div class="segmented" role="radiogroup" aria-label="How to add learners">
+              <label><input type="radio" name="method" value="names" checked /><span>Type or paste names</span></label>
+              <label><input type="radio" name="method" value="numbers" /><span>Numbers only</span></label>
+              <label><input type="radio" name="method" value="import" /><span>Import CSV or Excel</span></label>
+            </div>
+
+            <div class="method" data-method="names">
+              <label class="field">
+                <span>Names, one per line</span>
+                <textarea id="names-text" rows="8" spellcheck="false" placeholder="Thandi Mokoena&#10;Sipho Dlamini&#10;Ayesha Patel"></textarea>
+              </label>
+              <p class="help">You can paste a column (or two, such as first name and surname) straight from a spreadsheet.</p>
+            </div>
+
+            <div class="method" data-method="numbers" hidden>
+              <label class="field narrow">
+                <span>How many learners</span>
+                <input id="learner-count" type="number" min="1" max="9999" step="1" inputmode="numeric" value="30" />
+              </label>
+              <p class="help">Each learner gets a Learner ID (01, 02, 03...) and no name. Learners fill in or are given their number.</p>
+            </div>
+
+            <div class="method" data-method="import" hidden>
+              <div class="file-row">
+                <label class="button" for="sheet-input">Choose a CSV or Excel file</label>
+                <span id="sheet-file-name" class="file-name">No file chosen</span>
+              </div>
+              <p class="help">.csv or .xlsx. The file is read in your browser and never uploaded.</p>
+              <p id="import-error" class="error" role="alert" hidden></p>
+              <div id="import-options" class="stack" hidden>
+                <label class="field" id="sheet-field">
+                  <span>Sheet</span>
+                  <select id="sheet-select"></select>
+                </label>
+                <label class="check"><input id="header-row" type="checkbox" checked /> Row 1 is a header (column titles)</label>
+                <fieldset class="columns">
+                  <legend>Columns</legend>
+                  <p class="help">Tick the name column(s) in the order the name should read, for example First name, then Surname.</p>
+                  <ul id="column-list" class="column-list"></ul>
+                  <label class="check"><input type="radio" name="id-column" value="" checked /> No ID column: number the learners 1, 2, 3...</label>
+                </fieldset>
+              </div>
+            </div>
+          </fieldset>
+
+          <section class="panel" aria-labelledby="preview-title">
+            <h3 id="preview-title">Preview</h3>
+            <p id="preview-summary" class="summary" role="status"></p>
+            <div class="table-wrap">
+              <table id="preview-table" class="learner-table">
+                <thead>
+                  <tr><th scope="col">Learner ID</th><th scope="col">Name</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <p id="preview-more" class="help" hidden></p>
+          </section>
+
+          <p id="new-error" class="error" role="alert" hidden></p>
+          <div class="actions">
+            <button type="submit" id="save-new" class="primary">Save class</button>
+            <a class="button" href="#">Cancel</a>
+          </div>
+        </form>
+      </section>
+
+      <!-- Editing one class -->
+      <section id="edit-view" class="workspace" aria-labelledby="edit-title" hidden>
+        <p class="back"><a href="#">&larr; All classes</a></p>
+        <h2 id="edit-title"></h2>
+        <div class="toolbar">
+          <span id="edit-summary" class="summary"></span>
+          <span class="spacer"></span>
+          <button type="button" id="sort-names">Sort by name</button>
+          <button type="button" id="export-csv">Export CSV</button>
+        </div>
+        <p id="edit-status" class="status" role="status"></p>
+
+        <div class="panel row-fields">
+          <label class="field grow">
+            <span>Class name</span>
+            <input id="edit-name" type="text" />
+          </label>
+          <label class="field">
+            <span>Learner ID digits</span>
+            <select id="edit-digits">
+              <option value="1">1 (up to 9)</option>
+              <option value="2">2 (up to 99)</option>
+              <option value="3">3 (up to 999)</option>
+              <option value="4">4 (up to 9999)</option>
+            </select>
+          </label>
+        </div>
+        <p id="digits-warning" class="warning" role="alert" hidden></p>
+
+        <section class="panel" aria-labelledby="learners-title">
+          <h3 id="learners-title">Learners</h3>
+          <p class="help">Learner IDs stay with each learner when you reorder, sort or remove others.</p>
+          <ol id="learner-list" class="learner-list"></ol>
+          <p id="no-learners" class="empty" hidden>No learners yet.</p>
+          <form id="add-form" class="add-row" autocomplete="off">
+            <label class="field grow">
+              <span>New learner's name (optional)</span>
+              <input id="add-name" type="text" />
+            </label>
+            <button type="submit" id="add-learner">Add learner</button>
+          </form>
+        </section>
+      </section>
+
+      <input id="class-file-input" type="file" accept=".csv,text/csv" hidden />
+      <input id="sheet-input" type="file" hidden />
+    </main>
+    <script type="module" src="/src/classes/main.ts"></script>
+  </body>
+</html>

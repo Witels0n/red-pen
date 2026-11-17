@@ -113,3 +113,13 @@ _Avoid_: Field (that is a form field), zone, hotspot
 **Signature**:
 The teacher's (or parent's) handwritten name as an image with a transparent background, made by drawing, typing in a script font or uploading a picture. **Initials** are made the same way. Kept only for the current visit unless the teacher ticks "Remember on this device".
 _Avoid_: E-signature, digital signature (Red Pen does not add cryptographic signatures)
+
+### Classes
+
+**Class list**:
+A named list of learners, each with a Learner ID and optionally a name. Stored only in the browser it was made in; exported and imported as a class file (CSV with the columns `Learner ID,Name`) for backup or moving devices.
+_Avoid_: Roster, register, class (on its own, in UI text about the list)
+
+**Learner ID**:
+A short number (1 to 4 digits, chosen per Class list) that identifies a learner without a name, always written with leading zeros to the list's digit count (for example `07`). A QR on paper holds the Learner ID, never a name. It stays with the learner when the list is reordered or sorted.
+_Avoid_: Student number, learner number, index

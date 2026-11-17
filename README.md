@@ -17,6 +17,7 @@ Live at `https://witels0n.github.io/red-pen/`.
 | Organise pages | `/red-pen/organise/`  | `src/organise/` |
 | Sign and fill  | `/red-pen/sign/`      | `src/sign/`     |
 | QR codes       | `/red-pen/qr/`        | `src/qr/`       |
+| Class lists    | `/red-pen/classes/`   | `src/classes/`  |
 
 The landing page (`index.html`, `src/landing/`) lists them.
 
@@ -28,14 +29,18 @@ mark/index.html       Mark a test
 combine/index.html    Combine PDFs (likewise split/ and organise/)
 qr/index.html         QR codes
 sign/index.html       Sign and fill
+classes/index.html    Class lists
 src/shared/           header, design tokens, self-hosted fonts, ruled-paper style, offline (PWA)
 src/shared/pdf/       shared PDF code: opening and checking a PDF, pdf.js setup, thumbnails,
                       file picker and drag and drop, reordering, downloads, the PDF Tools' styles
+src/shared/classes/   Class lists for every Tool: types, Learner IDs, IndexedDB storage, CSV
+                      parser, CSV/XLSX import (read-excel-file, loaded on demand), class files
 src/landing/          landing page code and the list of tools (tools.ts)
 src/mark/             the marker
 src/combine/, src/split/, src/organise/   the PDF Tools
 src/qr/               the QR code maker (payloads, renderer, export, settings, editor)
 src/sign/             Sign and fill (form fields, box detection in a Web Worker, signatures)
+src/classes/          the Class lists Tool (list, new class and import, editing)
 public/               icons (the web app manifest is generated in vite.config.ts)
 design/icon.svg       source for the app icons
 ```
