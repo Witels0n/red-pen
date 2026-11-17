@@ -38,7 +38,6 @@ src/qr/               the QR code maker (payloads, renderer, export, settings, e
 src/sign/             Sign and fill (form fields, box detection in a Web Worker, signatures)
 public/               icons (the web app manifest is generated in vite.config.ts)
 design/icon.svg       source for the app icons
-redirect/             the page that keeps the old /pdf-marker/ URL working (published separately)
 ```
 
 ## Adding a tool
