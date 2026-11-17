@@ -120,6 +120,14 @@ _Avoid_: Selection, interval
 A quarter rotation the teacher gives a page in Organise pages. It is added to the rotation the page already has and stored in the saved PDF, so the page itself is never redrawn.
 _Avoid_: Re-render, flip
 
+**Watermark**:
+Large, faint words (for example MEMO or DRAFT) that Stamp and number draws across a page, diagonally or straight across, as real text in the PDF.
+_Avoid_: Background, overlay
+
+**Stamped page**:
+A page that Stamp and number adds its watermark, page number, header and footer to: every page, odd or even pages, or custom pages. Page numbers count only stamped pages, so a cover page can be left out.
+_Avoid_: Marked page, selected page
+
 ### QR codes
 
 **Content type**:

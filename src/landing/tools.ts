@@ -59,6 +59,12 @@ export const TOOLS: readonly Tool[] = [
     group: 'PDF',
   },
   {
+    name: 'Stamp and number',
+    blurb: 'Add a MEMO or DRAFT watermark, page numbers, a header and footer with your logo and the date to PDFs.',
+    path: 'stamp/',
+    group: 'PDF',
+  },
+  {
     name: 'QR codes',
     blurb: 'Codes for a link, your classroom Wi-Fi, an email or a contact card, with your colours and school logo.',
     path: 'qr/',
