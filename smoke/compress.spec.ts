@@ -105,11 +105,19 @@ test('compresses scans, keeps a typed PDF that would grow, and zips them', async
 
 test('compression can be cancelled', async ({ page }) => {
   await page.goto(COMPRESS)
-  await page.locator('#file-input').setInputFiles([await scanPdf('long-scan.pdf', 30)])
+  await page.locator('#file-input').setInputFiles([await scanPdf('long-scan.pdf', 10)])
   await page.getByRole('radio', { name: 'Sharp 200 dpi' }).check()
+  // Press Cancel the moment the first page is reported, so the test does not race the compression.
+  await page.evaluate(() => {
+    const text = document.getElementById('progress-text')!
+    const observer = new MutationObserver(() => {
+      if (!text.textContent?.includes('page 1 of 10')) return
+      observer.disconnect()
+      document.getElementById('cancel')!.click()
+    })
+    observer.observe(text, { childList: true, characterData: true, subtree: true })
+  })
   await page.locator('#compress').click()
-  await expect(page.locator('#progress-text')).toContainText(/page \d+ of 30/)
-  await page.locator('#cancel').click()
   await expect(page.locator('#progress-text')).toHaveText('Cancelled.')
   await expect(page.locator('.file-result')).toHaveText('Cancelled')
   await expect(page.locator('#compress')).toBeEnabled()
