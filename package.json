@@ -40,15 +40,15 @@
     "read-excel-file": "9.3.14"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "@types/node": "^26.6.3",
-    "fake-indexeddb": "6.2.7",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "fake-indexeddb": "6.2.8",
     "jsqr": "^1.4.0",
-    "prettier": "3.9.10",
+    "prettier": "3.10.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.1",
+    "vite": "^8.3.8",
     "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^5.0.3",
+    "vitest": "^5.1.0",
     "workbox-window": "^7.4.1",
     "write-excel-file": "4.1.1"
   }
