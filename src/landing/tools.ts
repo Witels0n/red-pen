@@ -1,7 +1,7 @@
 /** A group of tools on the landing page, in display order. */
-export type ToolGroup = 'Marking' | 'PDF' | 'Classroom'
+export type ToolGroup = 'Assessments and marking' | 'PDF' | 'Useful stuff'
 
-export const TOOL_GROUPS: readonly ToolGroup[] = ['Marking', 'PDF', 'Classroom']
+export const TOOL_GROUPS: readonly ToolGroup[] = ['Assessments and marking', 'PDF', 'Useful stuff']
 
 /** One Tool: a single job on its own page, listed on the landing page. */
 export interface Tool {
@@ -18,20 +18,20 @@ export const TOOLS: readonly Tool[] = [
     name: 'Mark a test',
     blurb: 'Ticks, crosses, subtotals and totals on a scanned PDF, then export a marked copy.',
     path: 'mark/',
-    group: 'Marking',
+    group: 'Assessments and marking',
   },
   {
     name: 'MCQ assessments',
     blurb:
       'Build a multiple-choice test, print answer sheets, scan them and get a marksheet with item analysis per Topic.',
     path: 'mcq/',
-    group: 'Marking',
+    group: 'Assessments and marking',
   },
   {
     name: 'Cover sheets',
     blurb: 'A QR cover sheet for each learner, so one batch scan of the class splits into a PDF per learner.',
     path: 'covers/',
-    group: 'Marking',
+    group: 'Assessments and marking',
   },
   {
     name: 'Combine PDFs',
@@ -62,13 +62,13 @@ export const TOOLS: readonly Tool[] = [
     name: 'QR codes',
     blurb: 'Codes for a link, your classroom Wi-Fi, an email or a contact card, with your colours and school logo.',
     path: 'qr/',
-    group: 'Classroom',
+    group: 'Useful stuff',
   },
   {
     name: 'Class lists',
     blurb: 'Keep your classes with a Learner ID for each learner, ready for answer sheets. Names stay on this device.',
     path: 'classes/',
-    group: 'Classroom',
+    group: 'Useful stuff',
   },
 ]
 
