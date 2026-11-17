@@ -6,7 +6,8 @@ import { defineConfig } from '@playwright/test'
 export default defineConfig({
   testDir: 'smoke',
   webServer: {
-    command: 'npm run build && npm run preview -- --port 4173 --strictPort',
+    // build:smoke adds the test-only pages (SMOKE_PAGES in vite.config.ts) to the production build.
+    command: 'npm run build:smoke && npm run preview -- --port 4173 --strictPort',
     url: 'http://localhost:4173/red-pen/',
     reuseExistingServer: false,
     timeout: 120_000,

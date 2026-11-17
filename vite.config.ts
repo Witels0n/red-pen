@@ -21,6 +21,14 @@ export const PAGES = {
   classes: 'classes/index.html',
 } as const
 
+/**
+ * Test-only pages, built only with `vite build --mode smoke` (npm run build:smoke) for the
+ * Playwright smoke tests. Never in the production build, never on the landing page or precached.
+ */
+export const SMOKE_PAGES = {
+  'omr-harness': 'smoke/omr-harness/index.html',
+} as const
+
 // Enforces ADR 0001: the browser itself refuses any network request from the page.
 // GitHub Pages cannot set response headers, so the policy ships as a <meta> tag.
 // Injected at build time only, because the dev server needs a websocket for HMR.
@@ -51,7 +59,7 @@ function contentSecurityPolicy(): Plugin {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: BASE,
   plugins: [
     contentSecurityPolicy(),
@@ -84,6 +92,7 @@ export default defineConfig({
         globPatterns: ['**/*.{html,js,mjs,css,woff2,svg,png,webmanifest}'],
         // The pdf.js worker is larger than Workbox's 2 MB default.
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        globIgnores: ['smoke/**'],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
       },
@@ -94,11 +103,14 @@ export default defineConfig({
     assetsInlineLimit: 0,
     rollupOptions: {
       input: Object.fromEntries(
-        Object.entries(PAGES).map(([name, file]) => [name, resolve(import.meta.dirname, file)]),
+        Object.entries({ ...PAGES, ...(mode === 'smoke' ? SMOKE_PAGES : {}) }).map(([name, file]) => [
+          name,
+          resolve(import.meta.dirname, file),
+        ]),
       ),
     },
   },
   test: {
     include: ['tests/**/*.test.ts'],
   },
-})
+}))
