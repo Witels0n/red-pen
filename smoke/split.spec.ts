@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test'
 import { unzipSync } from 'fflate'
-import { damagedPdf, describePdf, download, expectNetworkBlocked, lockedPdf, pdfFile, trackRequests } from './pdf-fixtures'
+import {
+  damagedPdf,
+  describePdf,
+  download,
+  expectNetworkBlocked,
+  lockedPdf,
+  pdfFile,
+  trackRequests,
+} from './pdf-fixtures'
 
 const SPLIT = '/red-pen/split/'
 const WIDTHS = [101, 102, 103, 104, 105, 106, 107]
@@ -18,7 +26,10 @@ async function unzip(bytes: Buffer): Promise<Record<string, number[]>> {
   return out
 }
 
-test('splits every N pages (one file per learner) into a zip, with nothing sent anywhere', async ({ page, baseURL }) => {
+test('splits every N pages (one file per learner) into a zip, with nothing sent anywhere', async ({
+  page,
+  baseURL,
+}) => {
   const outside = trackRequests(page, baseURL!)
   await page.goto(SPLIT)
   await expect(page.locator('#open-screen.paper h1')).toHaveText('Split a PDF')
@@ -26,7 +37,11 @@ test('splits every N pages (one file per learner) into a zip, with nothing sent 
   await openClass(page)
 
   await page.getByLabel('Pages per file').fill('3')
-  await expect(page.locator('#preview li .part-name')).toHaveText(['Class 8B-part-01.pdf', 'Class 8B-part-02.pdf', 'Class 8B-part-03.pdf'])
+  await expect(page.locator('#preview li .part-name')).toHaveText([
+    'Class 8B-part-01.pdf',
+    'Class 8B-part-02.pdf',
+    'Class 8B-part-03.pdf',
+  ])
   await expect(page.locator('#preview li .part-range')).toHaveText(['Pages 1-3', 'Pages 4-6', 'Page 7'])
 
   const out = await download(page, () => page.getByRole('button', { name: 'Download .zip' }).click())

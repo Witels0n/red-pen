@@ -18,7 +18,10 @@ class Page {
     return this.fill(x, y, len, thickness)
   }
   rect(x: number, y: number, w: number, h: number, t = 1): this {
-    return this.fill(x, y, w, t).fill(x, y + h - t, w, t).fill(x, y, t, h).fill(x + w - t, y, t, h)
+    return this.fill(x, y, w, t)
+      .fill(x, y + h - t, w, t)
+      .fill(x, y, t, h)
+      .fill(x + w - t, y, t, h)
   }
   /** A word of text-like strokes: short verticals, bowls and bars, about 12 pt high. */
   word(x: number, y: number, letters: number): this {
@@ -41,7 +44,7 @@ class Page {
   }
   noise(count: number, seed = 1): this {
     let s = seed
-    const rand = () => ((s = (s * 16807) % 2147483647) / 2147483647)
+    const rand = () => (s = (s * 16807) % 2147483647) / 2147483647
     for (let i = 0; i < count; i++) this.bin[Math.floor(rand() * W * H)] = 1
     return this
   }
@@ -62,7 +65,8 @@ describe('detectBoxes', () => {
 
   it('ignores underlined words, short dashes and full-width rules', () => {
     const p = new Page()
-      .word(100, 200, 12).hline(98, 211, 90) // underlined words
+      .word(100, 200, 12)
+      .hline(98, 211, 90) // underlined words
       .hline(100, 260, 20) // a short dash
       .hline(20, 300, 560) // a rule across the page
     expect(of(detect(p), 'line')).toEqual([])
@@ -100,7 +104,8 @@ describe('detectBoxes', () => {
 
   it('does not mistake round letters such as O, D or 0 for tick boxes', () => {
     const p = new Page()
-    for (const [i, size] of [10, 14, 18, 24, 36].entries()) p.ring(80 + i * 80, 200, size * 0.36, size * 0.36, size * 0.09)
+    for (const [i, size] of [10, 14, 18, 24, 36].entries())
+      p.ring(80 + i * 80, 200, size * 0.36, size * 0.36, size * 0.09)
     p.ring(80, 300, 5, 6.5, 1.4) // a zero
     expect(detect(p)).toEqual([])
   })
@@ -116,7 +121,12 @@ describe('detectBoxes', () => {
   })
 
   it('finds boxes and lines inside a bordered page, despite noise', () => {
-    const p = new Page().rect(10, 10, 575, 822, 2).noise(3000, 7).rect(100, 650, 200, 24).hline(100, 750, 180).rect(400, 652, 10, 10)
+    const p = new Page()
+      .rect(10, 10, 575, 822, 2)
+      .noise(3000, 7)
+      .rect(100, 650, 200, 24)
+      .hline(100, 750, 180)
+      .rect(400, 652, 10, 10)
     const found = detect(p)
     expect(found.map((b) => b.kind).sort()).toEqual(['box', 'line', 'tick'])
   })

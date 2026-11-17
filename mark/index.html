@@ -12,19 +12,18 @@
     <main id="app">
       <section id="open-screen" class="paper">
         <div class="open-inner">
-        <h1>Mark a test</h1>
-        <p class="open-hint handwritten">Ticks, crosses and totals, in your <span class="nowrap">browser ✓</span></p>
-        <p id="privacy-note">
-          Your PDF is not uploaded and not stored on any server. It never leaves your computer and
-          is processed only in your browser. This is called client-side processing. You can verify
-          this by disconnecting from the internet and opening a PDF. Now that you have loaded the page
-          you can run this app offline.
-        </p>
-        <div id="drop-zone">
-          <p>Drag a scanned test (PDF) here, or</p>
-          <label class="button" for="file-input">Choose a PDF</label>
-        </div>
-        <p id="open-error" class="error" role="alert" hidden></p>
+          <h1>Mark a test</h1>
+          <p class="open-hint handwritten">Ticks, crosses and totals, in your <span class="nowrap">browser ✓</span></p>
+          <p id="privacy-note">
+            Your PDF is not uploaded and not stored on any server. It never leaves your computer and is processed only
+            in your browser. This is called client-side processing. You can verify this by disconnecting from the
+            internet and opening a PDF. Now that you have loaded the page you can run this app offline.
+          </p>
+          <div id="drop-zone">
+            <p>Drag a scanned test (PDF) here, or</p>
+            <label class="button" for="file-input">Choose a PDF</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
         </div>
       </section>
 
@@ -32,9 +31,36 @@
         <header id="toolbar">
           <label class="button" for="file-input">Open another PDF</label>
           <span id="file-name"></span>
-          <span class="tool" id="tool-subtotal" data-tool="subtotal" data-ghost="Subtotal" role="button" tabindex="0" title="Drag onto the page">Subtotal</span>
-          <span class="tool" id="tool-total" data-tool="total" data-ghost="Total" role="button" tabindex="0" title="Drag onto the page">Total</span>
-          <span class="tool" id="tool-text" data-tool="text" data-ghost="Text note" role="button" tabindex="0" title="Drag onto the page">Text note</span>
+          <span
+            class="tool"
+            id="tool-subtotal"
+            data-tool="subtotal"
+            data-ghost="Subtotal"
+            role="button"
+            tabindex="0"
+            title="Drag onto the page"
+            >Subtotal</span
+          >
+          <span
+            class="tool"
+            id="tool-total"
+            data-tool="total"
+            data-ghost="Total"
+            role="button"
+            tabindex="0"
+            title="Drag onto the page"
+            >Total</span
+          >
+          <span
+            class="tool"
+            id="tool-text"
+            data-tool="text"
+            data-ghost="Text note"
+            role="button"
+            tabindex="0"
+            title="Drag onto the page"
+            >Text note</span
+          >
           <span id="ink-swatches" role="radiogroup" aria-label="Ink colour"></span>
           <span class="spacer"></span>
           <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>

@@ -24,7 +24,14 @@ export { detectDelimiter, parseCsv, writeCsv } from './csv'
 export type { CsvDelimiter, ParseCsvOptions } from './csv'
 export { CLASS_CSV_HEADER, classFileName, classFromCsv, classToCsv } from './class-csv'
 export type { ClassCsvResult } from './class-csv'
-export { SPREADSHEET_ACCEPT, SpreadsheetError, cellText, importSpreadsheet, normaliseRows, readTextFile } from './spreadsheet'
+export {
+  SPREADSHEET_ACCEPT,
+  SpreadsheetError,
+  cellText,
+  importSpreadsheet,
+  normaliseRows,
+  readTextFile,
+} from './spreadsheet'
 export type { ImportedSheet, ImportedSpreadsheet, SpreadsheetFile } from './spreadsheet'
 export {
   ClassStorageError,

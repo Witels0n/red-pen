@@ -94,7 +94,10 @@ describe('buildLearners', () => {
       { id: '01', name: 'Ann' },
       { id: '02', name: 'Gus' },
     ])
-    expect(r.rows.find((x) => x.sourceRow === 4)).toMatchObject({ id: '100', problems: ['100 does not fit in 2 digits.'] })
+    expect(r.rows.find((x) => x.sourceRow === 4)).toMatchObject({
+      id: '100',
+      problems: ['100 does not fit in 2 digits.'],
+    })
   })
 
   it('keeps an ID with no name, and skips rows with neither', () => {
@@ -112,7 +115,10 @@ describe('buildLearners', () => {
     const rows = Array.from({ length: 11 }, (_, i) => [`L${i}`])
     const r = buildLearners(rows, { headerRow: false, nameColumns: [0], idDigits: 1 })
     expect(r.learners).toHaveLength(9)
-    expect(r.problems).toEqual(['Row 10: Too many learners for 1-digit IDs (the most is 9).', 'Row 11: Too many learners for 1-digit IDs (the most is 9).'])
+    expect(r.problems).toEqual([
+      'Row 10: Too many learners for 1-digit IDs (the most is 9).',
+      'Row 11: Too many learners for 1-digit IDs (the most is 9).',
+    ])
   })
 
   it('handles short rows and a custom joiner', () => {
@@ -139,7 +145,8 @@ describe('rowsFromNames and numberedLearners', () => {
 })
 
 describe('editing a Class list', () => {
-  const base = () => newClassList(' Grade 8A ', 2, [{ id: '01', name: 'Zola' }, { id: '03' }, { id: '02', name: 'ann' }], 1000)
+  const base = () =>
+    newClassList(' Grade 8A ', 2, [{ id: '01', name: 'Zola' }, { id: '03' }, { id: '02', name: 'ann' }], 1000)
 
   it('makes a new list with an id and times', () => {
     const list = base()
@@ -204,7 +211,11 @@ describe('editing a Class list', () => {
 
 describe('class files (CSV)', () => {
   it('round-trips a Class list through its CSV', () => {
-    const list = newClassList('Grade 8A', 3, [{ id: '001', name: 'Mokoena, Thandi' }, { id: '002' }, { id: '010', name: 'Sipho' }])
+    const list = newClassList('Grade 8A', 3, [
+      { id: '001', name: 'Mokoena, Thandi' },
+      { id: '002' },
+      { id: '010', name: 'Sipho' },
+    ])
     const csv = classToCsv(list)
     expect(csv.startsWith('﻿Learner ID,Name\r\n001,"Mokoena, Thandi"\r\n002,\r\n')).toBe(true)
     expect(classFromCsv(csv)).toEqual({ learners: list.learners, idDigits: 3, problems: [] })
@@ -212,11 +223,20 @@ describe('class files (CSV)', () => {
 
   it('reads a class file Excel saved with semicolons and stripped zeros', () => {
     const r = classFromCsv('Learner ID;Name\r\n1;Ann\r\n12;Ben\r\n')
-    expect(r).toEqual({ learners: [{ id: '01', name: 'Ann' }, { id: '12', name: 'Ben' }], idDigits: 2, problems: [] })
+    expect(r).toEqual({
+      learners: [
+        { id: '01', name: 'Ann' },
+        { id: '12', name: 'Ben' },
+      ],
+      idDigits: 2,
+      problems: [],
+    })
   })
 
   it('rejects other CSV files and reports bad rows', () => {
-    expect(classFromCsv('Name,Surname\nAnn,Lee').problems).toEqual(['This is not a class file: the first column must be "Learner ID".'])
+    expect(classFromCsv('Name,Surname\nAnn,Lee').problems).toEqual([
+      'This is not a class file: the first column must be "Learner ID".',
+    ])
     expect(classFromCsv('Learner ID,Name\n1,Ann\n1,Ben').problems).toEqual(['Row 3: Learner ID 1 is also on row 2.'])
     expect(classFromCsv('Learner ID,Name\n').problems).toEqual(['The class file has no learners.'])
     expect(classFromCsv('Learner ID,Name\n12345,Ann').problems).toEqual(['Row 2: 12345 does not fit in 4 digits.'])

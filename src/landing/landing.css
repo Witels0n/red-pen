@@ -173,7 +173,9 @@ button:focus-visible {
   background: var(--surface);
   color: var(--text);
   text-decoration: none;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .tool-card:hover {

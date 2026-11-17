@@ -1,15 +1,32 @@
 {
   "name": "red-pen",
+  "version": "1.0.0",
+  "description": "Free, private tools for teachers: marking, PDFs, QR codes and class lists. Everything runs in the browser; files are never uploaded.",
   "private": true,
-  "version": "0.0.0",
+  "license": "MIT",
+  "homepage": "https://witels0n.github.io/red-pen/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Witels0n/red-pen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Witels0n/red-pen/issues"
+  },
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:smoke": "playwright test"
+    "test:smoke": "playwright test",
+    "check": "npm run typecheck && npm run format:check && npm test"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible": "^5.3.0",
@@ -27,6 +44,7 @@
     "@types/node": "^26.6.3",
     "fake-indexeddb": "6.2.7",
     "jsqr": "^1.4.0",
+    "prettier": "3.9.10",
     "typescript": "^7.0.2",
     "vite": "^8.3.1",
     "vite-plugin-pwa": "^2.0.0",

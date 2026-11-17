@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test'
-import { damagedPdf, describePdf, download, expectNetworkBlocked, lockedPdf, pdfFile, trackRequests } from './pdf-fixtures'
+import {
+  damagedPdf,
+  describePdf,
+  download,
+  expectNetworkBlocked,
+  lockedPdf,
+  pdfFile,
+  trackRequests,
+} from './pdf-fixtures'
 
 const COMBINE = '/red-pen/combine/'
 
@@ -9,7 +17,11 @@ test('combines PDFs in the order the teacher sets, with nothing sent anywhere', 
   await expect(page.locator('#open-screen.paper h1')).toHaveText('Combine PDFs')
   await expect(page.locator('.privacy-note')).toContainText('never uploaded')
 
-  const files = [await pdfFile('a.pdf', [101, 102]), await pdfFile('b.pdf', [201]), await pdfFile('c.pdf', [301, 302, 303])]
+  const files = [
+    await pdfFile('a.pdf', [101, 102]),
+    await pdfFile('b.pdf', [201]),
+    await pdfFile('c.pdf', [301, 302, 303]),
+  ]
   await page.locator('#file-input').setInputFiles(files)
   const items = page.locator('.file-item')
   await expect(items).toHaveCount(3)
@@ -45,7 +57,9 @@ test('a locked or damaged PDF shows a clear error and the rest still combine', a
   await page.goto(COMBINE)
   await page.locator('#file-input').setInputFiles([await lockedPdf(), damagedPdf()])
   await expect(page.locator('#open-error')).toContainText('"locked.pdf" could not be opened: it is password protected.')
-  await expect(page.locator('#open-error')).toContainText('"damaged.pdf" could not be opened: it appears to be damaged.')
+  await expect(page.locator('#open-error')).toContainText(
+    '"damaged.pdf" could not be opened: it appears to be damaged.',
+  )
   await expect(page.locator('#open-screen')).toBeVisible()
 
   await page.locator('#file-input').setInputFiles([await pdfFile('ok.pdf', [150]), await lockedPdf('also-locked.pdf')])
@@ -59,7 +73,9 @@ test('a locked or damaged PDF shows a clear error and the rest still combine', a
 test('fits a phone screen without sideways scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 })
   await page.goto(COMBINE)
-  await page.locator('#file-input').setInputFiles([await pdfFile('a-very-long-file-name-for-a-whole-class-scan.pdf', [101])])
+  await page
+    .locator('#file-input')
+    .setInputFiles([await pdfFile('a-very-long-file-name-for-a-whole-class-scan.pdf', [101])])
   await expect(page.locator('.file-item')).toHaveCount(1)
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360)
 })

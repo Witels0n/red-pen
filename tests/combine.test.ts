@@ -44,7 +44,9 @@ describe('parsePdf', () => {
 
   it('refuses a damaged PDF', async () => {
     const bytes = new TextEncoder().encode('%PDF-1.7\nthis is not really a PDF\n%%EOF')
-    await expect(parsePdf('broken.pdf', bytes)).rejects.toThrow('"broken.pdf" could not be opened: it appears to be damaged.')
+    await expect(parsePdf('broken.pdf', bytes)).rejects.toThrow(
+      '"broken.pdf" could not be opened: it appears to be damaged.',
+    )
   })
 
   it('refuses a password-protected PDF', async () => {

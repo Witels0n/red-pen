@@ -190,7 +190,10 @@ function render(): void {
     previewEmpty.hidden = true
     const version = (result.matrix.size - 17) / 4
     payloadInfo.textContent = `${bytes} of ${MAX_BYTES[level]} bytes · version ${version} (${result.matrix.size} × ${result.matrix.size} modules)`
-    if (bytes > 300) warnings.push('This is a lot of content for one code. Dense codes are harder to scan from a distance, so print them larger.')
+    if (bytes > 300)
+      warnings.push(
+        'This is a lot of content for one code. Dense codes are harder to scan from a distance, so print them larger.',
+      )
   } else {
     current = null
     preview.innerHTML = ''
@@ -209,7 +212,10 @@ function render(): void {
   }
 
   warnings.push(...colourWarnings(settings.foreground, settings.background))
-  if (settings.margin < 2) warnings.push('A quiet zone under 2 modules may not scan, especially when the code is printed next to other things.')
+  if (settings.margin < 2)
+    warnings.push(
+      'A quiet zone under 2 modules may not scan, especially when the code is printed next to other things.',
+    )
 
   warningsEl.replaceChildren(
     ...warnings.map((w) => {
@@ -268,7 +274,8 @@ inputs.logoFile.addEventListener('change', async () => {
   try {
     let href = await readAsDataUrl(file)
     // Some systems report no type for SVG files; label it so browsers will draw it.
-    if (/\.svg$/i.test(file.name) && !href.startsWith('data:image/svg+xml')) href = href.replace(/^data:[^;,]*/, 'data:image/svg+xml')
+    if (/\.svg$/i.test(file.name) && !href.startsWith('data:image/svg+xml'))
+      href = href.replace(/^data:[^;,]*/, 'data:image/svg+xml')
     const image = await loadImage(href)
     logo = { href, name: file.name, image }
   } catch {
@@ -298,7 +305,12 @@ function setStatus(message: string): void {
 
 function pngBlob(c: Current): Promise<Blob> {
   const size = Number(inputs.exportSize.value)
-  const canvas = drawToCanvas(c.matrix, c.style, size, c.qrLogo && logo ? { logo: c.qrLogo, image: logo.image } : undefined)
+  const canvas = drawToCanvas(
+    c.matrix,
+    c.style,
+    size,
+    c.qrLogo && logo ? { logo: c.qrLogo, image: logo.image } : undefined,
+  )
   return canvasToPng(canvas)
 }
 

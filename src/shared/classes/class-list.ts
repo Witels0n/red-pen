@@ -1,12 +1,5 @@
 import { tidyName } from './build-learners'
-import {
-  formatLearnerId,
-  isIdDigits,
-  learnerNumber,
-  maxLearnerNumber,
-  type ClassList,
-  type Learner,
-} from './types'
+import { formatLearnerId, isIdDigits, learnerNumber, maxLearnerNumber, type ClassList, type Learner } from './types'
 
 /** A random id for a new Class list (not a Learner ID). */
 export function newId(): string {
@@ -32,7 +25,8 @@ export function classListProblems(list: ClassList): string[] {
   const seen = new Set<string>()
   for (const l of list.learners) {
     const n = learnerNumber(l.id)
-    if (n === null || l.id.length !== list.idDigits || n < 1) problems.push(`"${l.id}" is not a ${list.idDigits}-digit Learner ID.`)
+    if (n === null || l.id.length !== list.idDigits || n < 1)
+      problems.push(`"${l.id}" is not a ${list.idDigits}-digit Learner ID.`)
     else if (seen.has(l.id)) problems.push(`Learner ID ${l.id} is used twice.`)
     seen.add(l.id)
   }

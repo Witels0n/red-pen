@@ -12,16 +12,21 @@ async function fixturePdf(): Promise<Buffer> {
 
 async function openTest(page: Page): Promise<void> {
   await page.goto('./')
-  await page.locator('#file-input').setInputFiles({ name: 'learner-1.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
+  await page
+    .locator('#file-input')
+    .setInputFiles({ name: 'learner-1.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
   await expect(page.locator('.page')).toHaveCount(3)
 }
 
 /** Centre of the n-th tick in viewport px. */
 async function tickPoint(page: Page, index = 0) {
-  return page.locator('.annotation-tick').nth(index).evaluate((tick) => {
-    const r = tick.querySelector('circle')!.getBoundingClientRect()
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
-  })
+  return page
+    .locator('.annotation-tick')
+    .nth(index)
+    .evaluate((tick) => {
+      const r = tick.querySelector('circle')!.getBoundingClientRect()
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+    })
 }
 
 async function dragTick(page: Page, from: { x: number; y: number }, to: { x: number; y: number }) {
@@ -51,7 +56,10 @@ test('clicking a Tick selects it and places no new Tick; blank click deselects a
 
 test('dragging a Tick moves it without adding one, and it stays selected', async ({ page }) => {
   await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 150, y: 150 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 150, y: 150 } })
   const from = await tickPoint(page)
   await dragTick(page, from, { x: from.x + 80, y: from.y + 60 })
   await expect(page.locator('.annotation-tick')).toHaveCount(1)
@@ -64,7 +72,10 @@ test('dragging a Tick moves it without adding one, and it stays selected', async
 test('a Tick can be dragged onto another page', async ({ page }) => {
   await openTest(page)
   for (let i = 0; i < 3; i++) await page.locator('#zoom-out').click() // both pages in view
-  await page.locator('.page').first().click({ position: { x: 100, y: 100 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 100 } })
   const second = page.locator('.page').nth(1)
   const from = await tickPoint(page)
   const box = (await second.boundingBox())!
@@ -95,7 +106,10 @@ test('Delete and Backspace remove the selected Tick; nothing selected means noth
 
 test('the moved position, not the original, is exported', async ({ page }) => {
   await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 150, y: 150 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 150, y: 150 } })
   const from = await tickPoint(page)
   await dragTick(page, from, { x: from.x + 100, y: from.y + 50 })
   const to = await tickPoint(page)

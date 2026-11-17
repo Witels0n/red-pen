@@ -14,7 +14,12 @@ export function whiteToTransparent(data: Uint8ClampedArray, keep = 190, clear = 
 }
 
 /** The bounding box of pixels that are not (nearly) transparent, or null if there are none. */
-export function inkBounds(data: Uint8ClampedArray, width: number, height: number, minAlpha = 16): { x: number; y: number; width: number; height: number } | null {
+export function inkBounds(
+  data: Uint8ClampedArray,
+  width: number,
+  height: number,
+  minAlpha = 16,
+): { x: number; y: number; width: number; height: number } | null {
   let x1 = width
   let y1 = height
   let x2 = -1

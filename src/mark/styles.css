@@ -302,7 +302,10 @@ button:hover {
   z-index: 10;
   min-width: 8em;
   padding: 0 2px;
-  font: 14px Helvetica, Arial, sans-serif;
+  font:
+    14px Helvetica,
+    Arial,
+    sans-serif;
   color: var(--ink);
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid #2a5bd7;

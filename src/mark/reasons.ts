@@ -2,7 +2,7 @@
 // the last-used Total out-of value, the app) keeps in browser storage: never a PDF or any
 // annotation (ADR 0001). Storage is injected so the logic is testable without a browser.
 
-export const REASONS_STORAGE_KEY = 'pdf-marker.reasons'
+export const REASONS_STORAGE_KEY = 'red-pen.mark.reasons'
 
 export const DEFAULT_REASONS: readonly string[] = [
   'Factual error',

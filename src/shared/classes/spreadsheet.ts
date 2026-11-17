@@ -16,7 +16,8 @@ export class SpreadsheetError extends Error {
 }
 
 /** What the file picker should offer. */
-export const SPREADSHEET_ACCEPT = '.csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+export const SPREADSHEET_ACCEPT =
+  '.csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 /** The parts of a File that importing needs, so tests can pass a plain object. */
 export interface SpreadsheetFile {
@@ -90,7 +91,9 @@ export async function importSpreadsheet(file: SpreadsheetFile): Promise<Imported
   const lower = file.name.toLowerCase()
 
   if (isOldExcel(bytes) || lower.endsWith('.xls')) {
-    throw new SpreadsheetError('Old .xls files cannot be read. In Excel, choose Save As and pick Excel Workbook (.xlsx) or CSV.')
+    throw new SpreadsheetError(
+      'Old .xls files cannot be read. In Excel, choose Save As and pick Excel Workbook (.xlsx) or CSV.',
+    )
   }
   if (lower.endsWith('.ods')) {
     throw new SpreadsheetError('OpenDocument (.ods) files cannot be read. Save it as .xlsx or CSV first.')
@@ -101,7 +104,9 @@ export async function importSpreadsheet(file: SpreadsheetFile): Promise<Imported
     sheets = await readXlsx(buffer)
   } else {
     if (bytes.includes(0)) throw new SpreadsheetError('This file is not a spreadsheet. Choose a .csv or .xlsx file.')
-    sheets = [{ name: file.name.replace(/\.[^.]+$/, '') || 'Sheet 1', rows: normaliseRows(parseCsv(decodeText(bytes))) }]
+    sheets = [
+      { name: file.name.replace(/\.[^.]+$/, '') || 'Sheet 1', rows: normaliseRows(parseCsv(decodeText(bytes))) },
+    ]
   }
   if (sheets.every((s) => s.rows.length === 0)) throw new SpreadsheetError('This spreadsheet is empty.')
   return { sheets }

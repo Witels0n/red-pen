@@ -22,11 +22,14 @@ async function openTest(page: Page): Promise<void> {
 }
 
 async function crossCentre(page: Page, index: number) {
-  return page.locator('.annotation-cross').nth(index).evaluate((cross) => {
-    const pageEl = cross.closest('.page')!.getBoundingClientRect()
-    const r = cross.querySelector('circle')!.getBoundingClientRect()
-    return { x: r.left + r.width / 2 - pageEl.left, y: r.top + r.height / 2 - pageEl.top }
-  })
+  return page
+    .locator('.annotation-cross')
+    .nth(index)
+    .evaluate((cross) => {
+      const pageEl = cross.closest('.page')!.getBoundingClientRect()
+      const r = cross.querySelector('circle')!.getBoundingClientRect()
+      return { x: r.left + r.width / 2 - pageEl.left, y: r.top + r.height / 2 - pageEl.top }
+    })
 }
 
 test('right-click places a red Cross exactly where clicked at every zoom, with no browser menu', async ({ page }) => {
@@ -44,7 +47,12 @@ test('right-click places a red Cross exactly where clicked at every zoom, with n
     const c = await crossCentre(page, i)
     expect(Math.abs(c.x - at.x)).toBeLessThan(1.5)
     expect(Math.abs(c.y - at.y)).toBeLessThan(1.5)
-    expect(await page.locator('.annotation-cross line').last().evaluate((e) => getComputedStyle(e).stroke)).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
+    expect(
+      await page
+        .locator('.annotation-cross line')
+        .last()
+        .evaluate((e) => getComputedStyle(e).stroke),
+    ).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
   }
 
   const menus = await page.evaluate(() => (window as unknown as { __menus: boolean[] }).__menus)
@@ -65,8 +73,10 @@ test('right-clicking an existing Cross does not stack another, and still suppres
 
 test('a Cross is not a Tick', async ({ page }) => {
   await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 100, y: 120 }, button: 'right' })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 120 }, button: 'right' })
   await expect(page.locator('.annotation-cross')).toHaveCount(1)
   await expect(page.locator('.annotation-tick')).toHaveCount(0)
 })
-

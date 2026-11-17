@@ -16,7 +16,11 @@ export interface SignatureResult {
   aspect: number
 }
 
-function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Partial<HTMLElementTagNameMap[K]> = {}, ...children: (Node | string)[]): HTMLElementTagNameMap[K] {
+function h<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  props: Partial<HTMLElementTagNameMap[K]> = {},
+  ...children: (Node | string)[]
+): HTMLElementTagNameMap[K] {
   const el = Object.assign(document.createElement(tag), props)
   el.append(...children)
   return el
@@ -46,7 +50,11 @@ function trimmed(canvas: HTMLCanvasElement): string | null {
   return out.toDataURL('image/png')
 }
 
-export function openSignatureDialog(kind: SignatureKind, current: string | null, saved: SavedSignatures): Promise<SignatureResult | null> {
+export function openSignatureDialog(
+  kind: SignatureKind,
+  current: string | null,
+  saved: SavedSignatures,
+): Promise<SignatureResult | null> {
   const noun = kind === 'signature' ? 'signature' : 'initials'
   return new Promise((resolve) => {
     let mode: Mode = 'draw'
@@ -56,14 +64,26 @@ export function openSignatureDialog(kind: SignatureKind, current: string | null,
 
     const dialog = h('dialog', { className: 'sign-dialog', id: 'signature-dialog' })
     dialog.setAttribute('aria-labelledby', 'signature-title')
-    const title = h('h2', { id: 'signature-title', textContent: kind === 'signature' ? 'Your signature' : 'Your initials' })
+    const title = h('h2', {
+      id: 'signature-title',
+      textContent: kind === 'signature' ? 'Your signature' : 'Your initials',
+    })
 
     // Current signature, if there is one: one click to use it again.
     const currentBox = h('div', { className: 'sign-current' })
     if (current) {
-      const useCurrent = h('button', { type: 'button', className: 'primary', id: 'sig-use-current', textContent: `Use this ${noun}` })
+      const useCurrent = h('button', {
+        type: 'button',
+        className: 'primary',
+        id: 'sig-use-current',
+        textContent: `Use this ${noun}`,
+      })
       useCurrent.addEventListener('click', async () => finish({ src: current, aspect: await imageAspect(current) }))
-      currentBox.append(h('img', { src: current, alt: `Current ${noun}` }), useCurrent, h('p', { className: 'muted', textContent: `Or make a new one:` }))
+      currentBox.append(
+        h('img', { src: current, alt: `Current ${noun}` }),
+        useCurrent,
+        h('p', { className: 'muted', textContent: `Or make a new one:` }),
+      )
     } else currentBox.hidden = true
 
     const tabs = h('div', { className: 'sign-tabs' })
@@ -83,10 +103,25 @@ export function openSignatureDialog(kind: SignatureKind, current: string | null,
     const pad = h('canvas', { className: 'sign-pad', id: 'sig-pad' })
     pad.setAttribute('aria-label', `Draw your ${noun} here`)
     const clear = h('button', { type: 'button', textContent: 'Clear', id: 'sig-clear' })
-    const drawPanel = h('div', { className: 'sign-panel' }, pad, h('div', { className: 'sign-row' }, h('span', { className: 'muted', textContent: 'Use a mouse, finger or stylus.' }), clear))
+    const drawPanel = h(
+      'div',
+      { className: 'sign-panel' },
+      pad,
+      h(
+        'div',
+        { className: 'sign-row' },
+        h('span', { className: 'muted', textContent: 'Use a mouse, finger or stylus.' }),
+        clear,
+      ),
+    )
 
     // Type
-    const typed = h('input', { type: 'text', id: 'sig-typed', placeholder: kind === 'signature' ? 'Type your name' : 'Type your initials', autocomplete: 'off' })
+    const typed = h('input', {
+      type: 'text',
+      id: 'sig-typed',
+      placeholder: kind === 'signature' ? 'Type your name' : 'Type your initials',
+      autocomplete: 'off',
+    })
     typed.setAttribute('aria-label', kind === 'signature' ? 'Your name' : 'Your initials')
     const preview = h('div', { className: 'sign-typed-preview', id: 'sig-typed-preview' })
     preview.style.fontFamily = SIGNATURE_FONT
@@ -98,14 +133,23 @@ export function openSignatureDialog(kind: SignatureKind, current: string | null,
     file.setAttribute('aria-label', `Picture of your ${noun}`)
     const uploadPreview = h('img', { className: 'sign-upload-preview', alt: '' })
     uploadPreview.hidden = true
-    const uploadNote = h('p', { className: 'muted', textContent: 'A PNG or JPG on white paper. The white background is made transparent.' })
+    const uploadNote = h('p', {
+      className: 'muted',
+      textContent: 'A PNG or JPG on white paper. The white background is made transparent.',
+    })
     const uploadPanel = h('div', { className: 'sign-panel' }, file, uploadNote, uploadPreview)
     const panels: Record<Mode, HTMLElement> = { draw: drawPanel, type: typePanel, upload: uploadPanel }
 
     // Ink
     const inkGroup = h('fieldset', { className: 'sign-ink' }, h('legend', { textContent: 'Ink' }))
     for (const value of ['black', 'blue'] as Ink[]) {
-      const radio = h('input', { type: 'radio', name: 'sig-ink', value, checked: value === ink, id: `sig-ink-${value}` })
+      const radio = h('input', {
+        type: 'radio',
+        name: 'sig-ink',
+        value,
+        checked: value === ink,
+        id: `sig-ink-${value}`,
+      })
       radio.addEventListener('change', () => {
         ink = value
         preview.style.color = INK_CSS[ink]
@@ -117,7 +161,10 @@ export function openSignatureDialog(kind: SignatureKind, current: string | null,
     // Remember (opt-in)
     const remember = h('input', { type: 'checkbox', id: 'sig-remember', checked: saved.load(kind) !== null })
     const rememberLabel = h('label', { className: 'sign-remember' }, remember, ` Remember my ${noun} on this device`)
-    const rememberNote = h('p', { className: 'muted', textContent: `Saved only in this browser, never uploaded. Anyone who uses this device and browser could use it.` })
+    const rememberNote = h('p', {
+      className: 'muted',
+      textContent: `Saved only in this browser, never uploaded. Anyone who uses this device and browser could use it.`,
+    })
     const forget = h('button', { type: 'button', id: 'sig-forget', textContent: `Forget saved ${noun}` })
     forget.hidden = saved.load(kind) === null
     forget.addEventListener('click', () => {
@@ -135,12 +182,25 @@ export function openSignatureDialog(kind: SignatureKind, current: string | null,
     const done = h('button', { type: 'button', className: 'primary', textContent: `Use ${noun}`, id: 'sig-done' })
     const actions = h('div', { className: 'sign-actions' }, forget, h('span', { className: 'spacer' }), cancel, done)
 
-    dialog.append(title, currentBox, tabs, drawPanel, typePanel, uploadPanel, inkGroup, rememberLabel, rememberNote, error, actions)
+    dialog.append(
+      title,
+      currentBox,
+      tabs,
+      drawPanel,
+      typePanel,
+      uploadPanel,
+      inkGroup,
+      rememberLabel,
+      rememberNote,
+      error,
+      actions,
+    )
     document.body.append(dialog)
 
     function setMode(m: Mode): void {
       mode = m
-      for (const [k, b] of Object.entries(tabButtons) as [Mode, HTMLButtonElement][]) b.setAttribute('aria-selected', String(k === m))
+      for (const [k, b] of Object.entries(tabButtons) as [Mode, HTMLButtonElement][])
+        b.setAttribute('aria-selected', String(k === m))
       for (const [k, p] of Object.entries(panels) as [Mode, HTMLElement][]) p.hidden = k !== m
       inkGroup.hidden = m === 'upload'
       error.hidden = true
@@ -268,7 +328,12 @@ export function openSignatureDialog(kind: SignatureKind, current: string | null,
     done.addEventListener('click', async () => {
       const src = await makeImage()
       if (!src) {
-        error.textContent = mode === 'draw' ? `Draw your ${noun} first.` : mode === 'type' ? `Type your ${kind === 'signature' ? 'name' : 'initials'} first.` : 'Choose a picture first.'
+        error.textContent =
+          mode === 'draw'
+            ? `Draw your ${noun} first.`
+            : mode === 'type'
+              ? `Type your ${kind === 'signature' ? 'name' : 'initials'} first.`
+              : 'Choose a picture first.'
         error.hidden = false
         return
       }

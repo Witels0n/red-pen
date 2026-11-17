@@ -44,12 +44,7 @@ export interface TextAnnotation extends AnnotationBase {
 }
 
 /** Discriminated by `type`. */
-export type Annotation =
-  | TickAnnotation
-  | CrossAnnotation
-  | SubtotalAnnotation
-  | TotalAnnotation
-  | TextAnnotation
+export type Annotation = TickAnnotation | CrossAnnotation | SubtotalAnnotation | TotalAnnotation | TextAnnotation
 
 export interface TotalSummary {
   readonly id: string

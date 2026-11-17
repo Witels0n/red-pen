@@ -12,7 +12,9 @@ async function fixture(): Promise<Buffer> {
 
 async function openTest(page: Page): Promise<void> {
   await page.goto('./')
-  await page.locator('#file-input').setInputFiles({ name: 'learner-1.pdf', mimeType: 'application/pdf', buffer: await fixture() })
+  await page
+    .locator('#file-input')
+    .setInputFiles({ name: 'learner-1.pdf', mimeType: 'application/pdf', buffer: await fixture() })
   await expect(page.locator('.page')).toHaveCount(2)
 }
 
@@ -58,7 +60,9 @@ test('Escape dismisses the pop-up and leaves a bare Cross', async ({ page }) => 
   await expect(page.locator('.reason-tag')).toHaveCount(0)
 })
 
-test('marking elsewhere never waits on the pop-up: the next click places a Tick and leaves the Cross bare', async ({ page }) => {
+test('marking elsewhere never waits on the pop-up: the next click places a Tick and leaves the Cross bare', async ({
+  page,
+}) => {
   await openTest(page)
   await placeCross(page, 100, 120)
   await expect(popup(page)).toBeVisible()
@@ -118,12 +122,15 @@ test('the teacher can edit the Reasons list; it survives a reload, and nothing e
   await placeCross(page)
   await expect(popup(page).locator('.reason-choice')).toHaveText(['Units', 'Method'])
   await popup(page).getByRole('button', { name: 'Method', exact: true }).click()
-  await page.locator('.page').first().click({ position: { x: 30, y: 30 } }) // a Tick too
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 30, y: 30 } }) // a Tick too
 
   // Only the Reasons list is in storage: no PDF data, no annotations.
   const keys = await localStorageKeys(page)
-  expect(keys).toEqual(['pdf-marker.reasons'])
-  const stored = await page.evaluate(() => localStorage.getItem('pdf-marker.reasons'))
+  expect(keys).toEqual(['red-pen.mark.reasons'])
+  const stored = await page.evaluate(() => localStorage.getItem('red-pen.mark.reasons'))
   expect(JSON.parse(stored!)).toEqual(['Units', 'Method'])
 
   await page.reload({ waitUntil: 'load' })
@@ -136,13 +143,15 @@ test('the teacher can edit the Reasons list; it survives a reload, and nothing e
   await expect(page.locator('.annotation')).toHaveCount(0) // marks did not persist
   await placeCross(page)
   await expect(popup(page).locator('.reason-choice')).toHaveText(['Units', 'Method'])
-  expect(await localStorageKeys(page)).toEqual(['pdf-marker.reasons'])
+  expect(await localStorageKeys(page)).toEqual(['red-pen.mark.reasons'])
 })
 
 test('the pop-up can open the Reasons editor, and Cancel keeps the list', async ({ page }) => {
   await openTest(page)
   await placeCross(page)
-  await popup(page).getByRole('button', { name: /Edit reasons/ }).click()
+  await popup(page)
+    .getByRole('button', { name: /Edit reasons/ })
+    .click()
   await expect(page.locator('#reasons-editor')).toBeVisible()
   await page.locator('#reasons-text').fill('Only one')
   await page.getByRole('button', { name: 'Cancel' }).click()
@@ -162,7 +171,9 @@ test('exporting includes the Reason tag as text in the marked PDF', async ({ pag
   expect(fonts).toBeDefined()
 })
 
-test('deleting a Cross with Delete closes its pop-up; dragging a Cross carries its tag and opens no pop-up', async ({ page }) => {
+test('deleting a Cross with Delete closes its pop-up; dragging a Cross carries its tag and opens no pop-up', async ({
+  page,
+}) => {
   await openTest(page)
   await placeCross(page)
   await popup(page).getByRole('button', { name: 'RTQ', exact: true }).click()

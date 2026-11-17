@@ -70,7 +70,10 @@ describe('when the browser blocks storage', () => {
 
 function fileOf(name: string, data: Uint8Array | string) {
   const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data
-  return { name, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer }
+  return {
+    name,
+    arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
+  }
 }
 
 describe('importSpreadsheet', () => {
@@ -120,10 +123,16 @@ describe('importSpreadsheet', () => {
   })
 
   it('explains files it cannot read', async () => {
-    await expect(importSpreadsheet(fileOf('old.xls', new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 0])))).rejects.toThrow(/Old \.xls files/)
-    await expect(importSpreadsheet(fileOf('broken.xlsx', new Uint8Array([0x50, 0x4b, 1, 2, 3])))).rejects.toBeInstanceOf(SpreadsheetError)
+    await expect(importSpreadsheet(fileOf('old.xls', new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 0])))).rejects.toThrow(
+      /Old \.xls files/,
+    )
+    await expect(
+      importSpreadsheet(fileOf('broken.xlsx', new Uint8Array([0x50, 0x4b, 1, 2, 3]))),
+    ).rejects.toBeInstanceOf(SpreadsheetError)
     await expect(importSpreadsheet(fileOf('empty.csv', '\r\n'))).rejects.toThrow('This spreadsheet is empty.')
-    await expect(importSpreadsheet(fileOf('photo.csv', new Uint8Array([0xff, 0xd8, 0, 0])))).rejects.toThrow(/not a spreadsheet/)
+    await expect(importSpreadsheet(fileOf('photo.csv', new Uint8Array([0xff, 0xd8, 0, 0])))).rejects.toThrow(
+      /not a spreadsheet/,
+    )
   })
 
   it('turns cells into text', () => {

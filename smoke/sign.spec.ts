@@ -100,7 +100,11 @@ async function imageCentres(bytes: Uint8Array, pageNumber: number): Promise<{ x:
     else if (fn === OPS.restore) ctm = stack.pop() ?? ctm
     else if (fn === OPS.transform) ctm = mul(ctm, ops.argsArray[i] as M)
     else if (fn === OPS.paintImageXObject) {
-      out.push({ x: ctm[0] * 0.5 + ctm[2] * 0.5 + ctm[4], y: ctm[1] * 0.5 + ctm[3] * 0.5 + ctm[5], width: Math.hypot(ctm[0], ctm[1]) })
+      out.push({
+        x: ctm[0] * 0.5 + ctm[2] * 0.5 + ctm[4],
+        y: ctm[1] * 0.5 + ctm[3] * 0.5 + ctm[5],
+        width: Math.hypot(ctm[0], ctm[1]),
+      })
     }
   })
   return out
@@ -121,9 +125,13 @@ test('the open screen explains privacy and rejects broken or encrypted files', a
   await page.goto(SIGN)
   await expect(page.locator('.site-header .tool-name')).toHaveText('Sign and fill')
   await expect(page.locator('#privacy-note')).toContainText('never uploaded')
-  await page.locator('#file-input').setInputFiles({ name: 'broken.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.7 nonsense') })
+  await page
+    .locator('#file-input')
+    .setInputFiles({ name: 'broken.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.7 nonsense') })
   await expect(page.locator('#open-error')).toContainText('damaged')
-  await page.locator('#file-input').setInputFiles({ name: 'locked.pdf', mimeType: 'application/pdf', buffer: await encrypted() })
+  await page
+    .locator('#file-input')
+    .setInputFiles({ name: 'locked.pdf', mimeType: 'application/pdf', buffer: await encrypted() })
   await expect(page.locator('#open-error')).toContainText('password protected or encrypted')
   // Still usable.
   await open(page, await scannedForm())
@@ -191,7 +199,9 @@ test('real form fields are filled and flattened', async ({ page }) => {
   expect(strings).toContain('Grade 7')
 })
 
-test('a drawn signature is embedded on the right page, where it was placed, also on a rotated page', async ({ page }) => {
+test('a drawn signature is embedded on the right page, where it was placed, also on a rotated page', async ({
+  page,
+}) => {
   await page.goto(SIGN)
   await open(page, await twoPages(), 'letter.pdf')
   await page.locator('#tools [data-tool="signature"]').click()
@@ -258,11 +268,17 @@ test('typed signature, date stamp and the unsaved-changes warning', async ({ pag
   await page.locator('#sig-tab-type').click()
   await page.locator('#sig-typed').fill('N. Pillay')
   await page.locator('#sig-done').click()
-  await page.locator('.page').first().click({ position: { x: 300, y: 600 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 300, y: 600 } })
   await expect(page.locator('.item-signature')).toHaveCount(1)
 
   await page.locator('#date-style').selectOption('iso')
-  await page.locator('.page').first().click({ position: { x: 100, y: 700 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 700 } })
   const iso = await page.evaluate(() => {
     const d = new Date()
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -290,14 +306,24 @@ test('makes no network requests and is refused any connection', async ({ page, b
   await page.keyboard.type('Offline')
   await save(page)
   expect(foreign).toEqual([])
-  expect(await page.evaluate(() => fetch(location.href).then(() => 'allowed', () => 'blocked'))).toBe('blocked')
+  expect(
+    await page.evaluate(() =>
+      fetch(location.href).then(
+        () => 'allowed',
+        () => 'blocked',
+      ),
+    ),
+  ).toBe('blocked')
 })
 
 test('added items can be moved, resized and deleted, with undo', async ({ page }) => {
   await page.goto(SIGN)
   await open(page, await scannedForm())
   await page.locator('#tools [data-tool="tick"]').click()
-  await page.locator('.page').first().click({ position: { x: 400, y: 450 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 400, y: 450 } })
   const tick = page.locator('.item-tick')
   await expect(tick).toHaveCount(1)
 

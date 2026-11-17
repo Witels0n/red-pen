@@ -30,7 +30,7 @@ describe('page order and rotation model', () => {
     expect(pages[1].turn).toBe(0)
   })
 
-  it('turns every page at once, keeping each page\'s own turn', () => {
+  it("turns every page at once, keeping each page's own turn", () => {
     const pages = rotateAll(rotatePage(initialPages(2), 0, 'right'), 'right')
     expect(pages.map((p) => p.turn)).toEqual([180, 90])
   })

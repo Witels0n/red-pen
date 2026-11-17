@@ -55,7 +55,8 @@ export function indexedDbStorage(factory?: IDBFactory): ClassStorage {
         resolve(db)
       }
       req.onerror = () => reject(req.error)
-      req.onblocked = () => reject(new ClassStorageError('Class lists are open in another Red Pen tab. Close it and try again.'))
+      req.onblocked = () =>
+        reject(new ClassStorageError('Class lists are open in another Red Pen tab. Close it and try again.'))
     }).catch((error) => {
       opening = null
       throw error

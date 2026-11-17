@@ -1,0 +1,39 @@
+name: Report a problem
+description: Something in Red Pen doesn't work as expected.
+title: 'Problem: '
+labels: [needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. **Please do not attach learners' work or any personal information.** If a file is needed to show the problem, make a sample with no real names in it.
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Tool
+      options:
+        - Landing page
+        - Mark a test
+        - Combine PDFs
+        - Split a PDF
+        - Organise pages
+        - Sign and fill
+        - QR codes
+        - Class lists
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: For example Chrome 142 on Windows 11, or Safari on iPad
+    validations:
+      required: true

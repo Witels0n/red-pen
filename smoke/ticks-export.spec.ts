@@ -20,11 +20,14 @@ async function openTest(page: Page): Promise<number> {
 
 /** Centre of the tick's hit circle relative to the first page, in CSS px. */
 async function tickCentre(page: Page, index = 0) {
-  return page.locator('.annotation-tick').nth(index).evaluate((tick) => {
-    const pageEl = tick.closest('.page')!.getBoundingClientRect()
-    const r = tick.querySelector('circle')!.getBoundingClientRect()
-    return { x: r.left + r.width / 2 - pageEl.left, y: r.top + r.height / 2 - pageEl.top, scale: pageEl.width / 595 }
-  })
+  return page
+    .locator('.annotation-tick')
+    .nth(index)
+    .evaluate((tick) => {
+      const pageEl = tick.closest('.page')!.getBoundingClientRect()
+      const r = tick.querySelector('circle')!.getBoundingClientRect()
+      return { x: r.left + r.width / 2 - pageEl.left, y: r.top + r.height / 2 - pageEl.top, scale: pageEl.width / 595 }
+    })
 }
 
 test('clicking blank page places a red Tick exactly where clicked, at every zoom level', async ({ page }) => {
@@ -44,7 +47,12 @@ test('clicking blank page places a red Tick exactly where clicked, at every zoom
     const c = await tickCentre(page, before)
     expect(Math.abs(c.x - at.x)).toBeLessThan(1.5)
     expect(Math.abs(c.y - at.y)).toBeLessThan(1.5)
-    expect(await page.locator('.annotation-tick polyline').last().evaluate((e) => getComputedStyle(e).stroke)).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
+    expect(
+      await page
+        .locator('.annotation-tick polyline')
+        .last()
+        .evaluate((e) => getComputedStyle(e).stroke),
+    ).toMatch(/^rgb\(2\d\d, \d+, \d+\)$/)
   }
 
   // Existing ticks follow zoom: same page position, new pixel position.
@@ -68,8 +76,14 @@ test('clicking an existing Tick does not stack another one on it', async ({ page
 
 test('Export downloads <name>-marked.pdf with the same pages and added marks', async ({ page }) => {
   const originalSize = await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 100, y: 120 } })
-  await page.locator('.page').first().click({ position: { x: 200, y: 220 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 120 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 200, y: 220 } })
 
   const [download] = await Promise.all([page.waitForEvent('download'), page.locator('#export').click()])
   expect(download.suggestedFilename()).toBe('learner-1-marked.pdf')
@@ -81,7 +95,10 @@ test('Export downloads <name>-marked.pdf with the same pages and added marks', a
 
 test('opening another file starts with a clean slate', async ({ page }) => {
   await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 100, y: 120 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 120 } })
   await expect(page.locator('.annotation-tick')).toHaveCount(1)
   await page.locator('#file-input').setInputFiles({
     name: 'learner-2.pdf',
@@ -107,7 +124,10 @@ async function closeAndSeeWarning(page: Page): Promise<boolean> {
 
 test('closing with unexported marks warns', async ({ page }) => {
   await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 100, y: 120 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 120 } })
   expect(await closeAndSeeWarning(page)).toBe(true)
 })
 
@@ -118,7 +138,10 @@ test('closing with nothing marked does not warn', async ({ page }) => {
 
 test('closing right after exporting does not warn', async ({ page }) => {
   await openTest(page)
-  await page.locator('.page').first().click({ position: { x: 100, y: 120 } })
+  await page
+    .locator('.page')
+    .first()
+    .click({ position: { x: 100, y: 120 } })
   await Promise.all([page.waitForEvent('download'), page.locator('#export').click()])
   expect(await closeAndSeeWarning(page)).toBe(false)
 })

@@ -16,7 +16,9 @@ export interface ColumnGuess {
 }
 
 function looksLikeTitle(cell: string): boolean {
-  return FIRST.test(cell) || SURNAME.test(cell) || FULL.test(cell) || ID.test(cell) || /name|surname|class|grade/i.test(cell)
+  return (
+    FIRST.test(cell) || SURNAME.test(cell) || FULL.test(cell) || ID.test(cell) || /name|surname|class|grade/i.test(cell)
+  )
 }
 
 export function guessColumns(rows: readonly (readonly string[])[]): ColumnGuess {

@@ -41,7 +41,10 @@ export function tidyName(value: string): string {
  * Rows whose chosen cells are all empty are skipped. With an ID column, each ID must be a whole
  * number from 1 up, fit in `idDigits` digits and be unique; otherwise learners get 1, 2, 3...
  */
-export function buildLearners(rows: readonly (readonly string[])[], options: BuildLearnersOptions): BuildLearnersResult {
+export function buildLearners(
+  rows: readonly (readonly string[])[],
+  options: BuildLearnersOptions,
+): BuildLearnersResult {
   const { headerRow, nameColumns, idColumn, idDigits } = options
   const joiner = options.joiner ?? ' '
   const max = maxLearnerNumber(idDigits)
@@ -87,7 +90,9 @@ export function buildLearners(rows: readonly (readonly string[])[], options: Bui
   })
 
   return {
-    learners: built.filter((r) => r.problems.length === 0).map((r) => (r.name ? { id: r.id, name: r.name } : { id: r.id })),
+    learners: built
+      .filter((r) => r.problems.length === 0)
+      .map((r) => (r.name ? { id: r.id, name: r.name } : { id: r.id })),
     rows: built,
     problems: built.flatMap((r) => r.problems.map((p) => `Row ${r.sourceRow}: ${p}`)),
   }

@@ -91,12 +91,21 @@ function outcome(): Outcome {
   }
   if (m === 'numbers') {
     const count = Number(countInput.value)
-    if (!Number.isInteger(count) || count < 1) return { rows: [], learners: [], problems: ['Enter how many learners, 1 or more.'] }
+    if (!Number.isInteger(count) || count < 1)
+      return { rows: [], learners: [], problems: ['Enter how many learners, 1 or more.'] }
     if (count > maxLearnerNumber(d)) {
-      return { rows: [], learners: [], problems: [`${count} learners need more than ${d}-digit IDs (the most is ${maxLearnerNumber(d)}).`] }
+      return {
+        rows: [],
+        learners: [],
+        problems: [`${count} learners need more than ${d}-digit IDs (the most is ${maxLearnerNumber(d)}).`],
+      }
     }
     const learners = numberedLearners(count, d)
-    return { rows: learners.map((l, i) => ({ sourceRow: i + 1, id: l.id, name: '', problems: [] })), learners, problems: [] }
+    return {
+      rows: learners.map((l, i) => ({ sourceRow: i + 1, id: l.id, name: '', problems: [] })),
+      learners,
+      problems: [],
+    }
   }
   const sheet = imported?.sheets[Number(sheetSelect.value) || 0]
   if (!sheet) return { rows: [], learners: [], problems: [] }
@@ -116,7 +125,10 @@ function update(): void {
       const showRow = method() === 'import' ? `Row ${r.sourceRow}: ` : ''
       return h(
         'tr',
-        { class: r.problems.length > 0 ? 'problem' : undefined, title: r.problems.length > 0 ? `${showRow}${r.problems.join(' ')}` : undefined },
+        {
+          class: r.problems.length > 0 ? 'problem' : undefined,
+          title: r.problems.length > 0 ? `${showRow}${r.problems.join(' ')}` : undefined,
+        },
         h('td', { class: 'id', text: r.id }),
         nameCell,
       )
@@ -169,7 +181,9 @@ function buildColumns(): void {
           'div',
           { class: 'column-label' },
           h('span', { class: 'column-title', text: columnTitle(c) }),
-          sample ? h('span', { class: 'column-sample', text: `e.g. ${sample}` }) : h('span', { class: 'column-sample', text: 'empty' }),
+          sample
+            ? h('span', { class: 'column-sample', text: `e.g. ${sample}` })
+            : h('span', { class: 'column-sample', text: 'empty' }),
         ),
         h(
           'div',
@@ -177,14 +191,24 @@ function buildColumns(): void {
           h(
             'label',
             { class: 'check' },
-            h('input', { type: 'checkbox', class: 'name-part', value: c, 'aria-label': `${columnTitle(c)} is part of the name` }),
+            h('input', {
+              type: 'checkbox',
+              class: 'name-part',
+              value: c,
+              'aria-label': `${columnTitle(c)} is part of the name`,
+            }),
             ' Name',
             h('span', { class: 'order' }),
           ),
           h(
             'label',
             { class: 'check' },
-            h('input', { type: 'radio', name: 'id-column', value: c, 'aria-label': `${columnTitle(c)} holds the Learner ID` }),
+            h('input', {
+              type: 'radio',
+              name: 'id-column',
+              value: c,
+              'aria-label': `${columnTitle(c)} holds the Learner ID`,
+            }),
             ' Learner ID',
           ),
         ),
@@ -200,7 +224,8 @@ function syncColumns(): void {
     const c = Number(li.dataset.column)
     const position = nameOrder.indexOf(c)
     li.querySelector<HTMLInputElement>('.name-part')!.checked = position >= 0
-    li.querySelector('.order')!.textContent = position >= 0 && nameOrder.length > 1 ? ` (${ORDINALS[position] ?? `${position + 1}th`})` : ''
+    li.querySelector('.order')!.textContent =
+      position >= 0 && nameOrder.length > 1 ? ` (${ORDINALS[position] ?? `${position + 1}th`})` : ''
     li.querySelector<HTMLInputElement>('input[name="id-column"]')!.checked = idColumn === c
     li.classList.toggle('chosen', position >= 0 || idColumn === c)
   }
@@ -215,7 +240,12 @@ function applyGuess(): void {
   idColumn = guess.idColumn
   // A file that already has IDs needs as many digits as its longest ID.
   if (idColumn !== undefined) {
-    const longest = Math.max(1, ...currentRows().slice(guess.headerRow ? 1 : 0).map((r) => (r[idColumn!] ?? '').trim().length))
+    const longest = Math.max(
+      1,
+      ...currentRows()
+        .slice(guess.headerRow ? 1 : 0)
+        .map((r) => (r[idColumn!] ?? '').trim().length),
+    )
     if (longest > digits() && longest <= 4) digitsSelect.value = String(longest)
   }
   buildColumns()
@@ -244,9 +274,14 @@ sheetInput.addEventListener('change', async () => {
     return
   }
   fileBaseName = file.name.replace(/\.[^.]+$/, '')
-  const firstWithRows = Math.max(0, imported.sheets.findIndex((s) => s.rows.length > 0))
+  const firstWithRows = Math.max(
+    0,
+    imported.sheets.findIndex((s) => s.rows.length > 0),
+  )
   sheetSelect.replaceChildren(
-    ...imported.sheets.map((s, i) => h('option', { value: i, text: `${s.name} (${s.rows.length} rows)`, selected: i === firstWithRows })),
+    ...imported.sheets.map((s, i) =>
+      h('option', { value: i, text: `${s.name} (${s.rows.length} rows)`, selected: i === firstWithRows }),
+    ),
   )
   sheetField.hidden = imported.sheets.length < 2
   importOptions.hidden = false

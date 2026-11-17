@@ -52,7 +52,14 @@ export interface QrGeometry {
 const n = (v: number) => String(Math.round(v * 100) / 100)
 
 /** A rectangle with its own radius at each corner, clockwise (or anticlockwise to cut a hole). */
-function roundedRect(x: number, y: number, w: number, h: number, r: [number, number, number, number], clockwise = true): string {
+function roundedRect(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: [number, number, number, number],
+  clockwise = true,
+): string {
   const [tl, tr, br, bl] = r
   const arc = (rad: number, ex: number, ey: number, sweep: number) =>
     rad > 0 ? `A${n(rad)} ${n(rad)} 0 0 ${sweep} ${n(ex)} ${n(ey)}` : `L${n(ex)} ${n(ey)}`
@@ -74,7 +81,11 @@ function roundedRect(x: number, y: number, w: number, h: number, r: [number, num
 
 function eye(x: number, y: number, style: EyeStyle): string {
   const r = (v: number): [number, number, number, number] => (style === 'rounded' ? [v, v, v, v] : [0, 0, 0, 0])
-  return roundedRect(x, y, 7, 7, r(2)) + roundedRect(x + 1, y + 1, 5, 5, r(1.3), false) + roundedRect(x + 2, y + 2, 3, 3, r(0.9))
+  return (
+    roundedRect(x, y, 7, 7, r(2)) +
+    roundedRect(x + 1, y + 1, 5, 5, r(1.3), false) +
+    roundedRect(x + 2, y + 2, 3, 3, r(0.9))
+  )
 }
 
 /** The three 7 by 7 finder patterns at the top left, top right and bottom left. */
@@ -86,13 +97,47 @@ function inEye(row: number, col: number, size: number): boolean {
 
 /** Alignment pattern centre rows and columns for each version (ISO/IEC 18004 Annex E). */
 const ALIGNMENT_POSITIONS: number[][] = [
-  [], [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50],
-  [6, 30, 54], [6, 32, 58], [6, 34, 62], [6, 26, 46, 66], [6, 26, 48, 70], [6, 26, 50, 74], [6, 30, 54, 78],
-  [6, 30, 56, 82], [6, 30, 58, 86], [6, 34, 62, 90], [6, 28, 50, 72, 94], [6, 26, 50, 74, 98], [6, 30, 54, 78, 102],
-  [6, 28, 54, 80, 106], [6, 32, 58, 84, 110], [6, 30, 58, 86, 114], [6, 34, 62, 90, 118], [6, 26, 50, 74, 98, 122],
-  [6, 30, 54, 78, 102, 126], [6, 26, 52, 78, 104, 130], [6, 30, 56, 82, 108, 134], [6, 34, 60, 86, 112, 138],
-  [6, 30, 58, 86, 114, 142], [6, 34, 62, 90, 118, 146], [6, 30, 54, 78, 102, 126, 150], [6, 24, 50, 76, 102, 128, 154],
-  [6, 28, 54, 80, 106, 132, 158], [6, 32, 58, 84, 110, 136, 162], [6, 26, 54, 82, 110, 138, 166], [6, 30, 58, 86, 114, 142, 170],
+  [],
+  [],
+  [6, 18],
+  [6, 22],
+  [6, 26],
+  [6, 30],
+  [6, 34],
+  [6, 22, 38],
+  [6, 24, 42],
+  [6, 26, 46],
+  [6, 28, 50],
+  [6, 30, 54],
+  [6, 32, 58],
+  [6, 34, 62],
+  [6, 26, 46, 66],
+  [6, 26, 48, 70],
+  [6, 26, 50, 74],
+  [6, 30, 54, 78],
+  [6, 30, 56, 82],
+  [6, 30, 58, 86],
+  [6, 34, 62, 90],
+  [6, 28, 50, 72, 94],
+  [6, 26, 50, 74, 98],
+  [6, 30, 54, 78, 102],
+  [6, 28, 54, 80, 106],
+  [6, 32, 58, 84, 110],
+  [6, 30, 58, 86, 114],
+  [6, 34, 62, 90, 118],
+  [6, 26, 50, 74, 98, 122],
+  [6, 30, 54, 78, 102, 126],
+  [6, 26, 52, 78, 104, 130],
+  [6, 30, 56, 82, 108, 134],
+  [6, 34, 60, 86, 112, 138],
+  [6, 30, 58, 86, 114, 142],
+  [6, 34, 62, 90, 118, 146],
+  [6, 30, 54, 78, 102, 126, 150],
+  [6, 24, 50, 76, 102, 128, 154],
+  [6, 28, 54, 80, 106, 132, 158],
+  [6, 32, 58, 84, 110, 136, 162],
+  [6, 26, 54, 82, 110, 138, 166],
+  [6, 30, 58, 86, 114, 142, 170],
 ]
 
 /** The centres of the 5 by 5 alignment patterns, which scanners use to correct for perspective. */
@@ -112,7 +157,11 @@ export function alignmentCentres(size: number): [number, number][] {
 /** An alignment pattern drawn as one solid shape, so dots and rounded modules do not break it up. */
 function alignment(x: number, y: number, style: EyeStyle): string {
   const r = (v: number): [number, number, number, number] => (style === 'rounded' ? [v, v, v, v] : [0, 0, 0, 0])
-  return roundedRect(x, y, 5, 5, r(1.5)) + roundedRect(x + 1, y + 1, 3, 3, r(0.8), false) + roundedRect(x + 2, y + 2, 1, 1, r(0.5))
+  return (
+    roundedRect(x, y, 5, 5, r(1.5)) +
+    roundedRect(x + 1, y + 1, 3, 3, r(0.8), false) +
+    roundedRect(x + 2, y + 2, 1, 1, r(0.5))
+  )
 }
 
 /** The logo's rectangle, and the whole modules it clears, both centred on the code. */
@@ -140,13 +189,19 @@ export function qrGeometry(matrix: QrMatrix, style: QrStyle, logo?: QrLogo): QrG
   const cleared = layout?.cleared
   const inCleared = (r: number, c: number) =>
     !!cleared && c >= cleared.x && c < cleared.x + cleared.w && r >= cleared.y && r < cleared.y + cleared.h
-  const dark = (r: number, c: number) => r >= 0 && c >= 0 && r < size && c < size && matrix.isDark(r, c) && !inCleared(r, c)
+  const dark = (r: number, c: number) =>
+    r >= 0 && c >= 0 && r < size && c < size && matrix.isDark(r, c) && !inCleared(r, c)
 
   // Alignment patterns the logo leaves alone are drawn whole; one the logo touches stays cleared.
   const touchesLogo = ([r, c]: [number, number]) =>
-    !!cleared && c + 2 >= cleared.x && c - 2 < cleared.x + cleared.w && r + 2 >= cleared.y && r - 2 < cleared.y + cleared.h
+    !!cleared &&
+    c + 2 >= cleared.x &&
+    c - 2 < cleared.x + cleared.w &&
+    r + 2 >= cleared.y &&
+    r - 2 < cleared.y + cleared.h
   const aligned = alignmentCentres(size).filter((centre) => !touchesLogo(centre))
-  const inAlignment = (r: number, c: number) => aligned.some(([ar, ac]) => Math.abs(r - ar) <= 2 && Math.abs(c - ac) <= 2)
+  const inAlignment = (r: number, c: number) =>
+    aligned.some(([ar, ac]) => Math.abs(r - ar) <= 2 && Math.abs(c - ac) <= 2)
   const special = (r: number, c: number) => inEye(r, c, size) || inAlignment(r, c)
 
   const parts: string[] = []
@@ -157,14 +212,23 @@ export function qrGeometry(matrix: QrMatrix, style: QrStyle, logo?: QrLogo): QrG
       const y = m + r
       if (style.moduleShape === 'dots') {
         const rad = 0.45
-        parts.push(`M${n(x + 0.5 - rad)} ${n(y + 0.5)}a${rad} ${rad} 0 1 1 ${rad * 2} 0a${rad} ${rad} 0 1 1 ${-rad * 2} 0Z`)
+        parts.push(
+          `M${n(x + 0.5 - rad)} ${n(y + 0.5)}a${rad} ${rad} 0 1 1 ${rad * 2} 0a${rad} ${rad} 0 1 1 ${-rad * 2} 0Z`,
+        )
       } else if (style.moduleShape === 'rounded') {
         const up = dark(r - 1, c) && !special(r - 1, c)
         const down = dark(r + 1, c) && !special(r + 1, c)
         const left = dark(r, c - 1) && !special(r, c - 1)
         const right = dark(r, c + 1) && !special(r, c + 1)
         const k = 0.5
-        parts.push(roundedRect(x, y, 1, 1, [!up && !left ? k : 0, !up && !right ? k : 0, !down && !right ? k : 0, !down && !left ? k : 0]))
+        parts.push(
+          roundedRect(x, y, 1, 1, [
+            !up && !left ? k : 0,
+            !up && !right ? k : 0,
+            !down && !right ? k : 0,
+            !down && !left ? k : 0,
+          ]),
+        )
       } else {
         parts.push(`M${x} ${y}h1v1h-1Z`)
       }

@@ -91,7 +91,7 @@ describe('exportMarkedPdf', () => {
     expect(contentOf(after.getPage(2))).toEqual(contentOf(before.getPage(2)))
   })
 
-  it('draws a Cross\'s Reason as red text on its page; a bare Cross gets no text', async () => {
+  it("draws a Cross's Reason as red text on its page; a bare Cross gets no text", async () => {
     const original = await fixture()
     const model = createMarkingModel()
     const withReason = model.placeCross(2, 100, 100)
@@ -171,7 +171,6 @@ describe('toPageSpace (top-left page units to PDF user space)', () => {
     expect(toPageSpace(box, 270, 0, 10)).toEqual({ x: 440, y: 670 })
   })
 })
-
 
 describe('markedFileName', () => {
   it('replaces the .pdf extension with -marked.pdf', () => {

@@ -22,7 +22,10 @@ export function zipFileName(originalName: string): string {
   return `${stripPdfExtension(originalName)}-split.zip`
 }
 
-function rangesFor(mode: SplitMode, pageCount: number): { ok: true; ranges: PageRange[] } | { ok: false; error: string } {
+function rangesFor(
+  mode: SplitMode,
+  pageCount: number,
+): { ok: true; ranges: PageRange[] } | { ok: false; error: string } {
   switch (mode.kind) {
     case 'each':
       return { ok: true, ranges: Array.from({ length: pageCount }, (_, i) => ({ start: i + 1, end: i + 1 })) }

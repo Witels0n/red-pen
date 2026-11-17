@@ -1,7 +1,7 @@
 // The only marking data kept in browser storage (besides the Reasons list): the last
 // out-of value the teacher used, to pre-fill the next Total. Never the PDF or its annotations.
 
-const KEY = 'pdf-marker.lastOutOf'
+const KEY = 'red-pen.mark.lastOutOf'
 
 export function getLastOutOf(): number | undefined {
   try {

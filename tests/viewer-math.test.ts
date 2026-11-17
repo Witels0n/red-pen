@@ -1,12 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  MAX_ZOOM,
-  MIN_ZOOM,
-  fitToWidthScale,
-  layoutPages,
-  stepZoom,
-  visiblePages,
-} from '../src/mark/viewer-math'
+import { MAX_ZOOM, MIN_ZOOM, fitToWidthScale, layoutPages, stepZoom, visiblePages } from '../src/mark/viewer-math'
 
 // Seam: pure zoom / layout / visibility math. Scale = CSS pixels per PDF page unit.
 

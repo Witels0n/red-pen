@@ -10,15 +10,22 @@ async function fixturePdf(): Promise<Buffer> {
 
 async function openTest(page: Page): Promise<void> {
   await page.goto('./')
-  await page.locator('#file-input').setInputFiles({ name: 'learner-1.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
+  await page
+    .locator('#file-input')
+    .setInputFiles({ name: 'learner-1.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
   await expect(page.locator('.page')).toHaveCount(1)
 }
 
 const swatch = (page: Page, name: string) => page.locator(`#ink-swatches [data-ink="${name}"]`)
 const strokeOf = (page: Page, selector: string) =>
-  page.locator(selector).first().evaluate((e) => getComputedStyle(e).stroke)
+  page
+    .locator(selector)
+    .first()
+    .evaluate((e) => getComputedStyle(e).stroke)
 
-test('Ink colour is red by default, recolours every annotation, is used in the export, and is remembered', async ({ page }) => {
+test('Ink colour is red by default, recolours every annotation, is used in the export, and is remembered', async ({
+  page,
+}) => {
   await openTest(page)
   await expect(swatch(page, 'red')).toHaveAttribute('aria-checked', 'true')
 
@@ -42,7 +49,9 @@ test('Ink colour is red by default, recolours every annotation, is used in the e
   const contents = marked.getPage(0).node.Contents()!
   const refs = contents instanceof PDFArray ? contents.asArray() : [contents]
   const content = refs
-    .map((ref) => new TextDecoder('latin1').decode(decodePDFRawStream(marked.context.lookup(ref, PDFRawStream)).decode()))
+    .map((ref) =>
+      new TextDecoder('latin1').decode(decodePDFRawStream(marked.context.lookup(ref, PDFRawStream)).decode()),
+    )
     .join('\n')
   expect(content).toMatch(/0\.1 0\.25 0\.85 RG/)
   expect(content).not.toMatch(/0\.85 0\.1 0\.1 RG/)

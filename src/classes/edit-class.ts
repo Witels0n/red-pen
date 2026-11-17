@@ -91,7 +91,14 @@ function render(): void {
 }
 
 function iconButton(text: string, label: string, action: string, disabled = false): HTMLButtonElement {
-  return h('button', { type: 'button', class: 'icon small', 'aria-label': label, 'data-action': action, disabled, text })
+  return h('button', {
+    type: 'button',
+    class: 'icon small',
+    'aria-label': label,
+    'data-action': action,
+    disabled,
+    text,
+  })
 }
 
 function row(learner: Learner, index: number, count: number): HTMLLIElement {

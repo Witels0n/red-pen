@@ -47,8 +47,12 @@ describe('Wi-Fi payload', () => {
   })
 
   it('marks hidden networks and leaves out the password on open ones', () => {
-    expect(wifiPayload({ ssid: 'Guest', password: 'ignored', security: 'nopass', hidden: true })).toBe('WIFI:T:nopass;S:Guest;H:true;;')
-    expect(wifiPayload({ ssid: 'Lab', password: 'abc', security: 'WEP', hidden: false })).toBe('WIFI:T:WEP;S:Lab;P:abc;;')
+    expect(wifiPayload({ ssid: 'Guest', password: 'ignored', security: 'nopass', hidden: true })).toBe(
+      'WIFI:T:nopass;S:Guest;H:true;;',
+    )
+    expect(wifiPayload({ ssid: 'Lab', password: 'abc', security: 'WEP', hidden: false })).toBe(
+      'WIFI:T:WEP;S:Lab;P:abc;;',
+    )
   })
 
   it('needs a network name', () => {
@@ -58,9 +62,9 @@ describe('Wi-Fi payload', () => {
 
 describe('mailto payload', () => {
   it('percent-encodes the subject and body, with CRLF line breaks', () => {
-    expect(mailtoPayload({ address: 'teacher@school.co.za', subject: 'Homework & tests', body: 'Line 1\nLine 2' })).toBe(
-      'mailto:teacher@school.co.za?subject=Homework%20%26%20tests&body=Line%201%0D%0ALine%202',
-    )
+    expect(
+      mailtoPayload({ address: 'teacher@school.co.za', subject: 'Homework & tests', body: 'Line 1\nLine 2' }),
+    ).toBe('mailto:teacher@school.co.za?subject=Homework%20%26%20tests&body=Line%201%0D%0ALine%202')
   })
 
   it('leaves out empty fields', () => {
@@ -79,7 +83,12 @@ describe('vCard payload', () => {
   })
 
   it('builds a vCard 3.0 with CRLF line endings', () => {
-    const card = vCardPayload({ name: 'Thandi van der Merwe', phone: '082 555 0123', email: 'thandi@school.co.za', organisation: 'Hill School, Grade 7' })
+    const card = vCardPayload({
+      name: 'Thandi van der Merwe',
+      phone: '082 555 0123',
+      email: 'thandi@school.co.za',
+      organisation: 'Hill School, Grade 7',
+    })
     expect(card).toBe(
       [
         'BEGIN:VCARD',
@@ -113,7 +122,9 @@ describe('file names', () => {
 
   it('names the export after the content', () => {
     expect(exportFileName({ type: 'link', url: 'www.example.com/notes' }, 'png')).toBe('qr-example-com-notes.png')
-    expect(exportFileName({ type: 'wifi', ssid: 'Room 12', password: '', security: 'WPA', hidden: false }, 'svg')).toBe('qr-wifi-room-12.svg')
+    expect(exportFileName({ type: 'wifi', ssid: 'Room 12', password: '', security: 'WPA', hidden: false }, 'svg')).toBe(
+      'qr-wifi-room-12.svg',
+    )
     expect(exportFileName({ type: 'text', text: '' }, 'png')).toBe('qr-code.png')
   })
 })
@@ -143,7 +154,10 @@ describe('contrast', () => {
 
   it('warns about low contrast and light codes', () => {
     expect(colourWarnings('#999999', '#ffffff').join(' ')).toMatch(/Low contrast/)
-    expect(colourWarnings('#c8c8ff', '#ffffff')).toEqual([expect.stringMatching(/quite light/), expect.stringMatching(/Low contrast/)])
+    expect(colourWarnings('#c8c8ff', '#ffffff')).toEqual([
+      expect.stringMatching(/quite light/),
+      expect.stringMatching(/Low contrast/),
+    ])
   })
 })
 
@@ -225,7 +239,9 @@ describe('renderer', () => {
   })
 
   it('produces an SVG with the quiet zone in the viewBox and the chosen colours', () => {
-    const svg = renderSvg(matrix, style({ foreground: '#123456', background: '#fedcba', margin: 3 }), undefined, { pixelSize: 512 })
+    const svg = renderSvg(matrix, style({ foreground: '#123456', background: '#fedcba', margin: 3 }), undefined, {
+      pixelSize: 512,
+    })
     const view = matrix.size + 6
     expect(svg).toContain(`viewBox="0 0 ${view} ${view}"`)
     expect(svg).toContain('width="512" height="512"')
@@ -260,7 +276,12 @@ describe('settings', () => {
 
   it('round-trips through storage under the red-pen.qr. prefix', () => {
     const storage = memoryStorage()
-    const s = { ...DEFAULT_SETTINGS, foreground: '#112233', moduleShape: 'dots' as const, errorCorrection: 'Q' as const }
+    const s = {
+      ...DEFAULT_SETTINGS,
+      foreground: '#112233',
+      moduleShape: 'dots' as const,
+      errorCorrection: 'Q' as const,
+    }
     saveSettings(s, storage)
     expect([...storage.data.keys()]).toEqual([STORAGE_KEY])
     expect(STORAGE_KEY.startsWith('red-pen.qr.')).toBe(true)
@@ -268,7 +289,10 @@ describe('settings', () => {
   })
 
   it('falls back to defaults for missing, invalid or unreadable settings', () => {
-    expect(sanitiseSettings({ foreground: 'red', margin: 99, exportSize: 7, moduleShape: 'stars' })).toEqual({ ...DEFAULT_SETTINGS, margin: 10 })
+    expect(sanitiseSettings({ foreground: 'red', margin: 99, exportSize: 7, moduleShape: 'stars' })).toEqual({
+      ...DEFAULT_SETTINGS,
+      margin: 10,
+    })
     expect(loadSettings({ getItem: () => '{broken' })).toEqual(DEFAULT_SETTINGS)
     expect(
       loadSettings({

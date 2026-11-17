@@ -1,12 +1,5 @@
 import type { PdfDocument, PdfPage, RenderTask } from '../shared/pdf/pdf-worker'
-import {
-  clampZoom,
-  fitToWidthScale,
-  layoutPages,
-  stepZoom,
-  visiblePages,
-  type PageSize,
-} from './viewer-math'
+import { clampZoom, fitToWidthScale, layoutPages, stepZoom, visiblePages, type PageSize } from './viewer-math'
 
 const GUTTER = 20 // px left/right of the pages, also used for fit-to-width
 const GAP = 12 // px between pages (and above the first)

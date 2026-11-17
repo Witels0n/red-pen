@@ -23,10 +23,7 @@ import type { PageView, Viewer } from './viewer'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
-function svg<K extends keyof SVGElementTagNameMap>(
-  tag: K,
-  attrs: Record<string, string>,
-): SVGElementTagNameMap[K] {
+function svg<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string>): SVGElementTagNameMap[K] {
   const e = document.createElementNS(SVG_NS, tag)
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v)
   return e
@@ -140,7 +137,9 @@ const renderers: { [T in Annotation['type']]: Renderer<T> } = {
         'stroke-width': String(STROKE_WIDTH * scale),
       }),
     )
-    root.append(label(text, scale, { 'text-anchor': 'middle', fill: colour, 'font-weight': summary?.over ? 'bold' : 'normal' }))
+    root.append(
+      label(text, scale, { 'text-anchor': 'middle', fill: colour, 'font-weight': summary?.over ? 'bold' : 'normal' }),
+    )
     return root
   },
   text(a, scale) {
@@ -148,7 +147,14 @@ const renderers: { [T in Annotation['type']]: Renderer<T> } = {
     const w = (a.text.length * FONT_SIZE * 0.56 + 4) * scale
     const h = BOX_HEIGHT * scale
     root.append(
-      svg('rect', { class: 'hit', x: String(-2 * scale), y: String(-h / 2), width: String(w), height: String(h), fill: 'transparent' }),
+      svg('rect', {
+        class: 'hit',
+        x: String(-2 * scale),
+        y: String(-h / 2),
+        width: String(w),
+        height: String(h),
+        fill: 'transparent',
+      }),
     )
     root.append(label(a.text, scale, { 'text-anchor': 'start', fill: INK_CSS }))
     return root
@@ -201,9 +207,9 @@ export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): Anno
       byPage.set(a.page, [...(byPage.get(a.page) ?? []), a])
     }
     for (const page of viewer.pages) {
-      layers.get(page.pageNumber)!.replaceChildren(
-        ...(byPage.get(page.pageNumber) ?? []).map((a) => renderAnnotation(a, page.scale, model)),
-      )
+      layers
+        .get(page.pageNumber)!
+        .replaceChildren(...(byPage.get(page.pageNumber) ?? []).map((a) => renderAnnotation(a, page.scale, model)))
     }
     renderListeners.forEach((l) => l())
   }

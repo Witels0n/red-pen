@@ -32,7 +32,11 @@ export interface ItemsLayer {
   destroy(): void
 }
 
-export function attachItemsLayer(pages: readonly PageView[], model: SignModel, onSelect: (item: Item | null) => void): ItemsLayer {
+export function attachItemsLayer(
+  pages: readonly PageView[],
+  model: SignModel,
+  onSelect: (item: Item | null) => void,
+): ItemsLayer {
   const layers = new Map<number, HTMLElement>()
   for (const p of pages) {
     const layer = document.createElement('div')
@@ -61,7 +65,14 @@ export function attachItemsLayer(pages: readonly PageView[], model: SignModel, o
     input.style.width = `${Math.max(min, textWidth(input.value, px) + px * 0.6)}px`
   }
 
-  function placeText(el: HTMLElement, x: number, y: number, size: number, width: number | undefined, scale: number): void {
+  function placeText(
+    el: HTMLElement,
+    x: number,
+    y: number,
+    size: number,
+    width: number | undefined,
+    scale: number,
+  ): void {
     el.style.left = `${x * scale}px`
     el.style.top = `${(y - size * BASELINE) * scale}px`
     sizeTextInput(el.querySelector('input')!, size, width, scale)
@@ -291,7 +302,11 @@ export function attachItemsLayer(pages: readonly PageView[], model: SignModel, o
 
   function commitTyping(): void {
     const active = document.activeElement
-    if (active instanceof HTMLInputElement && active.classList.contains('item-input') && !draft?.element.contains(active)) {
+    if (
+      active instanceof HTMLInputElement &&
+      active.classList.contains('item-input') &&
+      !draft?.element.contains(active)
+    ) {
       active.dispatchEvent(new Event('change'))
     }
     if (!draft) return
@@ -300,7 +315,16 @@ export function attachItemsLayer(pages: readonly PageView[], model: SignModel, o
     const text = d.element.querySelector('input')!.value
     d.element.remove()
     if (text.trim() !== '') {
-      const id = model.add({ type: 'text', page: d.page, x: d.x, y: d.y, size: d.size, width: d.width, text, ink: d.ink })
+      const id = model.add({
+        type: 'text',
+        page: d.page,
+        x: d.x,
+        y: d.y,
+        size: d.size,
+        width: d.width,
+        text,
+        ink: d.ink,
+      })
       select(id)
     }
   }

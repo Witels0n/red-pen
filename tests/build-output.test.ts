@@ -46,7 +46,9 @@ describe.each(Object.values(PAGES))('page %s', (file) => {
 
   it('loads nothing from a third-party origin', () => {
     // Plain <a> links to other sites (GitHub) are navigation, not loading, so they are allowed.
-    const loads = [...pages[file].matchAll(/<(?:script|link|img|iframe|source)\b[^>]*(?:src|href)="(?:https?:)?\/\/[^"]+"/g)]
+    const loads = [
+      ...pages[file].matchAll(/<(?:script|link|img|iframe|source)\b[^>]*(?:src|href)="(?:https?:)?\/\/[^"]+"/g),
+    ]
     expect(loads).toEqual([])
   })
 

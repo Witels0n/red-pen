@@ -11,7 +11,11 @@ export interface FixtureFile {
 }
 
 /** A PDF whose pages have these widths (and are 500 tall), optionally with stored rotations. */
-export async function pdfFile(name: string, widths: number[], rotations: Record<number, number> = {}): Promise<FixtureFile> {
+export async function pdfFile(
+  name: string,
+  widths: number[],
+  rotations: Record<number, number> = {},
+): Promise<FixtureFile> {
   const doc = await PDFDocument.create()
   widths.forEach((w, i) => {
     const page = doc.addPage([w, 500])
@@ -64,6 +68,11 @@ export async function describePdf(bytes: Uint8Array): Promise<{ widths: number[]
 
 /** The page refuses any network connection (CSP `connect-src 'none'`). */
 export async function expectNetworkBlocked(page: Page): Promise<void> {
-  const result = await page.evaluate(() => fetch(location.href).then(() => 'allowed', () => 'blocked'))
+  const result = await page.evaluate(() =>
+    fetch(location.href).then(
+      () => 'allowed',
+      () => 'blocked',
+    ),
+  )
   expect(result).toBe('blocked')
 }

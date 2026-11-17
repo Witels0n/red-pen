@@ -44,7 +44,10 @@ const deleteButton = el<HTMLButtonElement>('delete')
 const model = createSignModel()
 const saved = createSavedSignatures()
 /** The signature and initials made (or loaded) for this visit. */
-const images: Record<SignatureKind, string | null> = { signature: saved.load('signature'), initials: saved.load('initials') }
+const images: Record<SignatureKind, string | null> = {
+  signature: saved.load('signature'),
+  initials: saved.load('initials'),
+}
 
 let opened: { name: string; bytes: Uint8Array } | null = null
 let viewer: Viewer | null = null
@@ -101,14 +104,16 @@ function updateHint(): void {
 
 function setTool(next: Tool): void {
   tool = next
-  for (const b of document.querySelectorAll<HTMLButtonElement>('#tools .tool')) b.setAttribute('aria-pressed', String(b.dataset.tool === next))
+  for (const b of document.querySelectorAll<HTMLButtonElement>('#tools .tool'))
+    b.setAttribute('aria-pressed', String(b.dataset.tool === next))
   viewerEl.dataset.tool = next
   updateHint()
 }
 
 function setInk(next: Ink): void {
   ink = next
-  for (const b of document.querySelectorAll<HTMLButtonElement>('#ink .swatch')) b.setAttribute('aria-checked', String(b.dataset.ink === next))
+  for (const b of document.querySelectorAll<HTMLButtonElement>('#ink .swatch'))
+    b.setAttribute('aria-checked', String(b.dataset.ink === next))
 }
 
 function syncHistoryButtons(): void {
@@ -153,7 +158,10 @@ async function runDetection(pages: readonly PageView[], gen: number): Promise<vo
   let found = 0
   viewerEl.dataset.detection = 'running'
   for (const page of pages) {
-    detectionStatus = pages.length > 1 ? `Looking for boxes to fill in (page ${page.pageNumber} of ${pages.length})...` : 'Looking for boxes to fill in...'
+    detectionStatus =
+      pages.length > 1
+        ? `Looking for boxes to fill in (page ${page.pageNumber} of ${pages.length})...`
+        : 'Looking for boxes to fill in...'
     updateHint()
     let boxes: DetectedBox[] = []
     try {
@@ -168,7 +176,8 @@ async function runDetection(pages: readonly PageView[], gen: number): Promise<vo
     renderDetected(page)
   }
   detectionStatus = found ? `Found ${found} likely ${found === 1 ? 'place' : 'places'} to fill in.` : ''
-  if (form && form.count) detectionStatus = `This PDF has ${form.count} form ${form.count === 1 ? 'field' : 'fields'}. ${detectionStatus}`
+  if (form && form.count)
+    detectionStatus = `This PDF has ${form.count} form ${form.count === 1 ? 'field' : 'fields'}. ${detectionStatus}`
   viewerEl.dataset.detection = 'done'
   updateHint()
 }

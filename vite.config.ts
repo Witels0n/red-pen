@@ -75,7 +75,9 @@ export default defineConfig({
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
           { src: 'icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
-        shortcuts: [{ name: 'Mark a test', url: `${BASE}mark/`, icons: [{ src: 'icons/icon-192.png', sizes: '192x192' }] }],
+        shortcuts: [
+          { name: 'Mark a test', url: `${BASE}mark/`, icons: [{ src: 'icons/icon-192.png', sizes: '192x192' }] },
+        ],
       },
       workbox: {
         // woff2 only: every browser that supports service workers reads woff2.
@@ -91,7 +93,9 @@ export default defineConfig({
     // Never inline assets as data: URIs; the pdf.js worker must be a real, self-hosted file.
     assetsInlineLimit: 0,
     rollupOptions: {
-      input: Object.fromEntries(Object.entries(PAGES).map(([name, file]) => [name, resolve(import.meta.dirname, file)])),
+      input: Object.fromEntries(
+        Object.entries(PAGES).map(([name, file]) => [name, resolve(import.meta.dirname, file)]),
+      ),
     },
   },
   test: {

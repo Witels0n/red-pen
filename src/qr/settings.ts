@@ -39,7 +39,8 @@ const oneOf = <T>(value: unknown, options: readonly T[], fallback: T): T =>
 export function sanitiseSettings(raw: unknown): StyleSettings {
   const s = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
   const d = DEFAULT_SETTINGS
-  const colour = (v: unknown, fallback: string) => (typeof v === 'string' && parseHex(v) && v.startsWith('#') ? v : fallback)
+  const colour = (v: unknown, fallback: string) =>
+    typeof v === 'string' && parseHex(v) && v.startsWith('#') ? v : fallback
   const num = (v: unknown, min: number, max: number, fallback: number) =>
     typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : fallback
   return {

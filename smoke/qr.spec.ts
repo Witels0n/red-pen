@@ -22,20 +22,23 @@ async function logoPng(page: Page): Promise<Buffer> {
 
 /** Decodes a PNG with jsQR: the page turns it into pixels, Node does the decoding. */
 async function decodePng(page: Page, png: Buffer): Promise<string | null> {
-  const { width, height, pixels } = await page.evaluate(async (dataUrl) => {
-    const img = new Image()
-    img.src = dataUrl
-    await img.decode()
-    const c = document.createElement('canvas')
-    c.width = img.naturalWidth
-    c.height = img.naturalHeight
-    const ctx = c.getContext('2d')!
-    ctx.drawImage(img, 0, 0)
-    const data = ctx.getImageData(0, 0, c.width, c.height).data
-    let binary = ''
-    for (let i = 0; i < data.length; i += 0x8000) binary += String.fromCharCode(...data.subarray(i, i + 0x8000))
-    return { width: c.width, height: c.height, pixels: btoa(binary) }
-  }, `data:image/png;base64,${png.toString('base64')}`)
+  const { width, height, pixels } = await page.evaluate(
+    async (dataUrl) => {
+      const img = new Image()
+      img.src = dataUrl
+      await img.decode()
+      const c = document.createElement('canvas')
+      c.width = img.naturalWidth
+      c.height = img.naturalHeight
+      const ctx = c.getContext('2d')!
+      ctx.drawImage(img, 0, 0)
+      const data = ctx.getImageData(0, 0, c.width, c.height).data
+      let binary = ''
+      for (let i = 0; i < data.length; i += 0x8000) binary += String.fromCharCode(...data.subarray(i, i + 0x8000))
+      return { width: c.width, height: c.height, pixels: btoa(binary) }
+    },
+    `data:image/png;base64,${png.toString('base64')}`,
+  )
   const result = jsQR(new Uint8ClampedArray(Buffer.from(pixels, 'base64')), width, height)
   return result?.data ?? null
 }
@@ -109,7 +112,9 @@ test('warns about colours that may not scan', async ({ page }) => {
 
 test('a logo forces error correction H, and the code still scans with rounded and dot modules', async ({ page }) => {
   await page.locator('#ecl').selectOption('L')
-  await page.locator('#logo-input').setInputFiles({ name: 'crest.png', mimeType: 'image/png', buffer: await logoPng(page) })
+  await page
+    .locator('#logo-input')
+    .setInputFiles({ name: 'crest.png', mimeType: 'image/png', buffer: await logoPng(page) })
   await expect(page.locator('#preview svg image')).toHaveCount(1)
   await expect(page.locator('#ecl')).toHaveValue('H')
   await expect(page.locator('#ecl')).toBeDisabled()
@@ -167,7 +172,9 @@ test('remembers style settings across a reload, but not the content or logo', as
   await page.locator('#eye-style').selectOption('rounded')
   await page.locator('#margin').fill('2')
   await page.locator('#link-url').fill('example.org/secret')
-  await page.locator('#logo-input').setInputFiles({ name: 'crest.png', mimeType: 'image/png', buffer: await logoPng(page) })
+  await page
+    .locator('#logo-input')
+    .setInputFiles({ name: 'crest.png', mimeType: 'image/png', buffer: await logoPng(page) })
   await expect(page.locator('#preview svg image')).toHaveCount(1)
 
   await page.reload()
@@ -197,7 +204,9 @@ test('makes no network requests while editing and exporting', async ({ page, bas
   await chooseType(page, 'Contact')
   await page.locator('#contact-name').fill('Thandi Mokoena')
   await page.locator('#contact-org').fill('Hill School')
-  await page.locator('#logo-input').setInputFiles({ name: 'crest.png', mimeType: 'image/png', buffer: await logoPng(page) })
+  await page
+    .locator('#logo-input')
+    .setInputFiles({ name: 'crest.png', mimeType: 'image/png', buffer: await logoPng(page) })
   const { download } = await downloadPng(page)
   expect(download.suggestedFilename()).toBe('qr-thandi-mokoena.png')
   expect(requests.slice(afterLoad)).toEqual([])
@@ -207,6 +216,8 @@ test('fits a phone screen without sideways scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 })
   await page.reload()
   await expect(page.locator('#preview svg')).toBeVisible()
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  )
   expect(overflow).toBe(0)
 })

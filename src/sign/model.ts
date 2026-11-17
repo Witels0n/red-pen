@@ -60,7 +60,8 @@ export type Item = TextItem | MarkItem | ImageItem
 export type NewItem = Item extends infer I ? (I extends Item ? Omit<I, 'id'> : never) : never
 
 /** Fields that `update` may change. */
-export type ItemPatch = Partial<Omit<TextItem, 'id' | 'type'>> | Partial<Omit<MarkFields, 'id'>> | Partial<Omit<ImageFields, 'id'>>
+export type ItemPatch =
+  Partial<Omit<TextItem, 'id' | 'type'>> | Partial<Omit<MarkFields, 'id'>> | Partial<Omit<ImageFields, 'id'>>
 
 export interface SignModel {
   items(): readonly Item[]
@@ -108,7 +109,12 @@ export function createSignModel(): SignModel {
       if (at < 0) return
       const before = current[at]
       const after = { ...before, ...patch } as Item
-      if (Object.keys(patch).every((k) => (before as unknown as Record<string, unknown>)[k] === (after as unknown as Record<string, unknown>)[k])) return
+      if (
+        Object.keys(patch).every(
+          (k) => (before as unknown as Record<string, unknown>)[k] === (after as unknown as Record<string, unknown>)[k],
+        )
+      )
+        return
       commit(current.map((i, n) => (n === at ? after : i)))
     },
     remove(id) {

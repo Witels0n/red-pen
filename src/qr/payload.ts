@@ -66,11 +66,7 @@ export function mailtoPayload(e: EmailContent): string {
 
 /** Escapes a vCard 3.0 text value (RFC 2426): backslash, comma, semicolon and line breaks. */
 export function escapeVCard(value: string): string {
-  return value
-    .replace(/\\/g, '\\\\')
-    .replace(/,/g, '\\,')
-    .replace(/;/g, '\\;')
-    .replace(/\r?\n/g, '\\n')
+  return value.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\r?\n/g, '\\n')
 }
 
 /** Splits "Thandi van der Merwe" into given "Thandi van der" and family "Merwe" for the N field. */

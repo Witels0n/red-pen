@@ -27,7 +27,9 @@ async function learnerRows(page: Page): Promise<string[]> {
 }
 
 async function previewRows(page: Page): Promise<string[]> {
-  return page.locator('#preview-table tbody tr').evaluateAll((rows) => rows.map((r) => (r as HTMLElement).innerText.replace(/\s+/g, ' ').trim()))
+  return page
+    .locator('#preview-table tbody tr')
+    .evaluateAll((rows) => rows.map((r) => (r as HTMLElement).innerText.replace(/\s+/g, ' ').trim()))
 }
 
 function columnRow(page: Page, title: string) {
@@ -35,7 +37,9 @@ function columnRow(page: Page, title: string) {
 }
 
 async function noSidewaysScroll(page: Page): Promise<void> {
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  )
   expect(overflow).toBe(0)
 }
 
@@ -91,7 +95,9 @@ test('imports a semicolon CSV, picking two name columns in order, with problems 
   await newClass(page, '')
   await chooseMethod(page, 'Import CSV or Excel')
   const csv = 'Number;Surname;First name\r\n3;Mokoena;Thandi\r\n12;Dlamini;Sipho\r\n12;Patel;Ayesha\r\n'
-  await page.locator('#sheet-input').setInputFiles({ name: 'Grade 10B.csv', mimeType: 'text/csv', buffer: Buffer.from(csv) })
+  await page
+    .locator('#sheet-input')
+    .setInputFiles({ name: 'Grade 10B.csv', mimeType: 'text/csv', buffer: Buffer.from(csv) })
 
   await expect(page.locator('#import-options')).toBeVisible()
   await expect(page.locator('#new-name')).toHaveValue('Grade 10B')
@@ -161,7 +167,11 @@ test('imports an Excel file, choosing the sheet, the name columns and the ID col
 test('explains a file it cannot read', async ({ page }) => {
   await newClass(page, '')
   await chooseMethod(page, 'Import CSV or Excel')
-  await page.locator('#sheet-input').setInputFiles({ name: 'old.xls', mimeType: 'application/vnd.ms-excel', buffer: Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0]) })
+  await page.locator('#sheet-input').setInputFiles({
+    name: 'old.xls',
+    mimeType: 'application/vnd.ms-excel',
+    buffer: Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0]),
+  })
   await expect(page.locator('#import-error')).toContainText('Old .xls files cannot be read')
   await expect(page.locator('#import-options')).toBeHidden()
 })
@@ -260,7 +270,9 @@ test('renames, duplicates, exports, imports and deletes classes from the list', 
   await expect(page.locator('#no-classes')).toBeVisible()
 
   // The exported file brings the class back, IDs and all.
-  await page.locator('#class-file-input').setInputFiles({ name: 'Grade 12A History.csv', mimeType: 'text/csv', buffer: Buffer.from(csv) })
+  await page
+    .locator('#class-file-input')
+    .setInputFiles({ name: 'Grade 12A History.csv', mimeType: 'text/csv', buffer: Buffer.from(csv) })
   await expect(page.locator('#edit-title')).toHaveText('Grade 12A History')
   await expect(page.locator('#edit-digits')).toHaveValue('3')
   expect(await learnerRows(page)).toEqual(['001 Mokoena, Thandi', '002 Sipho "Spoon" Dlamini'])
@@ -272,7 +284,9 @@ test('renames, duplicates, exports, imports and deletes classes from the list', 
 
 test('a file that is not a class file is refused with a reason', async ({ page }) => {
   await page.goto(CLASSES)
-  await page.locator('#class-file-input').setInputFiles({ name: 'marks.csv', mimeType: 'text/csv', buffer: Buffer.from('Name,Mark\nAnn,7\n') })
+  await page
+    .locator('#class-file-input')
+    .setInputFiles({ name: 'marks.csv', mimeType: 'text/csv', buffer: Buffer.from('Name,Mark\nAnn,7\n') })
   await expect(page.locator('#home-error')).toContainText('the first column must be "Learner ID"')
   await expect(page.locator('.class-card')).toHaveCount(0)
 })
@@ -292,7 +306,9 @@ test('makes no network requests beyond its own files', async ({ page, baseURL })
   await page.locator('#new-name').fill('Private class')
   await chooseMethod(page, 'Import CSV or Excel')
   const xlsx = await writeXlsxFile([['Name'], ['Thandi Mokoena']]).toBuffer()
-  await page.locator('#sheet-input').setInputFiles({ name: 'c.xlsx', mimeType: 'application/octet-stream', buffer: Buffer.from(xlsx) })
+  await page
+    .locator('#sheet-input')
+    .setInputFiles({ name: 'c.xlsx', mimeType: 'application/octet-stream', buffer: Buffer.from(xlsx) })
   await expect(page.locator('#preview-summary')).toHaveText('1 learner')
   await page.locator('#save-new').click()
   await expect(page.locator('#edit-view')).toBeVisible()
@@ -302,7 +318,9 @@ test('makes no network requests beyond its own files', async ({ page, baseURL })
 
   // Only the lazily loaded Excel reader, from this site, may load after the page.
   const later = requests.slice(afterLoad)
-  expect(later.every((u) => new URL(u).origin === origin && new URL(u).pathname.startsWith('/red-pen/assets/'))).toBe(true)
+  expect(later.every((u) => new URL(u).origin === origin && new URL(u).pathname.startsWith('/red-pen/assets/'))).toBe(
+    true,
+  )
   expect(later.join(' ')).not.toContain('Thandi')
 })
 
@@ -310,7 +328,8 @@ test('fits a phone screen without sideways scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 })
   await newClass(page, 'A class with a rather long name for a small phone screen')
   await chooseMethod(page, 'Import CSV or Excel')
-  const csv = 'Learner number,First name,Surname,Home language,Gender\n1,Thandiwe Nomvula Precious,Mokoena-Hlongwane,isiZulu,F\n'
+  const csv =
+    'Learner number,First name,Surname,Home language,Gender\n1,Thandiwe Nomvula Precious,Mokoena-Hlongwane,isiZulu,F\n'
   await page.locator('#sheet-input').setInputFiles({ name: 'long.csv', mimeType: 'text/csv', buffer: Buffer.from(csv) })
   await expect(page.locator('#import-options')).toBeVisible()
   await noSidewaysScroll(page)

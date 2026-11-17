@@ -1,0 +1,20 @@
+name: Suggest a tool
+description: An idea for a new tool, or an improvement to an existing one.
+title: 'Tool idea: '
+labels: [needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What job would it help with?
+      description: Describe the task you do today and what makes it slow or awkward.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: How you imagine the tool working. Rough is fine.
+  - type: markdown
+    attributes:
+      value: Red Pen tools run entirely in the browser with no server, so ideas that need accounts, sharing or cloud storage are out of scope.

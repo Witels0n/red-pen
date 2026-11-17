@@ -27,12 +27,7 @@ export interface PageBox {
  * as the viewer uses) to PDF user space (bottom-left origin, offset by the page box, undone
  * for the page's /Rotate). `box` is the unrotated visible box (CropBox, else MediaBox).
  */
-export function toPageSpace(
-  box: PageBox,
-  rotation: number,
-  x: number,
-  y: number,
-): { x: number; y: number } {
+export function toPageSpace(box: PageBox, rotation: number, x: number, y: number): { x: number; y: number } {
   const r = (((Math.round(rotation / 90) * 90) % 360) + 360) % 360
   switch (r) {
     case 90:
@@ -73,7 +68,14 @@ function drawText(c: DrawContext, text: string, x: number, y: number, align: 'st
   const origin = c.at(startX, y + FONT_SIZE * 0.35) // baseline sits a little below the centre
   const along = c.at(startX + 1, y + FONT_SIZE * 0.35)
   const angle = Math.atan2(along.y - origin.y, along.x - origin.x) * (180 / Math.PI)
-  c.page.drawText(safe, { x: origin.x, y: origin.y, size: FONT_SIZE, font: c.font, color: c.color, rotate: degrees(angle) })
+  c.page.drawText(safe, {
+    x: origin.x,
+    y: origin.y,
+    size: FONT_SIZE,
+    font: c.font,
+    color: c.color,
+    rotate: degrees(angle),
+  })
 }
 
 const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>, c: DrawContext) => void } = {
@@ -113,7 +115,13 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
   },
   subtotal(a, c) {
     const centre = c.at(a.x, a.y)
-    c.page.drawCircle({ x: centre.x, y: centre.y, size: SUBTOTAL_RADIUS, borderColor: c.color, borderWidth: STROKE_WIDTH })
+    c.page.drawCircle({
+      x: centre.x,
+      y: centre.y,
+      size: SUBTOTAL_RADIUS,
+      borderColor: c.color,
+      borderWidth: STROKE_WIDTH,
+    })
     drawText(c, String(c.model.getSubtotalCount(a.id) ?? 0), a.x, a.y, 'middle')
   },
   total(a, c) {
@@ -127,7 +135,13 @@ const drawers: { [T in Annotation['type']]: (a: Extract<Annotation, { type: T }>
       c.at(a.x - w / 2, a.y + h / 2),
     ]
     corners.forEach((start, i) =>
-      c.page.drawLine({ start, end: corners[(i + 1) % 4], thickness: STROKE_WIDTH, color: c.color, lineCap: LineCapStyle.Projecting }),
+      c.page.drawLine({
+        start,
+        end: corners[(i + 1) % 4],
+        thickness: STROKE_WIDTH,
+        color: c.color,
+        lineCap: LineCapStyle.Projecting,
+      }),
     )
     drawText(c, label, a.x, a.y, 'middle')
   },

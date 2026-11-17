@@ -65,7 +65,7 @@ function clearErrors(): void {
 
 function updateZoomLabel(scale: number): void {
   // Show zoom relative to 100% = 96 dpi (1 PDF unit = 96/72 CSS px).
-  zoomLevel.textContent = `${Math.round((scale * 72) / 96 * 100)}%`
+  zoomLevel.textContent = `${Math.round(((scale * 72) / 96) * 100)}%`
 }
 
 async function openFile(file: File): Promise<void> {
@@ -85,10 +85,7 @@ async function openFile(file: File): Promise<void> {
   try {
     doc = await loadPdf(bytes)
   } catch (e) {
-    const reason =
-      (e as Error)?.name === 'PasswordException'
-        ? 'it is password protected'
-        : 'it appears to be damaged'
+    const reason = (e as Error)?.name === 'PasswordException' ? 'it is password protected' : 'it appears to be damaged'
     showError(`"${file.name}" could not be opened: ${reason}.`)
     return
   }

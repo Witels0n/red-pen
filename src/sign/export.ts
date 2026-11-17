@@ -1,4 +1,17 @@
-import { degrees, LineCapStyle, PDFCheckBox, PDFDocument, PDFDropdown, PDFFont, PDFImage, PDFOptionList, PDFRadioGroup, PDFTextField, rgb, StandardFonts } from 'pdf-lib'
+import {
+  degrees,
+  LineCapStyle,
+  PDFCheckBox,
+  PDFDocument,
+  PDFDropdown,
+  PDFFont,
+  PDFImage,
+  PDFOptionList,
+  PDFRadioGroup,
+  PDFTextField,
+  rgb,
+  StandardFonts,
+} from 'pdf-lib'
 import { placeUpright, toPageSpace } from './geometry'
 import { INK_RGB, type Item } from './model'
 
@@ -63,7 +76,11 @@ function fillField(doc: PDFDocument, font: PDFFont, name: string, v: FieldValue)
   }
 }
 
-export async function buildSignedPdf(originalBytes: Uint8Array, items: readonly Item[], fields: ReadonlyMap<string, FieldValue>): Promise<Uint8Array> {
+export async function buildSignedPdf(
+  originalBytes: Uint8Array,
+  items: readonly Item[],
+  fields: ReadonlyMap<string, FieldValue>,
+): Promise<Uint8Array> {
   const doc = await PDFDocument.load(originalBytes)
   const font = await doc.embedFont(StandardFonts.Helvetica)
 
@@ -98,10 +115,23 @@ export async function buildSignedPdf(originalBytes: Uint8Array, items: readonly 
       if (!text.trim()) continue
       const o = placeUpright(box, rotation, item.x, item.y)
       const c = INK_RGB[item.ink]
-      page.drawText(text, { x: o.x, y: o.y, size: item.size, font, color: rgb(c.r, c.g, c.b), rotate: degrees(o.angle) })
+      page.drawText(text, {
+        x: o.x,
+        y: o.y,
+        size: item.size,
+        font,
+        color: rgb(c.r, c.g, c.b),
+        rotate: degrees(o.angle),
+      })
     } else if (item.type === 'tick' || item.type === 'cross') {
       const c = INK_RGB[item.ink]
-      const strokes = item.type === 'tick' ? [[TICK_POINTS[0], TICK_POINTS[1]], [TICK_POINTS[1], TICK_POINTS[2]]] : CROSS_STROKES
+      const strokes =
+        item.type === 'tick'
+          ? [
+              [TICK_POINTS[0], TICK_POINTS[1]],
+              [TICK_POINTS[1], TICK_POINTS[2]],
+            ]
+          : CROSS_STROKES
       for (const [[x1, y1], [x2, y2]] of strokes) {
         page.drawLine({
           start: at(item.x + x1 * item.size, item.y + y1 * item.size),

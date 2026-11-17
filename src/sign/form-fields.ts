@@ -96,13 +96,16 @@ export async function attachFormLayer(pages: readonly PageView[], onEdit: () => 
     const input = w.element as HTMLInputElement
     if (input.type === 'radio' || input.type === 'checkbox') continue
     w.element.addEventListener('input', () => {
-      for (const other of widgets) if (other !== w && other.name === w.name) (other.element as HTMLInputElement).value = input.value
+      for (const other of widgets)
+        if (other !== w && other.name === w.name) (other.element as HTMLInputElement).value = input.value
     })
   }
   for (const w of widgets) {
     if ((w.element as HTMLInputElement).type !== 'checkbox') continue
     w.element.addEventListener('change', () => {
-      for (const other of widgets) if (other !== w && other.name === w.name) (other.element as HTMLInputElement).checked = (w.element as HTMLInputElement).checked
+      for (const other of widgets)
+        if (other !== w && other.name === w.name)
+          (other.element as HTMLInputElement).checked = (w.element as HTMLInputElement).checked
     })
   }
 
@@ -130,7 +133,12 @@ export async function attachFormLayer(pages: readonly PageView[], onEdit: () => 
   }
 }
 
-function createInput(a: PdfWidget, values: Map<string, FieldValue>, radioCount: Map<string, number>, onEdit: (name: string) => void): HTMLElement | null {
+function createInput(
+  a: PdfWidget,
+  values: Map<string, FieldValue>,
+  radioCount: Map<string, number>,
+  onEdit: (name: string) => void,
+): HTMLElement | null {
   const name = a.fieldName!
   const label = `Form field ${name}`
   if (a.fieldType === 'Btn' && a.radioButton) {

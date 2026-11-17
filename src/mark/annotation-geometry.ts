@@ -10,8 +10,14 @@ export const STROKE_WIDTH = 2
 
 /** An X centred on the click point: two strokes, each a [start, end] pair of offsets. */
 export const CROSS_STROKES: ReadonlyArray<readonly [readonly [number, number], readonly [number, number]]> = [
-  [[-7, -7], [7, 7]],
-  [[-7, 7], [7, -7]],
+  [
+    [-7, -7],
+    [7, 7],
+  ],
+  [
+    [-7, 7],
+    [7, -7],
+  ],
 ]
 
 /** A check mark centred on the click point, as a polyline. */

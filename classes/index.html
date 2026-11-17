@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Class lists · Red Pen</title>
-    <meta name="description" content="Keep your class lists with Learner IDs, ready for answer sheets and cover sheets. Names stay in your browser." />
+    <meta
+      name="description"
+      content="Keep your class lists with Learner IDs, ready for answer sheets and cover sheets. Names stay in your browser."
+    />
     <meta name="theme-color" content="#d3212d" />
     <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
@@ -18,7 +21,9 @@
         <section class="intro paper" aria-labelledby="classes-title">
           <div class="intro-inner">
             <h1 id="classes-title">Class lists</h1>
-            <p class="intro-hint handwritten">Set up a class once, use it for every <span class="nowrap">test ✓</span></p>
+            <p class="intro-hint handwritten">
+              Set up a class once, use it for every <span class="nowrap">test ✓</span>
+            </p>
             <p class="privacy-note">
               Names are stored only in this browser and never uploaded. You can use numbers instead of names.
             </p>
@@ -70,9 +75,16 @@
             <div class="method" data-method="names">
               <label class="field">
                 <span>Names, one per line</span>
-                <textarea id="names-text" rows="8" spellcheck="false" placeholder="Thandi Mokoena&#10;Sipho Dlamini&#10;Ayesha Patel"></textarea>
+                <textarea
+                  id="names-text"
+                  rows="8"
+                  spellcheck="false"
+                  placeholder="Thandi Mokoena&#10;Sipho Dlamini&#10;Ayesha Patel"
+                ></textarea>
               </label>
-              <p class="help">You can paste a column (or two, such as first name and surname) straight from a spreadsheet.</p>
+              <p class="help">
+                You can paste a column (or two, such as first name and surname) straight from a spreadsheet.
+              </p>
             </div>
 
             <div class="method" data-method="numbers" hidden>
@@ -80,7 +92,9 @@
                 <span>How many learners</span>
                 <input id="learner-count" type="number" min="1" max="9999" step="1" inputmode="numeric" value="30" />
               </label>
-              <p class="help">Each learner gets a Learner ID (01, 02, 03...) and no name. Learners fill in or are given their number.</p>
+              <p class="help">
+                Each learner gets a Learner ID (01, 02, 03...) and no name. Learners fill in or are given their number.
+              </p>
             </div>
 
             <div class="method" data-method="import" hidden>
@@ -95,12 +109,19 @@
                   <span>Sheet</span>
                   <select id="sheet-select"></select>
                 </label>
-                <label class="check"><input id="header-row" type="checkbox" checked /> Row 1 is a header (column titles)</label>
+                <label class="check"
+                  ><input id="header-row" type="checkbox" checked /> Row 1 is a header (column titles)</label
+                >
                 <fieldset class="columns">
                   <legend>Columns</legend>
-                  <p class="help">Tick the name column(s) in the order the name should read, for example First name, then Surname.</p>
+                  <p class="help">
+                    Tick the name column(s) in the order the name should read, for example First name, then Surname.
+                  </p>
                   <ul id="column-list" class="column-list"></ul>
-                  <label class="check"><input type="radio" name="id-column" value="" checked /> No ID column: number the learners 1, 2, 3...</label>
+                  <label class="check"
+                    ><input type="radio" name="id-column" value="" checked /> No ID column: number the learners 1, 2,
+                    3...</label
+                  >
                 </fieldset>
               </div>
             </div>
@@ -112,7 +133,10 @@
             <div class="table-wrap">
               <table id="preview-table" class="learner-table">
                 <thead>
-                  <tr><th scope="col">Learner ID</th><th scope="col">Name</th></tr>
+                  <tr>
+                    <th scope="col">Learner ID</th>
+                    <th scope="col">Name</th>
+                  </tr>
                 </thead>
                 <tbody></tbody>
               </table>

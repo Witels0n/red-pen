@@ -58,7 +58,12 @@ export function displayedSize(box: PageBox, rotation: number): { width: number; 
  * Where to draw something that is upright on the displayed page: the PDF user-space point for
  * its displayed bottom-left corner (x, y + height) and the angle, in degrees, to rotate it by.
  */
-export function placeUpright(box: PageBox, rotation: number, x: number, bottomY: number): { x: number; y: number; angle: number } {
+export function placeUpright(
+  box: PageBox,
+  rotation: number,
+  x: number,
+  bottomY: number,
+): { x: number; y: number; angle: number } {
   const origin = toPageSpace(box, rotation, x, bottomY)
   const along = toPageSpace(box, rotation, x + 1, bottomY)
   const angle = Math.round((Math.atan2(along.y - origin.y, along.x - origin.x) * 180) / Math.PI)
@@ -84,7 +89,8 @@ export function fitText(box: DetectedBox): { x: number; y: number; size: number;
 
 /** The area a detected box offers for clicking and for showing its outline. */
 export function hitArea(box: DetectedBox): PageBox {
-  if (box.kind === 'line') return { x: box.x, y: box.y - LINE_FIELD_HEIGHT, width: box.width, height: LINE_FIELD_HEIGHT + box.height }
+  if (box.kind === 'line')
+    return { x: box.x, y: box.y - LINE_FIELD_HEIGHT, width: box.width, height: LINE_FIELD_HEIGHT + box.height }
   return { x: box.x, y: box.y, width: box.width, height: box.height }
 }
 

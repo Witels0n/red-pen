@@ -1,82 +1,102 @@
 # Red Pen
 
-Free tools for teachers. Every tool runs entirely in the browser: files are never uploaded, and each
-page blocks itself from making network requests (see `docs/adr/0001-client-only-processing.md`).
-After one visit the whole site works offline and can be installed as an app
-(see `docs/adr/0002-multi-page-offline-site.md`).
+[![Deploy](https://github.com/Witels0n/red-pen/actions/workflows/deploy.yml/badge.svg)](https://github.com/Witels0n/red-pen/actions/workflows/deploy.yml)
+[![CI](https://github.com/Witels0n/red-pen/actions/workflows/ci.yml/badge.svg)](https://github.com/Witels0n/red-pen/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Live at `https://witels0n.github.io/red-pen/`.
+Free tools for teachers: marking, PDFs, QR codes and class lists.
+
+**[witels0n.github.io/red-pen](https://witels0n.github.io/red-pen/)**
+
+Red Pen is a static web app with no backend. Every file a teacher opens is processed in their own
+browser and never uploaded. Each page ships a Content Security Policy with `connect-src 'none'`,
+so the browser itself refuses any network request the page might make. After one visit the whole
+site works offline and can be installed as an app.
 
 ## Tools
 
-| Tool           | Page                  | Source          |
-| -------------- | --------------------- | --------------- |
-| Mark a test    | `/red-pen/mark/`      | `src/mark/`     |
-| Combine PDFs   | `/red-pen/combine/`   | `src/combine/`  |
-| Split a PDF    | `/red-pen/split/`     | `src/split/`    |
-| Organise pages | `/red-pen/organise/`  | `src/organise/` |
-| Sign and fill  | `/red-pen/sign/`      | `src/sign/`     |
-| QR codes       | `/red-pen/qr/`        | `src/qr/`       |
-| Class lists    | `/red-pen/classes/`   | `src/classes/`  |
+| Tool               | What it does                                                                                       |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.      |
+| **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                    |
+| **Split a PDF**    | Splits by page, every N pages (one file per learner) or custom ranges; downloads a zip.            |
+| **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.      |
+| **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.   |
+| **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export. |
+| **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.         |
 
-The landing page (`index.html`, `src/landing/`) lists them.
+## Privacy by design
 
-## Layout
+- **No server.** The site is static files on GitHub Pages. There is no API, database, analytics or
+  third-party script.
+- **Enforced, not promised.** The CSP blocks every connection, remote script, stylesheet and font.
+  Build tests fail if any page loses the policy or references a remote host.
+- **Self-hosted everything.** Fonts, pdf.js and its worker, and all libraries are bundled.
+- **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists
+  live in IndexedDB on the device. A signature is stored only if the teacher opts in.
+
+Details and trade-offs: [ADR 0001](docs/adr/0001-client-only-processing.md).
+
+## Architecture
+
+- **Vite multi-page app** in strict TypeScript with no UI framework. Each tool is its own HTML
+  entry point and loads only its own code ([ADR 0002](docs/adr/0002-multi-page-offline-site.md)).
+- **Shared layer** (`src/shared/`): site header, design tokens with light and dark themes,
+  self-hosted fonts, the offline service worker, PDF helpers and class list storage.
+- **PDF stack:** [pdf.js](https://mozilla.github.io/pdf.js/) for rendering and
+  [pdf-lib](https://pdf-lib.js.org/) for writing.
+- **Offline:** [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) (Workbox) precaches every page
+  and asset. Updates are offered, never forced, so work in progress is never lost.
 
 ```
-index.html            landing page
-mark/index.html       Mark a test
-combine/index.html    Combine PDFs (likewise split/ and organise/)
-qr/index.html         QR codes
-sign/index.html       Sign and fill
-classes/index.html    Class lists
-src/shared/           header, design tokens, self-hosted fonts, ruled-paper style, offline (PWA)
-src/shared/pdf/       shared PDF code: opening and checking a PDF, pdf.js setup, thumbnails,
-                      file picker and drag and drop, reordering, downloads, the PDF Tools' styles
-src/shared/classes/   Class lists for every Tool: types, Learner IDs, IndexedDB storage, CSV
-                      parser, CSV/XLSX import (read-excel-file, loaded on demand), class files
-src/landing/          landing page code and the list of tools (tools.ts)
-src/mark/             the marker
-src/combine/, src/split/, src/organise/   the PDF Tools
-src/qr/               the QR code maker (payloads, renderer, export, settings, editor)
-src/sign/             Sign and fill (form fields, box detection in a Web Worker, signatures)
-src/classes/          the Class lists Tool (list, new class and import, editing)
-public/               icons (the web app manifest is generated in vite.config.ts)
-design/icon.svg       source for the app icons
+index.html, <tool>/index.html   page entry points (landing page and one per tool)
+src/landing/                    landing page and the tool registry (tools.ts)
+src/shared/                     header, tokens, fonts, PWA, shared PDF and class list modules
+src/<tool>/                     one folder per tool
+tests/                          Vitest unit and build-output tests
+smoke/                          Playwright browser tests against the production build
+docs/adr/                       architecture decision records
+docs/specs/                     feature specifications
+GLOSSARY.md                     domain language used in code and UI
 ```
+
+## Development
+
+Requires Node.js 22 or later.
+
+```sh
+npm install
+npm run dev            # http://localhost:5173/red-pen/
+npm run build          # type check and production build into dist/
+npm run preview        # serve the production build
+```
+
+## Quality checks
+
+```sh
+npm run check          # type check, formatting and unit tests
+npm run test:smoke     # Playwright browser tests (run `npx playwright install chromium` once)
+npm run format         # apply Prettier formatting
+```
+
+CI runs both suites on every pull request. Pushing to `main` runs the checks, builds and deploys to
+GitHub Pages.
 
 ## Adding a tool
 
 1. Create `<tool>/index.html` and `src/<tool>/main.ts`. Call `mountSiteHeader({ toolName })` and
    `registerOffline(header)` from `src/shared/`, and give the open screen `class="paper"`.
-2. Add the page to `PAGES` in `vite.config.ts`.
+   PDF tools can start from `startPdfTool()` in `src/shared/pdf/`.
+2. Register the page in `PAGES` in `vite.config.ts`.
 3. Add an entry to `TOOLS` in `src/landing/tools.ts`.
 
-A Tool that works on PDFs can start from `startPdfTool()` and the modules in `src/shared/pdf/`
-(see `src/split/` for a small example).
+The build tests then check that the new page carries the CSP and is precached for offline use.
 
-The build tests check that every page carries the CSP and is precached for offline use.
+## Contributing
 
-## Development
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Please report security
+or privacy concerns privately as described in [SECURITY.md](SECURITY.md).
 
-```
-npm install
-npm run dev          # dev server at http://localhost:5173/red-pen/
-npm run build        # type-check + production build into dist/
-```
+## Licence
 
-## Tests
-
-```
-npm test             # Vitest (fast, no browser): unit tests and build-output checks
-npm run test:smoke   # Playwright browser smoke tests against the production build
-```
-
-The smoke tests need a browser once: `npx playwright install chromium`.
-Vitest tests live in `tests/`, Playwright specs in `smoke/`.
-
-## Deploy
-
-Pushing to `main` runs `.github/workflows/deploy.yml` (test, build, publish to GitHub Pages).
-In the repo settings, set Pages source to "GitHub Actions". The site is served under `/red-pen/`
-(`BASE` in `vite.config.ts`).
+[MIT](LICENSE)

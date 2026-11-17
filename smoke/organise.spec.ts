@@ -1,5 +1,13 @@
 import { expect, test, type Page } from '@playwright/test'
-import { damagedPdf, describePdf, download, expectNetworkBlocked, lockedPdf, pdfFile, trackRequests } from './pdf-fixtures'
+import {
+  damagedPdf,
+  describePdf,
+  download,
+  expectNetworkBlocked,
+  lockedPdf,
+  pdfFile,
+  trackRequests,
+} from './pdf-fixtures'
 
 const ORGANISE = '/red-pen/organise/'
 
@@ -12,7 +20,10 @@ async function openScan(page: Page) {
 
 const captions = (page: Page) => page.locator('.page-card .page-label')
 
-test('rotates, deletes and reorders pages, storing rotation in the PDF, with nothing sent anywhere', async ({ page, baseURL }) => {
+test('rotates, deletes and reorders pages, storing rotation in the PDF, with nothing sent anywhere', async ({
+  page,
+  baseURL,
+}) => {
   const outside = trackRequests(page, baseURL!)
   await page.goto(ORGANISE)
   await expect(page.locator('#open-screen.paper h1')).toHaveText('Organise pages')

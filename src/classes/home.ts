@@ -50,7 +50,11 @@ function meta(list: ClassList): string {
 
 function card(list: ClassList): HTMLLIElement {
   const li = h('li', { class: 'class-card', 'data-id': list.id })
-  const title = h('h3', { class: 'class-name' }, h('a', { href: `#class/${encodeURIComponent(list.id)}`, text: list.name }))
+  const title = h(
+    'h3',
+    { class: 'class-name' },
+    h('a', { href: `#class/${encodeURIComponent(list.id)}`, text: list.name }),
+  )
   li.append(h('div', { class: 'class-main' }, title, h('p', { class: 'meta', text: meta(list) })))
 
   if (open?.id === list.id && open.mode === 'rename') li.append(renameForm(list))
@@ -70,7 +74,12 @@ function actions(list: ClassList): HTMLElement {
   return h(
     'div',
     { class: 'class-actions' },
-    h('a', { class: 'button small', href: `#class/${encodeURIComponent(list.id)}`, 'aria-label': named('Open'), text: 'Open' }),
+    h('a', {
+      class: 'button small',
+      href: `#class/${encodeURIComponent(list.id)}`,
+      'aria-label': named('Open'),
+      text: 'Open',
+    }),
     button('Rename', named('Rename'), () => {
       open = { id: list.id, mode: 'rename' }
       render()
@@ -128,16 +137,21 @@ function deleteQuestion(list: ClassList): HTMLElement {
     { class: 'confirm', role: 'group', 'aria-label': `Delete ${list.name}?` },
     h('p', { text: `Delete ${list.name} and its ${learnerCount(list.learners.length)}? This cannot be undone.` }),
   )
-  const yes = button('Delete', `Yes, delete ${list.name}`, async () => {
-    try {
-      await deleteClass(list.id)
-      open = null
-      await refresh()
-      el('new-class').focus()
-    } catch (error) {
-      showMessage(homeError, errorMessage(error))
-    }
-  }, 'small danger')
+  const yes = button(
+    'Delete',
+    `Yes, delete ${list.name}`,
+    async () => {
+      try {
+        await deleteClass(list.id)
+        open = null
+        await refresh()
+        el('new-class').focus()
+      } catch (error) {
+        showMessage(homeError, errorMessage(error))
+      }
+    },
+    'small danger',
+  )
   const keep = button('Keep it', `Keep ${list.name}`, () => closeAndFocus(list, '[aria-label^="Delete"]'), 'small keep')
   box.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeAndFocus(list, '[aria-label^="Delete"]')

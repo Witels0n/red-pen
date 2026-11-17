@@ -195,10 +195,10 @@ export function detectBoxes(bin: Uint8Array, width: number, height: number, scal
       if (y < y1) y1 = y
       if (y > y2) y2 = y
       if (x === 0 || y === 0 || x === width - 1 || y === height - 1) touchesEdge = true
-      if (x > 0 && !mask[i - 1] && !seen[i - 1]) (seen[i - 1] = 1), (stack[top++] = i - 1)
-      if (x < width - 1 && !mask[i + 1] && !seen[i + 1]) (seen[i + 1] = 1), (stack[top++] = i + 1)
-      if (y > 0 && !mask[i - width] && !seen[i - width]) (seen[i - width] = 1), (stack[top++] = i - width)
-      if (y < height - 1 && !mask[i + width] && !seen[i + width]) (seen[i + width] = 1), (stack[top++] = i + width)
+      if (x > 0 && !mask[i - 1] && !seen[i - 1]) ((seen[i - 1] = 1), (stack[top++] = i - 1))
+      if (x < width - 1 && !mask[i + 1] && !seen[i + 1]) ((seen[i + 1] = 1), (stack[top++] = i + 1))
+      if (y > 0 && !mask[i - width] && !seen[i - width]) ((seen[i - width] = 1), (stack[top++] = i - width))
+      if (y < height - 1 && !mask[i + width] && !seen[i + width]) ((seen[i + width] = 1), (stack[top++] = i + width))
     }
     if (touchesEdge) continue
     const w = x2 - x1 + 1
@@ -208,7 +208,14 @@ export function detectBoxes(bin: Uint8Array, width: number, height: number, scal
     if (!hasStraightEdges(bin, width, height, x1, y1, x2, y2)) continue
     if (inkedCorners(bin, width, x1, y1, x2, y2) >= 3) continue
     const aspect = w / h
-    if (w >= px(DETECT.tickMin) && h >= px(DETECT.tickMin) && w <= px(DETECT.tickMax) && h <= px(DETECT.tickMax) && aspect >= 0.75 && aspect <= 1.33) {
+    if (
+      w >= px(DETECT.tickMin) &&
+      h >= px(DETECT.tickMin) &&
+      w <= px(DETECT.tickMax) &&
+      h <= px(DETECT.tickMax) &&
+      aspect >= 0.75 &&
+      aspect <= 1.33
+    ) {
       boxes.push({ kind: 'tick', x1, y1, x2, y2 })
     } else if (w >= px(DETECT.boxMinWidth) && h >= px(DETECT.boxMinHeight)) {
       boxes.push({ kind: 'box', x1, y1, x2, y2 })
@@ -229,7 +236,9 @@ export function detectBoxes(bin: Uint8Array, width: number, height: number, scal
       open = next
       openY = run.y
     }
-    const join = open.find((s) => s.y2 === run.y - 1 && overlap(s.x1, s.x2, run.x1, run.x2) >= 0.5 * Math.min(s.x2 - s.x1, run.x2 - run.x1))
+    const join = open.find(
+      (s) => s.y2 === run.y - 1 && overlap(s.x1, s.x2, run.x1, run.x2) >= 0.5 * Math.min(s.x2 - s.x1, run.x2 - run.x1),
+    )
     if (join) {
       join.x1 = Math.min(join.x1, run.x1)
       join.x2 = Math.max(join.x2, run.x2)
@@ -261,7 +270,10 @@ export function detectBoxes(bin: Uint8Array, width: number, height: number, scal
     for (let y = bandTop; y < bandBottom; y++) for (let x = s.x1; x <= s.x2; x++) ink += bin[y * width + x]
     if (ink / ((bandBottom - bandTop) * len) > MAX_INK_ABOVE_LINE) continue
     // A second stroke of the same line (double underline, scan ghost) is a duplicate.
-    const twin = lines.find((l) => Math.abs(l.y1 - s.y1) <= near * 2 && overlap(l.x1, l.x2, s.x1, s.x2) >= 0.8 * Math.min(len, l.x2 - l.x1 + 1))
+    const twin = lines.find(
+      (l) =>
+        Math.abs(l.y1 - s.y1) <= near * 2 && overlap(l.x1, l.x2, s.x1, s.x2) >= 0.8 * Math.min(len, l.x2 - l.x1 + 1),
+    )
     if (twin) continue
     lines.push(s)
   }
@@ -273,8 +285,20 @@ export function detectBoxes(bin: Uint8Array, width: number, height: number, scal
   }
 
   const out: DetectedBox[] = [
-    ...kept.map((b) => ({ kind: b.kind, x: b.x1 / scale, y: b.y1 / scale, width: (b.x2 - b.x1 + 1) / scale, height: (b.y2 - b.y1 + 1) / scale })),
-    ...lines.map((l) => ({ kind: 'line' as const, x: l.x1 / scale, y: l.y1 / scale, width: (l.x2 - l.x1 + 1) / scale, height: (l.y2 - l.y1 + 1) / scale })),
+    ...kept.map((b) => ({
+      kind: b.kind,
+      x: b.x1 / scale,
+      y: b.y1 / scale,
+      width: (b.x2 - b.x1 + 1) / scale,
+      height: (b.y2 - b.y1 + 1) / scale,
+    })),
+    ...lines.map((l) => ({
+      kind: 'line' as const,
+      x: l.x1 / scale,
+      y: l.y1 / scale,
+      width: (l.x2 - l.x1 + 1) / scale,
+      height: (l.y2 - l.y1 + 1) / scale,
+    })),
   ]
   return out.sort((a, b) => a.y - b.y || a.x - b.x)
 }
@@ -283,7 +307,15 @@ export function detectBoxes(bin: Uint8Array, width: number, height: number, scal
  * A rectangle has ink right outside each side of its interior, corner to corner. The inside of
  * a letter such as "O" does not: its corners are open. The band allows for a slightly skewed scan.
  */
-function hasStraightEdges(bin: Uint8Array, width: number, height: number, x1: number, y1: number, x2: number, y2: number): boolean {
+function hasStraightEdges(
+  bin: Uint8Array,
+  width: number,
+  height: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): boolean {
   const MIN_COVER = 0.9
   const side = (len: number) => 2 + Math.ceil(len * 0.02)
   const dh = side(x2 - x1 + 1)
@@ -340,7 +372,10 @@ function iou(a: Rect, b: Rect): number {
 }
 
 /** Detected boxes that a real form field already covers are left out. */
-export function withoutCovered(boxes: readonly DetectedBox[], fields: readonly { x: number; y: number; width: number; height: number }[]): DetectedBox[] {
+export function withoutCovered(
+  boxes: readonly DetectedBox[],
+  fields: readonly { x: number; y: number; width: number; height: number }[],
+): DetectedBox[] {
   return boxes.filter((b) => {
     const bh = b.kind === 'line' ? 14 : b.height
     const by = b.kind === 'line' ? b.y - bh : b.y

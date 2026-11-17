@@ -15,7 +15,10 @@ export function classToCsv(list: ClassList): string {
 
 /** "Grade 8A / Maths" -> "Grade 8A Maths.csv": safe on every system, still readable. */
 export function classFileName(list: ClassList): string {
-  const base = list.name.replace(/[\\/:*?"<>|\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim()
+  const base = list.name
+    .replace(/[\\/:*?"<>|\u0000-\u001f]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
   return `${base || 'class'}.csv`
 }
 
@@ -37,8 +40,14 @@ export function classFromCsv(text: string): ClassCsvResult {
     return { learners: [], idDigits: 2, problems: ['This is not a class file: the first column must be "Learner ID".'] }
   }
   const nameColumn = header.indexOf('name')
-  const ids = rows.slice(1).map((r) => (r[0] ?? '').trim()).filter((id) => id !== '')
-  const longest = Math.max(1, ...ids.map((id) => (learnerNumber(id) === null ? 1 : Math.max(id.length, digitsNeeded(learnerNumber(id)!)))))
+  const ids = rows
+    .slice(1)
+    .map((r) => (r[0] ?? '').trim())
+    .filter((id) => id !== '')
+  const longest = Math.max(
+    1,
+    ...ids.map((id) => (learnerNumber(id) === null ? 1 : Math.max(id.length, digitsNeeded(learnerNumber(id)!)))),
+  )
   const idDigits = Math.min(MAX_ID_DIGITS, longest)
   const built = buildLearners(rows, {
     headerRow: true,

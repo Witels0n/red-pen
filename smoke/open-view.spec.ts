@@ -27,11 +27,14 @@ async function trackRequests(page: Page, baseURL: string) {
 }
 
 async function renderedCanvasHasInk(page: Page, index: number): Promise<boolean> {
-  return page.locator('.page-canvas').nth(index).evaluate((c: HTMLCanvasElement) => {
-    const data = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data
-    for (let i = 0; i < data.length; i += 4) if (data[i] < 50 && data[i + 3] > 0) return true
-    return false
-  })
+  return page
+    .locator('.page-canvas')
+    .nth(index)
+    .evaluate((c: HTMLCanvasElement) => {
+      const data = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data
+      for (let i = 0; i < data.length; i += 4) if (data[i] < 50 && data[i + 3] > 0) return true
+      return false
+    })
 }
 
 test('open screen states the privacy guarantee', async ({ page }) => {

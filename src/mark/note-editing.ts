@@ -41,12 +41,7 @@ export function editTextAt(
 }
 
 /** Ask for the Total's out-of value and place it (pre-filled with the last value used). */
-export async function placeTotalWithPrompt(
-  model: MarkingModel,
-  page: PageView,
-  x: number,
-  y: number,
-): Promise<void> {
+export async function placeTotalWithPrompt(model: MarkingModel, page: PageView, x: number, y: number): Promise<void> {
   if (model.getTotal()) return
   const outOf = await askNumber('Total marks (out of):', getLastOutOf())
   if (outOf === null || model.getTotal()) return

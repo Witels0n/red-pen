@@ -10,7 +10,8 @@ export function openReasonsEditor(reasons: ReasonsList): void {
   const heading = document.createElement('h2')
   heading.textContent = 'Edit reasons'
   const hint = document.createElement('p')
-  hint.textContent = 'One reason per line. These are offered when you place a cross, and are remembered in this browser.'
+  hint.textContent =
+    'One reason per line. These are offered when you place a cross, and are remembered in this browser.'
   const area = document.createElement('textarea')
   area.id = 'reasons-text'
   area.rows = 10

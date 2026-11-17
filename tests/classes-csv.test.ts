@@ -96,7 +96,9 @@ describe('writeCsv', () => {
       ['04', ' padded '],
     ]
     const text = writeCsv(rows)
-    expect(text).toBe('Learner ID,Name\r\n01,"Mokoena, Thandi"\r\n02,"Sipho ""Spoon"" Dlamini"\r\n03,\r\n04," padded "\r\n')
+    expect(text).toBe(
+      'Learner ID,Name\r\n01,"Mokoena, Thandi"\r\n02,"Sipho ""Spoon"" Dlamini"\r\n03,\r\n04," padded "\r\n',
+    )
     expect(parseCsv(text)).toEqual(rows)
   })
 })

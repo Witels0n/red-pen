@@ -14,7 +14,7 @@ export type InkName = keyof typeof INK_PRESETS
 export type InkRgb = { readonly r: number; readonly g: number; readonly b: number }
 
 export const DEFAULT_INK: InkName = 'red'
-export const INK_STORAGE_KEY = 'pdf-marker.inkColour'
+export const INK_STORAGE_KEY = 'red-pen.mark.inkColour'
 
 export type InkStorage = Pick<Storage, 'getItem' | 'setItem'>
 

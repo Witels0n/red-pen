@@ -2,7 +2,16 @@ import { describe, expect, it } from 'vitest'
 import { PDFDocument, degrees } from 'pdf-lib'
 import { formatDate } from '../src/sign/dates'
 import { buildSignedPdf, signedFileName } from '../src/sign/export'
-import { boxAt, displayedSize, fitImage, fitMark, fitText, fromPageSpace, placeUpright, toPageSpace } from '../src/sign/geometry'
+import {
+  boxAt,
+  displayedSize,
+  fitImage,
+  fitMark,
+  fitText,
+  fromPageSpace,
+  placeUpright,
+  toPageSpace,
+} from '../src/sign/geometry'
 import { inkBounds, smoothStroke, whiteToTransparent } from '../src/sign/image-utils'
 import { createSignModel } from '../src/sign/model'
 import { createSavedSignatures, STORAGE_KEYS } from '../src/sign/saved-signature'
@@ -27,7 +36,11 @@ describe('page space mapping', () => {
   it('round-trips through fromPageSpace for every rotation', () => {
     for (const r of [0, 90, 180, 270]) {
       const { width, height } = displayedSize(BOX, r)
-      for (const [x, y] of [[0, 0], [width, height], [123.5, 45.25]]) {
+      for (const [x, y] of [
+        [0, 0],
+        [width, height],
+        [123.5, 45.25],
+      ]) {
         const p = toPageSpace(BOX, r, x, y)
         expect(fromPageSpace(BOX, r, p.x, p.y)).toEqual({ x, y })
       }
@@ -114,7 +127,12 @@ describe('signature images', () => {
   })
 
   it('smooths a jittery stroke but keeps its ends', () => {
-    const pts = [{ x: 0, y: 0 }, { x: 10, y: 5 }, { x: 20, y: -5 }, { x: 30, y: 0 }]
+    const pts = [
+      { x: 0, y: 0 },
+      { x: 10, y: 5 },
+      { x: 20, y: -5 },
+      { x: 30, y: 0 },
+    ]
     const s = smoothStroke(pts)
     expect(s[0]).toEqual(pts[0])
     expect(s[3]).toEqual(pts[3])

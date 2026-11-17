@@ -560,9 +560,7 @@ input.form-field[type='radio'] {
   height: 180px;
   border: 1px solid #8a8a93;
   border-radius: 6px;
-  background:
-    linear-gradient(to top, transparent 44px, #c9dcef 44px, #c9dcef 45px, transparent 45px),
-    #fff;
+  background: linear-gradient(to top, transparent 44px, #c9dcef 44px, #c9dcef 45px, transparent 45px), #fff;
   touch-action: none;
   cursor: crosshair;
 }
@@ -598,8 +596,7 @@ input.form-field[type='radio'] {
   max-height: 8rem;
   align-self: flex-start;
   border: 1px solid var(--hairline);
-  background:
-    repeating-conic-gradient(#eee 0 25%, #fff 0 50%) 0 0 / 16px 16px;
+  background: repeating-conic-gradient(#eee 0 25%, #fff 0 50%) 0 0 / 16px 16px;
 }
 
 .sign-ink {

@@ -54,7 +54,10 @@ test.describe('landing page', () => {
     await expect(page.locator('#privacy li')).toHaveCount(3)
     await expect(page.locator('#install-manual')).toBeVisible() // no install prompt in a test browser
     await expect(page.locator('#install-available')).toBeHidden()
-    await expect(page.getByRole('link', { name: 'Suggest a tool' })).toHaveAttribute('href', /github\.com\/Witels0n\/red-pen\/issues\/new/)
+    await expect(page.getByRole('link', { name: 'Suggest a tool' })).toHaveAttribute(
+      'href',
+      /github\.com\/Witels0n\/red-pen\/issues\/new/,
+    )
     await expect(page.getByRole('link', { name: 'Report a problem' })).toHaveAttribute('target', '_blank')
   })
 
@@ -70,20 +73,14 @@ test.describe('landing page', () => {
     await page.goto(HOME)
     await page.waitForLoadState('networkidle')
     expect(foreign).toEqual([])
-    const result = await page.evaluate(() => fetch(location.href).then(() => 'allowed', () => 'blocked'))
+    const result = await page.evaluate(() =>
+      fetch(location.href).then(
+        () => 'allowed',
+        () => 'blocked',
+      ),
+    )
     expect(result).toBe('blocked')
   })
-})
-
-test('settings saved on the old site carry over to the moved marker', async ({ page }) => {
-  // The old /pdf-marker/ site was on the same origin, so its local storage is still there.
-  await page.goto(HOME)
-  await page.evaluate(() => localStorage.setItem('pdf-marker.reasons', JSON.stringify(['From the old site'])))
-  await page.goto(MARK)
-  await page.locator('#file-input').setInputFiles({ name: 't.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
-  await expect(page.locator('.page')).toHaveCount(1)
-  await page.locator('#edit-reasons').click()
-  await expect(page.locator('#reasons-text')).toHaveValue('From the old site')
 })
 
 test.describe('offline', () => {
@@ -103,9 +100,14 @@ test.describe('offline', () => {
     await expect(page.locator('.tool-card')).toHaveCount(TOOLS.length)
 
     await page.goto(MARK)
-    await page.locator('#file-input').setInputFiles({ name: 'learner.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
+    await page
+      .locator('#file-input')
+      .setInputFiles({ name: 'learner.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })
     await expect(page.locator('.page[data-rendered="true"]')).toHaveCount(1)
-    await page.locator('.page').first().click({ position: { x: 100, y: 100 } })
+    await page
+      .locator('.page')
+      .first()
+      .click({ position: { x: 100, y: 100 } })
     await expect(page.locator('.annotation-tick')).toHaveCount(1)
 
     const download = page.waitForEvent('download')

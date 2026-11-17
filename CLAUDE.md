@@ -2,7 +2,7 @@
 
 ### Issue tracker
 
-Issues live in GitHub Issues for Witels0n/red-pen (renamed from pdf-marker) (via `gh`). See `docs/agents/issue-tracker.md`.
+Issues live in GitHub Issues for Witels0n/red-pen (via `gh`). See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
