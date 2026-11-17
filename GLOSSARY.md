@@ -130,6 +130,18 @@ _Avoid_: Selection, interval
 A quarter rotation the teacher gives a page in Organise pages. It is added to the rotation the page already has and stored in the saved PDF, so the page itself is never redrawn.
 _Avoid_: Re-render, flip
 
+**Crop corners**:
+The four handles the teacher places on the corners of the sheet in a photo, in Photos to PDF. The page inside them is straightened (perspective corrected) into a rectangle. Suggested automatically when the sheet stands out from the background, otherwise the whole photo.
+_Avoid_: Crop box, selection
+
+**Look**:
+How a photographed page is finished in Photos to PDF: Original, Greyscale, Black and white (crisp text, judged against each pixel's surroundings) or Enhanced colour (even light, white paper). Called a filter in code.
+_Avoid_: Effect, mode
+
+**First page**:
+In Photos to PDF, a page the teacher marks as the start of a learner's work. Page 1 and each First page start a new Part.
+_Avoid_: Divider, separator
+
 ### QR codes
 
 **Content type**:

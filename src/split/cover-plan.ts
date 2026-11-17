@@ -73,7 +73,7 @@ function rangeText(start: number, end: number): string {
  * scanned twice, or two learners with the same name) is numbered on every use, in page order:
  * "Thandi Mokoena-1.pdf", "Thandi Mokoena-2.pdf". Comparison ignores case, as Windows and macOS do.
  */
-function uniqueFileNames(bases: readonly string[]): string[] {
+export function uniqueFileNames(bases: readonly string[]): string[] {
   const count = new Map<string, number>()
   for (const b of bases) count.set(b.toLowerCase(), (count.get(b.toLowerCase()) ?? 0) + 1)
   const taken = new Set(bases.filter((b) => count.get(b.toLowerCase()) === 1).map((b) => b.toLowerCase()))

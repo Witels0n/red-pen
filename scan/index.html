@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photos to PDF · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Photos to PDF</h1>
+          <p class="open-hint handwritten">Snap the pages, get one tidy <span class="nowrap">PDF ✓</span></p>
+          <p class="privacy-note">Your photos are processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Take a photo of each page, or drag photos here.</p>
+            <div class="add-buttons">
+              <label class="button primary" for="camera-input">Take a photo</label>
+              <label class="button" for="photo-input">Choose photos</label>
+            </div>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace" hidden>
+        <h2>Photos to PDF</h2>
+        <div class="toolbar">
+          <label class="button primary" for="camera-input">Take a photo</label>
+          <label class="button" for="photo-input">Add photos</label>
+          <span id="summary" class="summary"></span>
+          <span class="spacer"></span>
+          <button type="button" id="start-over">Start over</button>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+        <p id="progress" class="progress" role="status"></p>
+        <p class="list-hint">
+          Tap a page to crop, straighten, turn or change its look. Drag the ⠿ handle, or use the arrows, to reorder.
+        </p>
+        <ol id="page-grid" class="page-grid"></ol>
+
+        <form id="output-form" class="panel" novalidate>
+          <fieldset class="modes">
+            <legend>Download as</legend>
+            <label class="mode">
+              <input type="radio" name="mode" value="one" checked />
+              <span>One PDF</span>
+            </label>
+            <label class="mode">
+              <input type="radio" name="mode" value="split" />
+              <span>
+                A PDF per learner
+                <small>Mark the first page of each learner's work, then download a .zip.</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="settings">
+            <label class="field">
+              <span>File name</span>
+              <input id="file-name" type="text" value="Scan" autocomplete="off" spellcheck="false" />
+            </label>
+            <label class="field">
+              <span>Page size</span>
+              <select id="page-size"></select>
+            </label>
+            <label class="field">
+              <span>Margins</span>
+              <select id="margins"></select>
+            </label>
+            <label class="field quality">
+              <span>Quality <output id="quality-value" for="quality"></output></span>
+              <input id="quality" type="range" min="30" max="95" step="5" value="75" />
+              <small id="estimate" class="estimate" aria-live="polite"></small>
+            </label>
+          </div>
+
+          <div id="split-options" class="split-options" hidden>
+            <div class="split-row">
+              <label class="inline">
+                Every
+                <input
+                  id="every-size"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="2"
+                  inputmode="numeric"
+                  aria-label="Pages per learner"
+                />
+                pages
+              </label>
+              <button type="button" id="apply-every">Mark first pages</button>
+            </div>
+            <div class="split-row">
+              <label id="class-field" class="inline" hidden>
+                Names from
+                <select id="class-select"></select>
+              </label>
+              <button type="button" id="fill-names" hidden>Fill in names in order</button>
+              <p id="no-classes" class="help" hidden>
+                Type each learner's name below, or add the class in <a href="../classes/">Class lists</a> to pick names.
+              </p>
+            </div>
+            <h3 class="parts-title" id="parts-title">Files in the download</h3>
+            <ol id="parts" class="parts" aria-labelledby="parts-title"></ol>
+            <datalist id="learner-names"></datalist>
+          </div>
+
+          <div class="download-row">
+            <button type="submit" id="download" class="primary">Download PDF</button>
+          </div>
+        </form>
+      </section>
+
+      <dialog id="editor" class="editor" aria-labelledby="editor-title">
+        <div class="editor-head">
+          <h3 id="editor-title">Page 1</h3>
+          <span class="spacer"></span>
+          <button type="button" id="editor-cancel">Cancel</button>
+          <button type="button" id="editor-done" class="primary">Done</button>
+        </div>
+        <div class="editor-body">
+          <div class="editor-stage">
+            <div id="crop" class="crop">
+              <img id="crop-image" alt="The photo, with the crop corners on it" />
+              <svg class="crop-lines" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
+                <path id="crop-shade" class="crop-shade" fill-rule="evenodd" d="" />
+                <polygon id="crop-outline" class="crop-outline" points="" />
+              </svg>
+            </div>
+            <p class="help">Drag the four corners onto the corners of the page.</p>
+          </div>
+          <div class="editor-side">
+            <div class="editor-tools">
+              <button type="button" id="detect">Find the page</button>
+              <button type="button" id="whole-photo">Whole photo</button>
+              <button type="button" id="turn-left" aria-label="Turn left" title="Turn left">↺ Turn</button>
+              <button type="button" id="turn-right" aria-label="Turn right" title="Turn right">↻ Turn</button>
+            </div>
+            <fieldset class="filters">
+              <legend>Look</legend>
+              <div id="filter-choices" class="filter-choices"></div>
+            </fieldset>
+            <p id="editor-note" class="help" role="status"></p>
+            <div class="result">
+              <canvas id="result" width="1" height="1" aria-label="The finished page"></canvas>
+            </div>
+            <button type="button" id="look-all">Use this look on every page</button>
+          </div>
+        </div>
+      </dialog>
+
+      <input id="camera-input" type="file" accept="image/*" capture="environment" hidden />
+      <input id="photo-input" type="file" accept="image/*,.heic,.heif" multiple hidden />
+    </main>
+    <script type="module" src="/src/scan/main.ts"></script>
+  </body>
+</html>
