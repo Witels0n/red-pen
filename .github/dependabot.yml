@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Only propose releases that have been public for two weeks, which avoids
+    # most compromised or quickly withdrawn versions.
+    cooldown:
+      default-days: 14
     groups:
       dev-dependencies:
         dependency-type: development
@@ -13,3 +17,8 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 14
+    groups:
+      actions:
+        patterns: ['*']
