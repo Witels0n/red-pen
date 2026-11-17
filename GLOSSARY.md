@@ -173,3 +173,17 @@ _Avoid_: Student number, learner number, index
 **Cover sheet**:
 An A4 page with a learner's name (optional), Learner ID and a QR code holding only the Learner ID, stapled to the front of a written test. A class's tests are scanned in one batch, and Split a PDF starts a new part at each Cover sheet, named after the learner when the Class list is on the device. Printed by the Cover sheets Tool.
 _Avoid_: Title page, front page, separator sheet
+
+### Worksheets
+
+**Worksheet**:
+A printable page or pages made in the Worksheet maker: a heading (title, instructions, optional Name, Class and Date lines, and the total marks, added up automatically) and one or more Activities. Printed as a PDF with its Memo pages after it. Saved in the browser on this device only (localStorage), with any pictures downscaled.
+_Avoid_: Handout, activity sheet
+
+**Activity**:
+One numbered section of a Worksheet, of one type: word search, crossword, match the columns, fill in the blanks, true or false, unscramble the words, vocabulary or label the diagram. Each shows its marks (marks each item times the number of items). Its shuffles and layout come from a stored seed, so a saved Worksheet prints the same every time; Shuffle picks a new seed.
+_Avoid_: Section, exercise, question (in UI text about the whole block)
+
+**Word bank**:
+A box of the answers in shuffled order, printed above a fill in the blanks, vocabulary or labelling Activity when the teacher ticks it.
+_Avoid_: Word list (that is the list of words to find in a word search)

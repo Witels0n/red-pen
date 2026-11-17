@@ -70,6 +70,12 @@ export const TOOLS: readonly Tool[] = [
     path: 'classes/',
     group: 'Useful stuff',
   },
+  {
+    name: 'Worksheet maker',
+    blurb: 'Word searches, crosswords, matching, fill in the blanks and more, printed as a worksheet with its memo.',
+    path: 'worksheets/',
+    group: 'Useful stuff',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */
