@@ -120,6 +120,18 @@ _Avoid_: Selection, interval
 A quarter rotation the teacher gives a page in Organise pages. It is added to the rotation the page already has and stored in the saved PDF, so the page itself is never redrawn.
 _Avoid_: Re-render, flip
 
+**Booklet**:
+A4 pages laid out two to a side on landscape sheets, in the order that makes an A5 booklet once the sheets are printed double-sided, stacked, folded and stapled along the fold. Padded with blank pages to a multiple of 4.
+_Avoid_: Brochure, pamphlet
+
+**Sheet**:
+One piece of paper that comes out of the printer. A booklet sheet has a front and a back, each carrying two pages.
+_Avoid_: Page (a page is one page of the original PDF)
+
+**Creep**:
+How far the inner sheets of a folded booklet stick out past the outer ones. Booklet printing can move the inner pages towards the fold to allow for it, or ignore it (the default).
+_Avoid_: Shingling
+
 ### QR codes
 
 **Content type**:

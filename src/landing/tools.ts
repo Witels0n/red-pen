@@ -59,6 +59,12 @@ export const TOOLS: readonly Tool[] = [
     group: 'PDF',
   },
   {
+    name: 'Booklet printing',
+    blurb: 'Turn A4 pages into a folded A5 booklet, fit several pages on a sheet, or print copies of a slip to cut.',
+    path: 'booklet/',
+    group: 'PDF',
+  },
+  {
     name: 'QR codes',
     blurb: 'Codes for a link, your classroom Wi-Fi, an email or a contact card, with your colours and school logo.',
     path: 'qr/',
