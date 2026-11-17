@@ -56,23 +56,31 @@ export function attachReasonPopup({ root, model, reasons, onEditReasons }: Reaso
     panel.className = 'reason-popup'
     panel.setAttribute('role', 'dialog')
     panel.setAttribute('aria-label', 'Reason for this cross')
+    const heading = document.createElement('p')
+    heading.className = 'reason-heading'
+    heading.textContent = 'Why is this wrong?'
+    const choices = document.createElement('div')
+    choices.className = 'reason-choices'
+    const footer = document.createElement('div')
+    footer.className = 'reason-footer'
+    panel.append(heading, choices, footer)
     for (const r of reasons.get()) {
       const b = button(r, 'reason-choice', () => {
         model.setReason(crossId, r)
         close()
       })
       b.setAttribute('aria-pressed', String(cross.reason === r))
-      panel.append(b)
+      choices.append(b)
     }
     if (cross.reason) {
-      panel.append(
+      footer.append(
         button('Clear', 'reason-clear', () => {
           model.setReason(crossId, undefined)
           close()
         }),
       )
     }
-    panel.append(
+    footer.append(
       button('Edit reasons…', 'reason-edit', () => {
         close()
         onEditReasons()
