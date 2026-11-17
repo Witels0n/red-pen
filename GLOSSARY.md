@@ -60,6 +60,40 @@ _Avoid_: Comment, label
 The single colour in which every annotation of a test is drawn, on screen and in the exported copy. Chosen by the teacher from a fixed set (red by default); changing it recolours all annotations, including those already placed. Remembered in the browser between tests.
 _Avoid_: Pen colour, marker colour, annotation colour
 
+### MCQ assessments
+
+**Assessment**:
+The questions, options, marks, Memo, Topics and Versions of one multiple-choice test, plus its results (the reads and Review decisions, never the scans). Saved in the browser and exportable as an Assessment file (JSON) with its Class list link.
+_Avoid_: Quiz, test (a Test is one learner's scanned work in the marker), exam
+
+**Memo**:
+The correct option for each question. Correcting it re-marks every learner at once from the stored reads.
+_Avoid_: Answer key, key, solutions
+
+**Topic**:
+A tag on a question (for example "Fractions"), used for per-learner and class breakdowns and for "Topics to revise".
+_Avoid_: Category, tag, skill
+
+**Version**:
+A shuffled order of questions and options (A, B, C, D). Version A is the original order; marking maps answers on every Version back to it. The shuffle is seeded and stored, so a reprint matches.
+_Avoid_: Variant, form, paper
+
+**Answer sheet**:
+The A4 bubble sheet a learner fills in, with corner squares and a QR code holding the Assessment code, the Version, the Learner ID and the page. Never a name.
+_Avoid_: Bubble sheet, OMR form, script
+
+**Sheet identity**:
+How a scanned Answer sheet is matched to a learner. One of: **Named QR** (a sheet per learner, QR holds the Learner ID, name printed on it), **ID-only QR** (the same, with no name anywhere) or **Bubbled ID** (one identical sheet for everyone; the learner fills in their Learner ID in a digit grid).
+_Avoid_: ID mode, matching
+
+**Review**:
+The step where the teacher confirms uncertain reads: light, erased or double marks, unknown or spare sheets, duplicates and unread Versions, each shown beside the straightened scan.
+_Avoid_: Verification, checking, moderation
+
+**Item analysis**:
+Per question: the percentage correct, how answers spread across the options, the most-chosen wrong option with its misconception note, and flags for too easy (over 90%), too hard (under 30%) and negative discrimination (the top third of the class did worse than the bottom third).
+_Avoid_: Question stats, psychometrics
+
 ### PDF tools
 
 **Part**:

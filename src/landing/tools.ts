@@ -21,6 +21,13 @@ export const TOOLS: readonly Tool[] = [
     group: 'Marking',
   },
   {
+    name: 'MCQ assessments',
+    blurb:
+      'Build a multiple-choice test, print answer sheets, scan them and get a marksheet with item analysis per Topic.',
+    path: 'mcq/',
+    group: 'Marking',
+  },
+  {
     name: 'Cover sheets',
     blurb: 'A QR cover sheet for each learner, so one batch scan of the class splits into a PDF per learner.',
     path: 'covers/',
