@@ -4,4 +4,4 @@ The project grew from a single PDF marker into Red Pen, a set of tools for teach
 
 The site is a PWA: `vite-plugin-pwa` precaches every page and asset, so after one visit the whole site works offline and can be installed. A new version never reloads the page by itself, because that could wipe a test halfway through marking; the header offers a Reload button instead.
 
-The site is served under `/red-pen/` (the base path is `BASE` in `vite.config.ts`). Each Tool keeps its settings in local storage under its own `red-pen.<tool>.` key prefix.
+The site is served under `/red-pen/` (the base path is `BASE` in `vite.config.ts`, and its host is `ORIGIN`). At build time `seo.ts` writes the landing page's tool links into the HTML, adds search and share tags to every page, and emits `sitemap.xml` and `robots.txt`. Each Tool keeps its settings in local storage under its own `red-pen.<tool>.` key prefix.

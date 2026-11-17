@@ -3,7 +3,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { build } from 'vite'
-import { BASE, PAGES } from '../vite.config'
+import { BASE, ORIGIN, PAGES } from '../vite.config'
+import { TOOLS } from '../src/landing/tools'
 
 // Seam: the production build output (what GitHub Pages serves).
 // See docs/adr/0001-client-only-processing.md and docs/adr/0002-multi-page-offline-site.md.
@@ -46,10 +47,28 @@ describe.each(Object.values(PAGES))('page %s', (file) => {
 
   it('loads nothing from a third-party origin', () => {
     // Plain <a> links to other sites (GitHub) are navigation, not loading, so they are allowed.
+    // A canonical link names the page's own public address; it loads nothing.
     const loads = [
       ...pages[file].matchAll(/<(?:script|link|img|iframe|source)\b[^>]*(?:src|href)="(?:https?:)?\/\/[^"]+"/g),
-    ]
+    ].filter((m) => !m[0].includes('rel="canonical"'))
     expect(loads).toEqual([])
+  })
+
+  it('has exactly one meta description', () => {
+    expect(pages[file].match(/<meta\s+name="description"/g)).toHaveLength(1)
+  })
+
+  it('names its own public address as canonical and in its share tags', () => {
+    const url = ORIGIN + BASE + file.replace(/index\.html$/, '')
+    expect(pages[file]).toContain(`<link rel="canonical" href="${url}"`)
+    expect(pages[file]).toContain(`<meta property="og:url" content="${url}"`)
+    expect(pages[file]).toContain(`<meta property="og:image" content="${ORIGIN}${BASE}og-image.png"`)
+  })
+
+  it('carries valid JSON-LD', () => {
+    const m = pages[file].match(/<script type="application\/ld\+json">([^<]*)<\/script>/)
+    expect(m, 'page has a JSON-LD block').not.toBeNull()
+    expect(JSON.parse(m![1])['@context']).toBe('https://schema.org')
   })
 
   it('serves assets under the GitHub Pages base path', () => {
@@ -88,6 +107,23 @@ describe('production build', () => {
     expect(files.filter((f) => /smoke|harness/.test(f))).toEqual([])
     const sw = readFileSync(join(outDir, 'sw.js'), 'utf8')
     expect(sw).not.toMatch(/smoke|harness/)
+  })
+
+  it('writes every tool link into the landing page, so it works without JavaScript', () => {
+    for (const t of TOOLS) expect(pages['index.html']).toContain(`class="tool-card" href="${BASE}${t.path}"`)
+  })
+
+  it('ships a sitemap of every page, and a robots.txt that points at it', () => {
+    const sitemap = readFileSync(join(outDir, 'sitemap.xml'), 'utf8')
+    for (const file of Object.values(PAGES))
+      expect(sitemap).toContain(`<loc>${ORIGIN}${BASE}${file.replace(/index\.html$/, '')}</loc>`)
+    expect(sitemap).not.toMatch(/smoke|harness/)
+    expect(readFileSync(join(outDir, 'robots.txt'), 'utf8')).toContain(`Sitemap: ${ORIGIN}${BASE}sitemap.xml`)
+  })
+
+  it('ships the share image but leaves it out of the offline cache', () => {
+    expect(readdirSync(outDir)).toContain('og-image.png')
+    expect(readFileSync(join(outDir, 'sw.js'), 'utf8')).not.toContain('og-image.png')
   })
 
   it('ships a manifest scoped to the site', () => {
