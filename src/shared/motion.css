@@ -104,9 +104,20 @@
 }
 
 /* At the foot of a page: a ruled-paper band, like the one at the top, in the page's own column. */
-.tool-help-foot {
+.tool-help-foot.paper {
   margin-top: 2rem;
-  border-top: 1px solid var(--hairline);
+  /* This band starts mid-page, so its rules fade in at the top instead of out at the bottom. */
+  background-image:
+    linear-gradient(to top, transparent calc(100% - var(--paper-fade)), var(--paper)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--rule-gap) - 1px),
+      var(--rule) calc(var(--rule-gap) - 1px) var(--rule-gap)
+    );
+}
+
+.tool-help-foot.paper::before {
+  background: linear-gradient(to top, var(--margin-line) calc(100% - var(--paper-fade)), transparent);
 }
 
 .tool-help-foot .intro-inner {

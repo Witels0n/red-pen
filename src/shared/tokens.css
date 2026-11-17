@@ -61,15 +61,26 @@
   color-scheme: dark;
 }
 
-/* Ruled exam paper with a red margin line. Used by the landing hero and every tool's empty screen. */
+/*
+ * Ruled exam paper with a red margin line. Used by the landing hero and every tool's empty screen.
+ * The rules and margin line fade out over the last few rows instead of stopping at an edge.
+ */
 .paper {
+  --paper-fade: min(7rem, 60%);
   position: relative;
   background-color: var(--paper);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 calc(var(--rule-gap) - 1px),
-    var(--rule) calc(var(--rule-gap) - 1px) var(--rule-gap)
-  );
+  background-image:
+    linear-gradient(to bottom, transparent calc(100% - var(--paper-fade)), var(--paper)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--rule-gap) - 1px),
+      var(--rule) calc(var(--rule-gap) - 1px) var(--rule-gap)
+    );
+}
+
+/* No hard line under a paper band: the fade is the edge. Doubled to outrank each page's own border. */
+.paper.paper {
+  border-bottom-color: transparent;
 }
 
 .paper::before {
@@ -79,7 +90,7 @@
   bottom: 0;
   left: 44px;
   width: 2px;
-  background: var(--margin-line);
+  background: linear-gradient(to bottom, var(--margin-line) calc(100% - var(--paper-fade)), transparent);
   pointer-events: none;
 }
 
