@@ -1,7 +1,8 @@
 import './styles.css'
 import { mountSiteHeader } from '../shared/site-header'
 import { registerOffline } from '../shared/pwa'
-import { attachAnnotationLayer, type AnnotationLayer } from './annotation-layer'
+import { attachAnnotationLayer, type AnnotationLayer, type ClickMark } from './annotation-layer'
+import { applyIcons } from './icons'
 import { attachSelection, type Selection } from './selection'
 import { attachHistoryKeys } from './history-keys'
 import { attachNoteEditing, editTextAt, placeTotalWithPrompt } from './note-editing'
@@ -18,7 +19,9 @@ import { loadPdf } from '../shared/pdf/pdf-worker'
 import { getOpenedTest, setOpenedTest } from './session'
 import { createViewer, type Viewer } from './viewer'
 
-registerOffline(mountSiteHeader({ toolName: 'Mark a test' }))
+const siteHeader = mountSiteHeader({ toolName: 'Mark a test' })
+registerOffline(siteHeader)
+applyIcons()
 
 function el<T extends HTMLElement>(id: string): T {
   return document.getElementById(id) as T
@@ -33,6 +36,10 @@ const viewerError = el('viewer-error')
 const fileName = el('file-name')
 const zoomLevel = el('zoom-level')
 const viewerEl = el('viewer')
+const markCount = el('mark-count')
+// The file name and mark count live in the Red Pen header bar, where there is room, keeping the
+// toolbar to one row on a laptop. They stay hidden until a Test is open.
+siteHeader.querySelector('.spacer')!.before(fileName, markCount)
 
 let viewer: Viewer | null = null
 let annotationLayer: AnnotationLayer | null = null
@@ -100,6 +107,9 @@ async function openFile(file: File): Promise<void> {
   openScreen.hidden = true
   viewerScreen.hidden = false
   fileName.textContent = file.name
+  fileName.title = file.name
+  fileName.hidden = false
+  markCount.hidden = false
   setOpenedTest({ name: file.name, bytes })
   model.reset() // marking never carries over to the next Test
   unexported = false
@@ -107,7 +117,7 @@ async function openFile(file: File): Promise<void> {
   next.onScaleChange(updateZoomLabel)
   updateZoomLabel(next.scale)
   viewer = next
-  annotationLayer = attachAnnotationLayer(next, model)
+  annotationLayer = attachAnnotationLayer(next, model, () => clickMark)
   selection = attachSelection(next, model, annotationLayer)
   detachNoteEditing = attachNoteEditing(next, model)
 }
@@ -153,6 +163,7 @@ attachToolbarDrag(
       })
     }
   },
+  viewerEl,
 )
 
 el('export').addEventListener('click', () => void exportMarked())
@@ -198,3 +209,87 @@ window.addEventListener('drop', (e) => {
   const file = e.dataTransfer?.files[0]
   if (file) void openFile(file)
 })
+
+// --- Toolbar: click mode, undo and redo, mark count, More menu and tips ---
+
+/** What a plain click places; a right-click places the other. Not remembered between visits. */
+let clickMark: ClickMark = 'tick'
+const modeTick = el<HTMLButtonElement>('mode-tick')
+const modeCross = el<HTMLButtonElement>('mode-cross')
+const hintClick = el('hint-click')
+const hintRight = el('hint-right')
+function setClickMark(mark: ClickMark): void {
+  clickMark = mark
+  modeTick.setAttribute('aria-pressed', String(mark === 'tick'))
+  modeCross.setAttribute('aria-pressed', String(mark === 'cross'))
+  viewerEl.dataset.clickMark = mark
+  hintClick.textContent = mark
+  hintRight.textContent = mark === 'tick' ? 'cross' : 'tick'
+}
+modeTick.addEventListener('click', () => setClickMark('tick'))
+modeCross.addEventListener('click', () => setClickMark('cross'))
+setClickMark('tick')
+
+// T and X switch the click mode while a Test is open (never while typing).
+document.addEventListener('keydown', (e) => {
+  if (viewerScreen.hidden || e.ctrlKey || e.metaKey || e.altKey) return
+  const t = e.target as HTMLElement | null
+  if (t && (t.closest('input, textarea, select, [contenteditable]') || t.isContentEditable)) return
+  const key = e.key.toLowerCase()
+  if (key === 't') setClickMark('tick')
+  else if (key === 'x') setClickMark('cross')
+})
+
+const undoButton = el<HTMLButtonElement>('undo')
+const redoButton = el<HTMLButtonElement>('redo')
+undoButton.addEventListener('click', () => model.undo())
+redoButton.addEventListener('click', () => model.redo())
+
+const tickCount = el('tick-count')
+const crossCount = el('cross-count')
+function syncToolbarState(): void {
+  undoButton.disabled = !model.canUndo()
+  redoButton.disabled = !model.canRedo()
+  const annotations = model.getAnnotations()
+  tickCount.textContent = String(annotations.filter((a) => a.type === 'tick').length)
+  crossCount.textContent = String(annotations.filter((a) => a.type === 'cross').length)
+}
+model.onChange(syncToolbarState)
+syncToolbarState()
+
+// On narrow screens the less-used groups fold away behind "More".
+const toolbar = el('toolbar')
+const moreButton = el<HTMLButtonElement>('more')
+moreButton.addEventListener('click', () => {
+  const open = toolbar.classList.toggle('show-more')
+  moreButton.setAttribute('aria-expanded', String(open))
+})
+
+// The tips strip shows until the teacher hides it; that choice is remembered on this device.
+const HINT_KEY = 'red-pen.mark.hideTips'
+const hint = el('hint')
+function readHintHidden(): boolean {
+  try {
+    return localStorage.getItem(HINT_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+hint.hidden = readHintHidden()
+el('hint-close').addEventListener('click', () => {
+  hint.hidden = true
+  try {
+    localStorage.setItem(HINT_KEY, '1')
+  } catch {
+    // Storage blocked: the tips simply come back next visit.
+  }
+})
+
+// The "Open" labels stand in for the hidden file input, so make them work from the keyboard too.
+for (const label of document.querySelectorAll<HTMLLabelElement>('label[for="file-input"]')) {
+  label.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return
+    e.preventDefault()
+    fileInput.click()
+  })
+}

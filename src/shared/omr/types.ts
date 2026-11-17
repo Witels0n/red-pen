@@ -1,11 +1,9 @@
 // The shapes shared by the Answer sheet printer and the reader (OMR).
 // Everything here is plain data, so it can cross into the OMR Web Worker unchanged.
 
-/**
- * A Learner ID: 1 to 4 digits, zero-padded to the Class list's digit count (for example "007").
- * Part A (Class lists) owns the real type; this matches it.
- */
-export type LearnerId = string
+import type { LearnerId } from '../classes/types'
+
+export type { LearnerId }
 
 export type SheetVersion = 'A' | 'B' | 'C' | 'D'
 

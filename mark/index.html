@@ -14,62 +14,197 @@
         <div class="open-inner">
           <h1>Mark a test</h1>
           <p class="open-hint handwritten">Ticks, crosses and totals, in your <span class="nowrap">browser ✓</span></p>
-          <p id="privacy-note">
-            Your PDF is not uploaded and not stored on any server. It never leaves your computer and is processed only
-            in your browser. This is called client-side processing. You can verify this by disconnecting from the
-            internet and opening a PDF. Now that you have loaded the page you can run this app offline.
-          </p>
           <div id="drop-zone">
-            <p>Drag a scanned test (PDF) here, or</p>
-            <label class="button" for="file-input">Choose a PDF</label>
+            <p class="drop-title">Drag a scanned test (PDF) here</p>
+            <p class="drop-or">or</p>
+            <label class="btn btn-primary" for="file-input" data-icon="open" tabindex="0">Choose a PDF</label>
           </div>
+          <p id="privacy-note">
+            <strong>Private by design.</strong> Your PDF is not uploaded and not stored on any server: it is processed
+            only in your browser. Once this page has loaded it even works offline.
+          </p>
           <p id="open-error" class="error" role="alert" hidden></p>
         </div>
       </section>
 
       <section id="viewer-screen" hidden>
-        <header id="toolbar">
-          <label class="button" for="file-input">Open another PDF</label>
-          <span id="file-name"></span>
-          <span
-            class="tool"
-            id="tool-subtotal"
-            data-tool="subtotal"
-            data-ghost="Subtotal"
-            role="button"
-            tabindex="0"
-            title="Drag onto the page"
-            >Subtotal</span
+        <header id="toolbar" class="toolbar" aria-label="Marking tools">
+          <div class="tb-group tb-file">
+            <label class="btn" for="file-input" data-icon="open" title="Open another PDF" tabindex="0"
+              ><span class="label-wide">Open another PDF</span><span class="label-narrow">Open</span></label
+            >
+            <span id="file-name" class="file-name" hidden></span>
+          </div>
+
+          <div class="tb-group" role="group" aria-labelledby="click-mode-label">
+            <span class="tb-label" id="click-mode-label">Click</span>
+            <div class="segmented" id="click-mode">
+              <button
+                type="button"
+                id="mode-tick"
+                class="seg seg-tick"
+                aria-pressed="true"
+                title="Click places a tick (T)"
+                data-icon="tick"
+              >
+                Tick
+              </button>
+              <button
+                type="button"
+                id="mode-cross"
+                class="seg seg-cross"
+                aria-pressed="false"
+                title="Click places a cross (X)"
+                data-icon="cross"
+              >
+                Cross
+              </button>
+            </div>
+          </div>
+
+          <div class="tb-group" role="group" aria-labelledby="drag-label">
+            <span class="tb-label" id="drag-label">Drag</span>
+            <span
+              class="chip tool"
+              id="tool-subtotal"
+              data-tool="subtotal"
+              data-ghost="Subtotal"
+              data-icon="grip"
+              role="button"
+              tabindex="0"
+              title="Drag onto the page, or press Enter to place it in view"
+              >Subtotal</span
+            >
+            <span
+              class="chip tool"
+              id="tool-total"
+              data-tool="total"
+              data-ghost="Total"
+              data-icon="grip"
+              role="button"
+              tabindex="0"
+              title="Drag onto the page, or press Enter to place it in view"
+              >Total</span
+            >
+            <span
+              class="chip tool"
+              id="tool-text"
+              data-tool="text"
+              data-ghost="Text note"
+              data-icon="grip"
+              role="button"
+              tabindex="0"
+              title="Drag onto the page, or press Enter to place it in view"
+              >Text note</span
+            >
+          </div>
+
+          <div class="tb-group tb-secondary" role="group" aria-labelledby="ink-label">
+            <span class="tb-label" id="ink-label">Ink</span>
+            <span id="ink-swatches" role="radiogroup" aria-labelledby="ink-label"></span>
+          </div>
+
+          <div class="tb-group">
+            <button
+              type="button"
+              id="undo"
+              class="btn btn-icon"
+              aria-label="Undo"
+              title="Undo (Ctrl+Z)"
+              data-icon="undo"
+            ></button>
+            <button
+              type="button"
+              id="redo"
+              class="btn btn-icon"
+              aria-label="Redo"
+              title="Redo (Ctrl+Y)"
+              data-icon="redo"
+            ></button>
+          </div>
+
+          <div
+            id="mark-count"
+            class="mark-count"
+            hidden
+            role="status"
+            aria-live="polite"
+            title="Ticks and crosses on this test"
           >
-          <span
-            class="tool"
-            id="tool-total"
-            data-tool="total"
-            data-ghost="Total"
-            role="button"
-            tabindex="0"
-            title="Drag onto the page"
-            >Total</span
-          >
-          <span
-            class="tool"
-            id="tool-text"
-            data-tool="text"
-            data-ghost="Text note"
-            role="button"
-            tabindex="0"
-            title="Drag onto the page"
-            >Text note</span
-          >
-          <span id="ink-swatches" role="radiogroup" aria-label="Ink colour"></span>
+            <span class="count-tick"
+              ><span aria-hidden="true">✓</span> <b id="tick-count">0</b
+              ><span class="visually-hidden"> ticks</span></span
+            >
+            <span class="count-cross"
+              ><span aria-hidden="true">✗</span> <b id="cross-count">0</b
+              ><span class="visually-hidden"> crosses</span></span
+            >
+          </div>
+
           <span class="spacer"></span>
-          <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>
-          <span id="zoom-level">100%</span>
-          <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
-          <button type="button" id="zoom-fit">Fit width</button>
-          <button type="button" id="edit-reasons">Edit reasons</button>
-          <button type="button" id="export">Export marked PDF</button>
+
+          <div class="tb-group tb-secondary">
+            <div class="segmented zoom" role="group" aria-label="Zoom">
+              <button
+                type="button"
+                id="zoom-out"
+                class="seg"
+                aria-label="Zoom out"
+                title="Zoom out"
+                data-icon="minus"
+              ></button>
+              <span id="zoom-level" class="zoom-level">100%</span>
+              <button
+                type="button"
+                id="zoom-in"
+                class="seg"
+                aria-label="Zoom in"
+                title="Zoom in"
+                data-icon="plus"
+              ></button>
+            </div>
+            <button type="button" id="zoom-fit" class="btn" data-icon="fit" title="Fit width">
+              <span class="label-xl">Fit width</span><span class="label-l">Fit</span>
+            </button>
+          </div>
+
+          <div class="tb-group tb-secondary">
+            <button type="button" id="edit-reasons" class="btn" data-icon="list" title="Edit reasons">
+              <span class="label-xl">Edit reasons</span><span class="label-l">Reasons</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            id="more"
+            class="btn btn-icon tb-more"
+            aria-label="More tools"
+            aria-expanded="false"
+            aria-controls="toolbar"
+            title="More tools"
+            data-icon="more"
+          ></button>
+          <button type="button" id="export" class="btn btn-primary" data-icon="download">
+            <span class="label-xl">Export marked PDF</span><span class="label-l">Export PDF</span>
+          </button>
         </header>
+        <div id="hint" class="hint" hidden>
+          <p>
+            <span><kbd>Click</kbd> <span id="hint-click">tick</span></span>
+            <span><kbd>Right-click</kbd> <span id="hint-right">cross</span></span>
+            <span><kbd>T</kbd> / <kbd>X</kbd> switch</span>
+            <span>Drag a chip onto the page</span>
+            <span><kbd>Ctrl</kbd>+<kbd>Z</kbd> undo</span>
+          </p>
+          <button
+            type="button"
+            id="hint-close"
+            class="btn btn-ghost btn-icon"
+            aria-label="Hide these tips"
+            title="Hide these tips"
+            data-icon="close"
+          ></button>
+        </div>
         <p id="viewer-error" class="error" role="alert" hidden></p>
         <div id="viewer"></div>
       </section>

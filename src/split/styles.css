@@ -92,10 +92,149 @@ legend {
   border-bottom: 0;
 }
 
+.part-label,
 .part-name {
+  min-width: 0;
   overflow-wrap: anywhere;
 }
 
 .part-range {
   color: var(--text-muted);
+}
+
+/* At cover sheets */
+
+:root {
+  --warn-soft: #fff6e0;
+  --warn-edge: #c88a00;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --warn-soft: #33291a;
+    --warn-edge: #e0a832;
+  }
+}
+
+:root[data-theme='dark'] {
+  --warn-soft: #33291a;
+  --warn-edge: #e0a832;
+}
+
+.cover-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0.25rem 0 0 1.7rem;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.cover-scan {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  min-height: 2.25rem;
+}
+
+.cover-status {
+  color: var(--text-muted);
+}
+
+.cover-scan progress {
+  width: 10rem;
+  max-width: 100%;
+  accent-color: var(--red);
+}
+
+.cover-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  max-width: 24rem;
+}
+
+.cover-field > span {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cover-field select {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.cover-field select:focus-visible,
+.check input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--red);
+  flex-shrink: 0;
+}
+
+.cover-options .help {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.cover-options a {
+  color: var(--focus);
+}
+
+@media (max-width: 480px) {
+  .cover-options {
+    margin-left: 0;
+  }
+}
+
+.warnings {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.9rem 0.6rem 2rem;
+  border-left: 4px solid var(--warn-edge);
+  border-radius: 4px;
+  background: var(--warn-soft);
+}
+
+.warnings li + li {
+  margin-top: 0.35rem;
+}
+
+.part-id {
+  margin-left: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.part-flag {
+  display: inline-block;
+  margin-left: 0.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--warn-edge);
+  border-radius: 999px;
+  background: var(--warn-soft);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.5;
 }

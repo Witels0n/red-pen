@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>MCQ assessments · Red Pen</title>
+    <meta
+      name="description"
+      content="Build a multiple-choice assessment, print answer sheets, scan them and get a marksheet with item analysis. Everything stays in your browser."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="mcq-app">
+      <p id="storage-error" class="banner error" role="alert" hidden></p>
+
+      <!-- Home: the saved assessments -->
+      <div id="home-view">
+        <section class="intro paper" aria-labelledby="mcq-title">
+          <div class="intro-inner">
+            <h1 id="mcq-title">MCQ assessments</h1>
+            <p class="intro-hint handwritten">Print, scan, and the marking is <span class="nowrap">done ✓</span></p>
+            <p class="privacy-note">
+              Assessments, scans and results stay in this browser and are never uploaded. A QR code on a sheet holds
+              only a code and the Learner ID, never a name.
+            </p>
+            <ol class="how-it-works">
+              <li><strong>Build</strong> the questions and Memo, with a Topic per question.</li>
+              <li><strong>Print</strong> an answer sheet per learner, from a Class list or one master to copy.</li>
+              <li><strong>Mark</strong>: scan the sheets on a copier or take photos, then check anything uncertain.</li>
+              <li><strong>Results</strong>: a marksheet, item analysis, Topics to revise and feedback slips.</li>
+            </ol>
+            <div class="intro-actions">
+              <button type="button" id="new-assessment" class="primary">New assessment</button>
+              <label class="button" for="assessment-file-input">Open an Assessment file</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="workspace" aria-labelledby="saved-title">
+          <h2 id="saved-title">Your assessments</h2>
+          <p id="home-error" class="error" role="alert" hidden></p>
+          <p id="no-assessments" class="empty" hidden>No assessments yet. Start one with New assessment.</p>
+          <ul id="assessment-list" class="card-list"></ul>
+        </section>
+      </div>
+
+      <!-- One assessment, in steps -->
+      <div id="work-view" hidden>
+        <section class="work-head paper" aria-labelledby="work-title">
+          <div class="work-head-inner">
+            <p class="back"><a href="#">&larr; All assessments</a></p>
+            <div class="work-title-row">
+              <h1 id="work-title"></h1>
+              <span id="save-state" class="save-state" role="status"></span>
+              <button type="button" id="export-assessment" class="small">Download Assessment file</button>
+            </div>
+            <p id="work-meta" class="meta"></p>
+          </div>
+          <nav class="steps" aria-label="Steps">
+            <div class="steps-inner" role="tablist" id="step-tabs">
+              <button type="button" role="tab" id="tab-build" aria-controls="step-build" data-step="build">
+                <span class="step-no">1</span> Build
+              </button>
+              <button type="button" role="tab" id="tab-print" aria-controls="step-print" data-step="print">
+                <span class="step-no">2</span> Print
+              </button>
+              <button type="button" role="tab" id="tab-mark" aria-controls="step-mark" data-step="mark">
+                <span class="step-no">3</span> Mark
+              </button>
+              <button type="button" role="tab" id="tab-review" aria-controls="step-review" data-step="review">
+                <span class="step-no">4</span> Review <span class="badge" id="review-badge" hidden></span>
+              </button>
+              <button type="button" role="tab" id="tab-results" aria-controls="step-results" data-step="results">
+                <span class="step-no">5</span> Results
+              </button>
+              <button type="button" role="tab" id="tab-return" aria-controls="step-return" data-step="return">
+                <span class="step-no">6</span> Return
+              </button>
+            </div>
+          </nav>
+        </section>
+
+        <section id="step-build" class="workspace step" role="tabpanel" aria-labelledby="tab-build" hidden></section>
+        <section id="step-print" class="workspace step" role="tabpanel" aria-labelledby="tab-print" hidden></section>
+        <section id="step-mark" class="workspace step" role="tabpanel" aria-labelledby="tab-mark" hidden></section>
+        <section id="step-review" class="workspace step" role="tabpanel" aria-labelledby="tab-review" hidden></section>
+        <section
+          id="step-results"
+          class="workspace step"
+          role="tabpanel"
+          aria-labelledby="tab-results"
+          hidden
+        ></section>
+        <section id="step-return" class="workspace step" role="tabpanel" aria-labelledby="tab-return" hidden></section>
+      </div>
+
+      <input id="assessment-file-input" type="file" accept=".json,application/json" hidden />
+      <input id="scan-input" type="file" accept=".pdf,application/pdf,image/*,.heic,.heif" multiple hidden />
+    </main>
+    <script type="module" src="/src/mcq/main.ts"></script>
+  </body>
+</html>

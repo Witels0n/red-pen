@@ -4,7 +4,7 @@
 [![CI](https://github.com/Witels0n/red-pen/actions/workflows/ci.yml/badge.svg)](https://github.com/Witels0n/red-pen/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Free tools for teachers: marking, PDFs, QR codes and class lists.
+Free tools for teachers: marking, MCQ assessments, PDFs, QR codes and class lists.
 
 **[witels0n.github.io/red-pen](https://witels0n.github.io/red-pen/)**
 
@@ -15,15 +15,17 @@ site works offline and can be installed as an app.
 
 ## Tools
 
-| Tool               | What it does                                                                                       |
-| ------------------ | -------------------------------------------------------------------------------------------------- |
-| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.      |
-| **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                    |
-| **Split a PDF**    | Splits by page, every N pages (one file per learner) or custom ranges; downloads a zip.            |
-| **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.      |
-| **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.   |
-| **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export. |
-| **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.         |
+| Tool               | What it does                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.         |
+| **MCQ assessments** | Builds a multiple-choice test, prints answer sheets, reads scans, and gives a marksheet and item analysis. |
+| **Cover sheets**   | A QR cover sheet per learner from a class list, so a batch scan splits into one PDF per learner.      |
+| **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                       |
+| **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
+| **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |
+| **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.      |
+| **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
+| **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
 
 ## Privacy by design
 
@@ -33,7 +35,7 @@ site works offline and can be installed as an app.
   Build tests fail if any page loses the policy or references a remote host.
 - **Self-hosted everything.** Fonts, pdf.js and its worker, and all libraries are bundled.
 - **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists
-  live in IndexedDB on the device. A signature is stored only if the teacher opts in.
+  and MCQ assessments (with their results, never the scans) live in IndexedDB on the device. A signature is stored only if the teacher opts in.
 
 Details and trade-offs: [ADR 0001](docs/adr/0001-client-only-processing.md).
 

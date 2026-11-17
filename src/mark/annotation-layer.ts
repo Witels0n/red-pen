@@ -29,12 +29,16 @@ function svg<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string,
   return e
 }
 
-/** A zero-size, overflow-visible <svg> whose origin sits at the annotation's position. */
+/**
+ * A tiny, overflow-visible <svg> whose origin sits at the annotation's position. It must not be
+ * zero-sized: Chromium skips painting a 0x0 <svg> entirely, overflow included, which once made
+ * every Annotation invisible on screen while still exporting correctly.
+ */
 function anchor(a: Annotation, scale: number): SVGSVGElement {
   const root = svg('svg', {
     class: `annotation annotation-${a.type}`,
-    width: '0',
-    height: '0',
+    width: '1',
+    height: '1',
     overflow: 'visible',
     'data-annotation-id': a.id,
     'data-type': a.type,
@@ -171,7 +175,14 @@ export interface AnnotationLayer {
   destroy(): void
 }
 
-export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): AnnotationLayer {
+/** Which mark a plain click places. A right-click always places the other one. */
+export type ClickMark = 'tick' | 'cross'
+
+export function attachAnnotationLayer(
+  viewer: Viewer,
+  model: MarkingModel,
+  clickMark: () => ClickMark = () => 'tick',
+): AnnotationLayer {
   const layers = new Map<number, HTMLElement>()
   const renderListeners: Array<() => void> = []
   for (const page of viewer.pages) {
@@ -183,21 +194,28 @@ export function attachAnnotationLayer(viewer: Viewer, model: MarkingModel): Anno
     page.overlay.addEventListener('contextmenu', onContextMenu(page))
   }
 
-  // Right-click places a Cross (blank page only); the browser menu never shows over a page.
+  function place(page: PageView, e: MouseEvent, mark: ClickMark): void {
+    const rect = page.overlay.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / page.scale
+    const y = (e.clientY - rect.top) / page.scale
+    if (mark === 'tick') model.placeTick(page.pageNumber, x, y)
+    else model.placeCross(page.pageNumber, x, y)
+  }
+
+  // Right-click places the opposite of a click (blank page only); the browser menu never shows
+  // over a page.
   function onContextMenu(page: PageView) {
     return (e: MouseEvent) => {
       e.preventDefault()
       if ((e.target as Element).closest('[data-annotation-id]')) return
-      const rect = page.overlay.getBoundingClientRect()
-      model.placeCross(page.pageNumber, (e.clientX - rect.left) / page.scale, (e.clientY - rect.top) / page.scale)
+      place(page, e, clickMark() === 'tick' ? 'cross' : 'tick')
     }
   }
 
   function onClick(page: PageView) {
     return (e: MouseEvent) => {
       if ((e.target as Element).closest('[data-annotation-id]')) return // not blank page
-      const rect = page.overlay.getBoundingClientRect()
-      model.placeTick(page.pageNumber, (e.clientX - rect.left) / page.scale, (e.clientY - rect.top) / page.scale)
+      place(page, e, clickMark())
     }
   }
 

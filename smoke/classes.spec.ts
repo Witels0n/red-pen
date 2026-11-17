@@ -316,11 +316,12 @@ test('makes no network requests beyond its own files', async ({ page, baseURL })
   await page.locator('#export-csv').click()
   await pending
 
-  // Only the lazily loaded Excel reader, from this site, may load after the page.
+  // Only the lazily loaded Excel reader (and, in some browsers, the site's own icon) may load
+  // after the page, and only from this site.
   const later = requests.slice(afterLoad)
-  expect(later.every((u) => new URL(u).origin === origin && new URL(u).pathname.startsWith('/red-pen/assets/'))).toBe(
-    true,
-  )
+  const ownFile = (u: string) =>
+    new URL(u).origin === origin && /^\/red-pen\/(assets|icons)\//.test(new URL(u).pathname)
+  expect(later.every(ownFile)).toBe(true)
   expect(later.join(' ')).not.toContain('Thandi')
 })
 
