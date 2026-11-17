@@ -25,6 +25,7 @@ export const PAGES = {
   scan: 'scan/index.html',
   booklet: 'booklet/index.html',
   compress: 'compress/index.html',
+  picker: 'picker/index.html',
 } as const
 
 /**

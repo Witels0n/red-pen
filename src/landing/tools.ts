@@ -95,6 +95,12 @@ export const TOOLS: readonly Tool[] = [
     path: 'classes/',
     group: 'Useful stuff',
   },
+  {
+    name: 'Class picker',
+    blurb: 'Spin a wheel to pick a learner fairly, or make random groups with keep-apart and keep-together rules.',
+    path: 'picker/',
+    group: 'Useful stuff',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */

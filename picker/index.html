@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Class picker · Red Pen</title>
+    <meta
+      name="description"
+      content="Spin a wheel to pick a learner fairly, or make random groups with rules. Names stay in your browser."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="picker-app">
+      <section class="intro paper" aria-labelledby="picker-title">
+        <div class="intro-inner">
+          <h1 id="picker-title">Class picker</h1>
+          <p class="intro-hint handwritten">Fair turns, fair <span class="nowrap">teams ✓</span></p>
+          <p class="intro-text">
+            Spin a wheel to pick a learner, or make random groups. Names stay on this device and are forgotten when you
+            close the tab.
+          </p>
+        </div>
+      </section>
+
+      <div class="layout">
+        <!-- Learners, shared by both tabs -->
+        <section class="panel learners" aria-labelledby="learners-title">
+          <h2 id="learners-title">Learners</h2>
+          <div class="segmented" role="radiogroup" aria-label="Where the learners come from">
+            <label><input type="radio" name="source" value="class" /><span>Class list</span></label>
+            <label><input type="radio" name="source" value="paste" checked /><span>Paste names</span></label>
+            <label><input type="radio" name="source" value="numbers" /><span>Numbers</span></label>
+          </div>
+
+          <div class="source" data-source="class" hidden>
+            <p id="no-classes" class="help" hidden>
+              No Class lists on this device yet. Make one in <a href="../classes/">Class lists</a>, or paste names.
+            </p>
+            <p id="class-error" class="error" role="alert" hidden></p>
+            <div id="class-row" class="row">
+              <label class="field grow">
+                <span>Class list</span>
+                <select id="class-select"></select>
+              </label>
+              <button type="button" id="use-class">Use this class</button>
+            </div>
+          </div>
+
+          <div class="source" data-source="paste">
+            <label class="field">
+              <span>Names, one per line</span>
+              <textarea
+                id="paste-text"
+                rows="6"
+                spellcheck="false"
+                placeholder="Thandi Mokoena&#10;Sipho Dlamini&#10;Ayesha Patel"
+              ></textarea>
+            </label>
+            <p class="help">Paste a second column (such as a level) from a spreadsheet to balance groups by it.</p>
+            <p id="paste-error" class="error" role="alert" hidden></p>
+            <button type="button" id="use-paste">Use these names</button>
+          </div>
+
+          <div class="source" data-source="numbers" hidden>
+            <div class="row">
+              <label class="field narrow">
+                <span>Numbers 1 to</span>
+                <input id="numbers-count" type="number" min="1" max="99" step="1" inputmode="numeric" value="30" />
+              </label>
+              <button type="button" id="use-numbers">Use numbers</button>
+            </div>
+          </div>
+
+          <div id="roster" class="roster" hidden>
+            <div class="roster-head">
+              <h3 id="roster-title">Who's here today</h3>
+              <span id="roster-summary" class="summary" role="status"></span>
+            </div>
+            <div class="roster-actions">
+              <button type="button" id="all-here" class="small">Everyone here</button>
+            </div>
+            <ul id="learner-list" class="learner-list" aria-labelledby="roster-title"></ul>
+            <p class="help">Untick learners who are away. The "After picked" choice is for the wheel.</p>
+          </div>
+        </section>
+
+        <div class="work">
+          <div class="tabs" role="tablist" aria-label="Class picker">
+            <button type="button" role="tab" id="tab-wheel" aria-controls="wheel-panel" aria-selected="true">
+              Spinning wheel
+            </button>
+            <button type="button" role="tab" id="tab-groups" aria-controls="groups-panel" aria-selected="false">
+              Groups
+            </button>
+          </div>
+
+          <!-- Tab 1: the wheel -->
+          <section id="wheel-panel" role="tabpanel" aria-labelledby="tab-wheel" class="tab-panel">
+            <div class="wheel-controls">
+              <label class="field">
+                <span>Wheel</span>
+                <select id="wheel-select"></select>
+              </label>
+              <label class="field">
+                <span>After a pick</span>
+                <select id="default-after">
+                  <option value="remove">Remove from the wheel</option>
+                  <option value="keep">Keep in</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Show as</span>
+                <select id="wheel-style">
+                  <option value="auto">Wheel (ticker for long lists)</option>
+                  <option value="wheel">Wheel</option>
+                  <option value="ticker">Ticker</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="stage" class="stage">
+              <div class="stage-bar">
+                <span id="wheel-count" class="summary"></span>
+                <span class="spacer"></span>
+                <button type="button" id="mute" class="small" aria-pressed="false">Sound on</button>
+                <button type="button" id="wheel-full" class="small">Full screen</button>
+              </div>
+              <div class="wheel-box">
+                <div id="pointer" class="pointer" aria-hidden="true"></div>
+                <canvas id="wheel" class="wheel" role="img" aria-label="The wheel"></canvas>
+                <p id="wheel-empty" class="wheel-empty" hidden></p>
+                <div id="reveal" class="reveal" hidden>
+                  <div class="reveal-card" role="status" aria-live="assertive">
+                    <p class="reveal-label">Picked</p>
+                    <p id="reveal-name" class="reveal-name"></p>
+                    <p id="reveal-note" class="reveal-note"></p>
+                    <div class="reveal-actions">
+                      <button type="button" id="reveal-undo">Undo</button>
+                      <button type="button" id="reveal-close" class="primary">Done</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" id="spin" class="primary spin">Spin</button>
+              <p class="help stage-help">Tip: press the space bar to spin.</p>
+            </div>
+
+            <div class="panel history">
+              <div class="roster-head">
+                <h3>Picked</h3>
+                <span class="spacer"></span>
+                <button type="button" id="undo" class="small">Undo last</button>
+                <button type="button" id="reset" class="small">Reset wheel</button>
+              </div>
+              <ol id="history" class="history-list" reversed></ol>
+              <p id="no-history" class="help">Nobody picked yet.</p>
+            </div>
+
+            <details id="custom-wheels" class="panel custom">
+              <summary>Custom wheels: topics, Yes or No, anything</summary>
+              <p class="help">Saved on this device. Pick one in Wheel above to spin it.</p>
+              <ul id="wheel-list" class="wheel-list"></ul>
+              <form id="wheel-form" class="stack" autocomplete="off">
+                <h3 id="wheel-form-title">New wheel</h3>
+                <label class="field">
+                  <span>Name</span>
+                  <input id="wheel-name" type="text" placeholder="For example Revision topics" />
+                </label>
+                <label class="field">
+                  <span>Options, one per line</span>
+                  <textarea id="wheel-options" rows="5" placeholder="Fractions&#10;Decimals&#10;Percentages"></textarea>
+                </label>
+                <p id="wheel-error" class="error" role="alert" hidden></p>
+                <div class="actions">
+                  <button type="submit" id="save-wheel" class="primary">Save wheel</button>
+                  <button type="button" id="cancel-wheel" hidden>Cancel</button>
+                </div>
+              </form>
+            </details>
+          </section>
+
+          <!-- Tab 2: groups -->
+          <section id="groups-panel" role="tabpanel" aria-labelledby="tab-groups" class="tab-panel" hidden>
+            <form id="group-form" class="panel" autocomplete="off" novalidate>
+              <div class="segmented" role="radiogroup" aria-label="How to make groups">
+                <label><input type="radio" name="group-by" value="size" checked /><span>Group size</span></label>
+                <label><input type="radio" name="group-by" value="count" /><span>Number of groups</span></label>
+              </div>
+              <div class="row">
+                <label class="field narrow">
+                  <span id="group-value-label">Learners per group</span>
+                  <input id="group-value" type="number" min="1" max="99" step="1" inputmode="numeric" value="4" />
+                </label>
+                <label class="field">
+                  <span>Group names</span>
+                  <select id="name-style">
+                    <option value="numbers">Numbers</option>
+                    <option value="colours">Colours</option>
+                    <option value="fun">Animals</option>
+                  </select>
+                </label>
+              </div>
+              <label class="check" id="balance-row"
+                ><input id="balance" type="checkbox" />
+                <span id="balance-label">Balance by the second column</span></label
+              >
+              <p id="group-preview" class="help"></p>
+              <div class="actions">
+                <button type="submit" id="make-groups" class="primary">Make groups</button>
+              </div>
+            </form>
+
+            <details id="rules" class="panel">
+              <summary>Rules: keep apart or keep together <span id="rule-count"></span></summary>
+              <p class="help">Tap two or more learners, then choose a rule.</p>
+              <div id="rule-picker" class="chips"></div>
+              <div class="actions">
+                <button type="button" id="add-apart">Keep apart</button>
+                <button type="button" id="add-together">Keep together</button>
+              </div>
+              <ul id="rule-list" class="rule-list"></ul>
+            </details>
+
+            <p id="group-error" class="error" role="alert" hidden></p>
+            <div id="group-notes" class="notes" role="status"></div>
+
+            <div id="group-output" class="group-output" hidden>
+              <div class="stage-bar">
+                <span id="group-summary" class="summary"></span>
+                <span class="spacer"></span>
+                <button type="button" id="reshuffle" class="small">Re-shuffle</button>
+                <button type="button" id="copy-groups" class="small">Copy as text</button>
+                <button type="button" id="print-groups" class="small">Print</button>
+                <button type="button" id="groups-full" class="small">Show large</button>
+              </div>
+              <p id="copy-status" class="help" role="status"></p>
+              <ol id="group-grid" class="group-grid"></ol>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/picker/main.ts"></script>
+  </body>
+</html>

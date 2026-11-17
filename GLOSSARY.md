@@ -210,3 +210,21 @@ _Avoid_: Student number, learner number, index
 **Cover sheet**:
 An A4 page with a learner's name (optional), Learner ID and a QR code holding only the Learner ID, stapled to the front of a written test. A class's tests are scanned in one batch, and Split a PDF starts a new part at each Cover sheet, named after the learner when the Class list is on the device. Printed by the Cover sheets Tool.
 _Avoid_: Title page, front page, separator sheet
+
+### Class picker
+
+**Wheel**:
+The spinning wheel in the Class picker. Its slices are the learners who are here today, or the options of a custom wheel (for example topics, or Yes and No), saved on the device. The winner is chosen first with the browser's secure random numbers, then the wheel spins to land on it. Long lists show as a ticker instead.
+_Avoid_: Spinner, randomiser
+
+**After picked**:
+Whether a picked learner comes off the wheel ("Remove") or stays on for another turn ("Keep in"). Set for the whole wheel, and optionally per learner. Undo puts a removed learner back.
+_Avoid_: Replacement, elimination
+
+**Group rule**:
+A rule for random groups: keep apart (these learners are all in different groups) or keep together (all in one group). Rules are always kept; when they cannot be, the Class picker says why instead of making groups.
+_Avoid_: Constraint (in UI text), condition
+
+**Locked group**:
+A group kept exactly as it is when the others are re-shuffled.
+_Avoid_: Fixed group, pinned group
