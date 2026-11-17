@@ -128,6 +128,31 @@ _Avoid_: Bloom level (unless the taxonomy is Bloom's), difficulty (a separate, o
 **Tolerance**:
 How many percentage points a level's or topic's share may be off its target before the Grid flags it as over or under (5 by default).
 _Avoid_: Margin, allowance
+### Marks analysis
+
+**Assessment card**:
+One column of pasted or imported marks in Marks analysis, with its name, "out of", counts of marks, absent and unreadable cells, and a tick box to include it. Not saved: marks and names are kept only while the page is open.
+_Avoid_: Assessment (that is an MCQ assessment), series, column (in UI text)
+
+**Out of**:
+The total a column's raw marks are out of, from its heading (`Test 1 (40)`), typed on the card, or per cell (`34/50`). Without one, values from 0 to 100 are assumed to be percentages.
+_Avoid_: Maximum, total (that is the marker's annotation)
+
+**Unreadable mark**:
+A cell that is not a mark or an absence (a word, a negative number, or more than its "out of"). Left out of the figures and listed under its card to correct in place.
+_Avoid_: Error, invalid value
+
+**Calculated column**:
+A column whose heading says Average, Avg, Total or Term mark. Analysed like any other, but left out of improved and dropped.
+_Avoid_: Formula column, derived column
+
+**Band scheme**:
+How percentages are grouped for the band chart: CAPS 7 levels (the default), 10% bands, symbols (A to H) or custom cut-offs. A mark is banded by its exact percentage, before rounding.
+_Avoid_: Grade scale, levels (unless CAPS)
+
+**Insight**:
+A short, tentatively worded observation worked out from the figures (for example a wide spread or a ceiling), with its thresholds fixed in code and explained on the page.
+_Avoid_: Finding, diagnosis
 
 ### PDF tools
 

@@ -42,6 +42,10 @@ export const TOOLS: readonly Tool[] = [
     blurb:
       'The analysis grid for a test or exam: marks per cognitive level and topic against your targets, with a one-page PDF for your HoD.',
     path: 'grid/',
+    name: 'Marks analysis',
+    blurb:
+      "Paste a class's marks and see the spread, bands, pass rate and plain-language insights, with a one-page report.",
+    path: 'marks/',
     group: 'Assessments and marking',
   },
   {

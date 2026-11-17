@@ -22,6 +22,7 @@ site works offline and can be installed as an app.
 | **Cover sheets**   | A QR cover sheet per learner from a class list, so a batch scan splits into one PDF per learner.      |
 | **Markbook builder** | Designs a markbook (assessments, weights, Categories, CAPS levels, class summary) and downloads an .xlsx with live Excel formulas. |
 | **Question paper grid** | Analysis grid for a paper: marks per cognitive level (CAPS, Bloom's, Barrett's or custom) and topic against targets, a level by topic matrix, and a one-page PDF or Excel file for the HoD. |
+| **Marks analysis** | Pasted or imported marks (or MCQ results) as bands, box plots, stats and insights per assessment and across them; a one-page PDF report and CSVs. |
 | **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                       |
 | **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
 | **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |

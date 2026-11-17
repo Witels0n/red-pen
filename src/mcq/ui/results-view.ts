@@ -13,6 +13,7 @@ import {
 import { formatNumber, letter, topicsOf, withQuestion } from '../core/model'
 import { safeFileName } from '../core/questions-csv'
 import { keepsOptionOrder } from '../core/versions'
+import { HANDOFF_KEY, type Handoff } from '../../marks/core/handoff'
 import { writeXlsx } from '../xlsx'
 import { busy, clear, download, h, MIME, plural } from './dom'
 import { memoEntry } from './memo-entry'
@@ -125,7 +126,34 @@ function downloads(): HTMLElement {
       download(marksheetCsv(a, sortRows(rowsNow())), `${safeFileName(a.title)} marksheet.csv`, MIME.csv)
     },
   })
-  return h('div', { class: 'toolbar results-downloads' }, xlsx, csv, status)
+  const analyse = h('button', {
+    type: 'button',
+    text: 'Analyse these marks',
+    id: 'analyse-marks',
+    title: 'Open the percentages and names in Marks analysis',
+    onclick: () => {
+      const { assessment: a } = workspace()
+      // Handed over in this tab only (sessionStorage): Marks analysis reads it once and removes it.
+      const handoff: Handoff = {
+        title: a.title,
+        learners: sortRows(rowsNow()).map((r) => ({
+          name: displayName(r),
+          percent: r.outOf ? (r.score / r.outOf) * 100 : 0,
+        })),
+      }
+      try {
+        sessionStorage.setItem(HANDOFF_KEY, JSON.stringify(handoff))
+      } catch {
+        status.classList.add('error')
+        status.hidden = false
+        status.textContent =
+          'This browser would not pass the marks on. Download the CSV and paste it into Marks analysis.'
+        return
+      }
+      location.href = `${import.meta.env.BASE_URL}marks/`
+    },
+  })
+  return h('div', { class: 'toolbar results-downloads' }, xlsx, csv, analyse, status)
 }
 
 function memoPanel(): HTMLElement {

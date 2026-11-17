@@ -19,7 +19,7 @@ import {
   newDocument,
   text,
   wrap,
-} from './layout'
+} from '../../shared/pdf/layout'
 
 /** The booklet's questions in a Version's order, with their options in that Version's order. */
 export function bookletQuestions(a: Assessment, plan: VersionPlan): BookletQuestion[] {

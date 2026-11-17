@@ -21,7 +21,7 @@ import {
   text,
   wrap,
   type Fonts,
-} from './layout'
+} from '../../shared/pdf/layout'
 
 export type SlipsPerPage = 1 | 2
 

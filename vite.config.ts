@@ -31,6 +31,7 @@ export const PAGES = {
   certificates: 'certificates/index.html',
   stamp: 'stamp/index.html',
   redact: 'redact/index.html',
+  marks: 'marks/index.html',
 } as const
 
 /**
