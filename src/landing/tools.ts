@@ -53,6 +53,12 @@ export const TOOLS: readonly Tool[] = [
     group: 'PDF',
   },
   {
+    name: 'Photos to PDF',
+    blurb: 'Photograph pages with your phone, straighten and clean them up, and get one PDF or a PDF per learner.',
+    path: 'scan/',
+    group: 'PDF',
+  },
+  {
     name: 'Sign and fill',
     blurb: 'Fill in a PDF form or permission slip, add the date and your signature, then download it.',
     path: 'sign/',
