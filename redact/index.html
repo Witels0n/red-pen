@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redact and anonymise · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Redact and anonymise</h1>
+          <p class="open-hint handwritten">Names hidden, moderation sample <span class="nowrap">ready ✓</span></p>
+          <p class="privacy-note">Your PDFs are processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag one test, or a whole class set of PDFs, here, or</p>
+            <label class="button primary" for="file-input">Choose PDFs</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="redact-screen" hidden>
+        <div id="toolbar" class="redact-toolbar" role="toolbar" aria-label="Redaction tools">
+          <div class="tb-group">
+            <label class="button" for="file-input">Add PDFs</label>
+            <select id="view-file" aria-label="File on screen"></select>
+          </div>
+          <div class="tb-group">
+            <button type="button" id="draw" aria-pressed="true" title="Drag on a page to draw a box">Draw boxes</button>
+            <span class="fill-choice" role="radiogroup" aria-label="Box colour">
+              <button type="button" class="fill fill-black" data-fill="black" role="radio" aria-checked="true">
+                Black
+              </button>
+              <button type="button" class="fill fill-white" data-fill="white" role="radio" aria-checked="false">
+                White
+              </button>
+            </span>
+          </div>
+          <div class="tb-group" id="box-tools" aria-label="Selected box">
+            <label class="tb-check"><input id="box-every" type="checkbox" disabled /> On every page</label>
+            <label class="tb-check"><input id="box-label" type="checkbox" disabled /> Label</label>
+            <button type="button" id="delete" disabled title="Delete the selected box (Delete)">Delete</button>
+          </div>
+          <div class="tb-group">
+            <button type="button" id="undo" title="Undo (Ctrl+Z)" disabled>Undo</button>
+            <button type="button" id="redo" title="Redo (Ctrl+Y)" disabled>Redo</button>
+            <button type="button" id="use-saved" hidden>Use the last box layout</button>
+          </div>
+          <div class="tb-group zoom">
+            <button type="button" id="zoom-out" class="icon" aria-label="Zoom out">&minus;</button>
+            <span id="zoom-level">100%</span>
+            <button type="button" id="zoom-in" class="icon" aria-label="Zoom in">+</button>
+            <button type="button" id="zoom-fit">Fit width</button>
+          </div>
+        </div>
+        <p id="hint" class="redact-hint" role="status"></p>
+        <p id="work-error" class="error" role="alert" hidden></p>
+
+        <div class="redact-body">
+          <div id="viewer" data-drawing="true"></div>
+
+          <aside class="redact-side" aria-labelledby="side-title">
+            <h2 id="side-title">Download</h2>
+            <p class="true-redaction">
+              <strong>Redaction is permanent.</strong> Each page with a box is turned into a picture with the box
+              painted on, so the words, pictures and form fields under it are gone from the file, not just covered.
+              Pages without a box are copied as they are.
+            </p>
+
+            <h3>Files <span id="file-count" class="muted"></span></h3>
+            <ol id="file-list" class="file-list"></ol>
+
+            <label class="check"><input id="rename" type="checkbox" checked /> Rename the files</label>
+            <div class="naming" id="naming">
+              <label class="field"
+                ><span>Name</span> <input id="prefix" type="text" maxlength="40" autocomplete="off"
+              /></label>
+              <label class="field field-short"
+                ><span>Start at</span> <input id="start" type="number" min="0" step="1" inputmode="numeric"
+              /></label>
+            </div>
+            <label class="check"
+              ><input id="shuffle" type="checkbox" checked /> Mix up the order, so numbers do not follow the class
+              list</label
+            >
+            <button type="button" id="reshuffle">Shuffle again</button>
+
+            <label class="field"
+              ><span>Picture quality of redacted pages</span>
+              <select id="dpi">
+                <option value="150">Smaller file (150 dpi)</option>
+                <option value="200" selected>Clear (200 dpi)</option>
+                <option value="300">Sharpest (300 dpi)</option>
+              </select>
+            </label>
+
+            <div class="actions">
+              <button type="button" id="download" class="primary">Download</button>
+              <button type="button" id="download-key">Download the anonymisation key (CSV)</button>
+            </div>
+            <p class="muted small">
+              The anonymisation key lists each original file name next to its new name. Keep it apart from the sample:
+              anyone with it can tell whose test is whose.
+            </p>
+            <p id="progress" class="muted" role="status"></p>
+          </aside>
+        </div>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden />
+    </main>
+    <script type="module" src="/src/redact/main.ts"></script>
+  </body>
+</html>

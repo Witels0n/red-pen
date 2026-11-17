@@ -2,7 +2,7 @@ import { zipSync } from 'fflate'
 import { formatDate, type DateStyle } from '../shared/dates'
 import { downloadFile } from '../shared/pdf/download'
 import { attachFileIntake } from '../shared/pdf/file-intake'
-import { withSuffix } from '../shared/pdf/file-names'
+import { uniqueNames, withSuffix } from '../shared/pdf/file-names'
 import { openErrorMessage, openPdfFile, type OpenedPdf } from '../shared/pdf/open-pdf'
 import { loadPdf } from '../shared/pdf/pdf-worker'
 import { byId, pages, startPdfTool } from '../shared/pdf/tool-page'
@@ -11,7 +11,6 @@ import {
   sanitiseSettings,
   selectPages,
   SLOTS,
-  uniqueNames,
   type Align,
   type FontName,
   type NumberFormat,

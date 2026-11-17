@@ -211,19 +211,6 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } {
   return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 }
 }
 
-/** The output names for a batch, each "<name>-stamped.pdf", made unique within the zip. */
-export function uniqueNames(names: readonly string[]): string[] {
-  const seen = new Map<string, number>()
-  return names.map((name) => {
-    const key = name.toLowerCase()
-    const count = (seen.get(key) ?? 0) + 1
-    seen.set(key, count)
-    if (count === 1) return name
-    const dot = name.lastIndexOf('.')
-    return dot > 0 ? `${name.slice(0, dot)} (${count})${name.slice(dot)}` : `${name} (${count})`
-  })
-}
-
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null
 
 /**

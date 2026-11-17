@@ -26,3 +26,16 @@ export function safeFileBase(text: string, fallback: string): string {
   const short = [...cleaned].slice(0, MAX_NAME_LENGTH).join('').trimEnd()
   return short === '' || RESERVED.test(short) ? fallback : short
 }
+
+/** File names made unique (ignoring case) for one zip: a repeat gets " (2)", " (3)" before its extension. */
+export function uniqueNames(names: readonly string[]): string[] {
+  const seen = new Map<string, number>()
+  return names.map((name) => {
+    const key = name.toLowerCase()
+    const count = (seen.get(key) ?? 0) + 1
+    seen.set(key, count)
+    if (count === 1) return name
+    const dot = name.lastIndexOf('.')
+    return dot > 0 ? `${name.slice(0, dot)} (${count})${name.slice(dot)}` : `${name} (${count})`
+  })
+}

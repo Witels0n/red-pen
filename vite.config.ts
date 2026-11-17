@@ -22,6 +22,7 @@ export const PAGES = {
   mcq: 'mcq/index.html',
   covers: 'covers/index.html',
   stamp: 'stamp/index.html',
+  redact: 'redact/index.html',
 } as const
 
 /**

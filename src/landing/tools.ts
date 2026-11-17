@@ -65,6 +65,13 @@ export const TOOLS: readonly Tool[] = [
     group: 'PDF',
   },
   {
+    name: 'Redact and anonymise',
+    blurb:
+      'Black out names for a moderation sample, on one test or a whole class set, and rename the files to Learner 01, 02 and so on.',
+    path: 'redact/',
+    group: 'PDF',
+  },
+  {
     name: 'QR codes',
     blurb: 'Codes for a link, your classroom Wi-Fi, an email or a contact card, with your colours and school logo.',
     path: 'qr/',

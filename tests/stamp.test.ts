@@ -9,11 +9,11 @@ import {
   sanitiseSettings,
   selectPages,
   slotTexts,
-  uniqueNames,
   watermarkFontSize,
   watermarkText,
   type StampSettings,
 } from '../src/stamp/layout'
+import { uniqueNames } from '../src/shared/pdf/file-names'
 import { numbering, previewPage, stampPdf } from '../src/stamp/stamp'
 
 const settings = (patch: Partial<StampSettings> = {}): StampSettings => ({

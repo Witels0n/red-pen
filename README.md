@@ -25,6 +25,7 @@ site works offline and can be installed as an app.
 | **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |
 | **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.      |
 | **Stamp and number** | Adds a watermark (MEMO, DRAFT and more), page numbers, a header and footer with a logo and the date to one or many PDFs. |
+| **Redact and anonymise** | Truly removes what is under black or white boxes (repeatable on every page), and renames a class set to Learner 01, 02 and so on, with a separate anonymisation key. |
 | **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
 | **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
 

@@ -128,6 +128,18 @@ _Avoid_: Background, overlay
 A page that Stamp and number adds its watermark, page number, header and footer to: every page, odd or even pages, or custom pages. Page numbers count only stamped pages, so a cover page can be left out.
 _Avoid_: Marked page, selected page
 
+**Redaction box**:
+A black or white box the teacher draws over something that must not be seen (usually a learner's name), on one page or on every page. Saving turns each page with a box into a picture with the box painted on, so what was under it is gone from the file. One box layout applies to every file in a batch.
+_Avoid_: Mask, cover, blackout
+
+**Anonymised name**:
+The name a redacted file is given in place of the learner's, such as "Learner 07", also written in labelled Redaction boxes. Numbers are given out in a shuffled order by default, so they do not follow the class list.
+_Avoid_: Code name, alias
+
+**Anonymisation key**:
+The CSV that links each original file name to its Anonymised name. Downloaded separately from the redacted files and kept apart from them.
+_Avoid_: Mapping, lookup
+
 ### QR codes
 
 **Content type**:
