@@ -132,6 +132,10 @@ _Avoid_: Page (a page is one page of the original PDF)
 How far the inner sheets of a folded booklet stick out past the outer ones. Booklet printing can move the inner pages towards the fold to allow for it, or ignore it (the default).
 _Avoid_: Shingling
 
+**Target size**:
+The size each compressed PDF must be under (for example 2 MB, for an email). Compress a PDF tries lower resolutions and picture quality until each file fits, or says it could not.
+_Avoid_: Limit, quota
+
 ### QR codes
 
 **Content type**:

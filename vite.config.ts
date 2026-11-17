@@ -22,6 +22,7 @@ export const PAGES = {
   mcq: 'mcq/index.html',
   covers: 'covers/index.html',
   booklet: 'booklet/index.html',
+  compress: 'compress/index.html',
 } as const
 
 /**

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compress a PDF · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Compress a PDF</h1>
+          <p class="open-hint handwritten">Small enough to <span class="nowrap">email ✓</span></p>
+          <p class="privacy-note">Your PDFs are processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag scanned PDFs here, or</p>
+            <label class="button primary" for="file-input">Choose PDFs</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace" hidden>
+        <h2>Compress a PDF</h2>
+        <div class="toolbar">
+          <label class="button" for="file-input">Add more PDFs</label>
+          <span id="summary" class="summary"></span>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+
+        <p class="picture-warning">
+          <strong>Every page becomes a picture.</strong> Text can no longer be selected or searched, and links and form
+          fields stop working. This suits scans; for a typed document, keep the original if it is small enough.
+        </p>
+
+        <form id="settings-form" class="panel" novalidate>
+          <fieldset>
+            <legend>Resolution</legend>
+            <div class="presets">
+              <label class="preset">
+                <input type="radio" name="preset" value="small" />
+                <span><strong>Small</strong> 100 dpi</span>
+              </label>
+              <label class="preset">
+                <input type="radio" name="preset" value="balanced" checked />
+                <span><strong>Balanced</strong> 150 dpi</span>
+              </label>
+              <label class="preset">
+                <input type="radio" name="preset" value="sharp" />
+                <span><strong>Sharp</strong> 200 dpi</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="field quality">
+            <span>Picture quality <output id="quality-value" for="quality"></output></span>
+            <input id="quality" type="range" min="30" max="95" step="5" />
+            <small>Lower is smaller but blurrier around the edges of writing.</small>
+          </label>
+
+          <label class="check">
+            <input id="greyscale" type="checkbox" />
+            Greyscale (smaller, for scans without colour)
+          </label>
+
+          <div class="target">
+            <label class="check">
+              <input id="use-target" type="checkbox" />
+              Keep each file under
+            </label>
+            <input id="target-value" type="number" min="0.1" step="0.1" inputmode="decimal" aria-label="Target size" />
+            <select id="target-unit" aria-label="Target size unit">
+              <option value="MB">MB</option>
+              <option value="KB">KB</option>
+            </select>
+          </div>
+          <p class="help">With a target, lower settings are tried until each file fits. This takes longer.</p>
+        </form>
+
+        <div class="actions panel">
+          <button type="button" id="compress" class="primary">Compress</button>
+          <button type="button" id="cancel" hidden>Cancel</button>
+          <span class="spacer"></span>
+          <button type="button" id="download-all">Download</button>
+          <div class="progress-row" id="progress-row" hidden>
+            <progress id="progress" max="1" value="0" aria-label="Progress"></progress>
+            <span id="progress-text" class="summary"></span>
+          </div>
+        </div>
+
+        <ol id="file-list" class="file-list"></ol>
+        <p id="status" class="visually-hidden" role="status"></p>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden />
+    </main>
+    <script type="module" src="/src/compress/main.ts"></script>
+  </body>
+</html>
