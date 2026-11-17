@@ -63,7 +63,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('opens with an example link already in the preview', async ({ page }) => {
-  await expect(page).toHaveTitle('QR codes · Red Pen')
+  await expect(page).toHaveTitle('Free QR code maker for teachers · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('QR codes')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('QR codes')
   await expect(page.locator('#link-url')).toHaveValue('https://example.com')

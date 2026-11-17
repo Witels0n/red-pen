@@ -36,7 +36,7 @@ test('builds a markbook from a Class list and downloads live formulas, with noth
   await makeClass(page, 'Grade 10B', LEARNERS)
 
   await page.goto(MARKBOOK)
-  await expect(page).toHaveTitle('Markbook builder · Red Pen')
+  await expect(page).toHaveTitle('Excel markbook template with CAPS levels · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Markbook builder')
   await expect(page.locator('body[data-ready="true"]')).toBeAttached()
   // A Class list on the device is chosen by default.

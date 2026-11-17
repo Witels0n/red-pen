@@ -34,7 +34,7 @@ async function waitForOfflineReady(page: Page): Promise<void> {
 test.describe('landing page', () => {
   test('lists the marker and links to it', async ({ page }) => {
     await page.goto(HOME)
-    await expect(page).toHaveTitle('Red Pen')
+    await expect(page).toHaveTitle('Red Pen: free marking and PDF tools for teachers')
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Less admin, more teaching.')
     const card = page.locator('.tool-card', { hasText: 'Mark a test' })
     await expect(card).toBeVisible()

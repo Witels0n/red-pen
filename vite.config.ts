@@ -2,8 +2,10 @@ import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig } from 'vitest/config'
+import { SHARE_IMAGE, seo } from './seo.ts'
 
-/** Where GitHub Pages serves the site. Change this one value to move the site. */
+/** Where GitHub Pages serves the site. Change these two values to move the site. */
+export const ORIGIN = 'https://witels0n.github.io'
 export const BASE = '/red-pen/'
 
 /**
@@ -76,6 +78,7 @@ export default defineConfig(({ mode }) => ({
   base: BASE,
   plugins: [
     contentSecurityPolicy(),
+    seo({ origin: ORIGIN, base: BASE, pages: PAGES }),
     // Offline-first: precaches every page and asset so the whole site works without a
     // connection after one visit. See docs/adr/0002-multi-page-offline-site.md.
     VitePWA({
@@ -105,7 +108,8 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ['**/*.{html,js,mjs,css,woff2,svg,png,webmanifest}'],
         // The pdf.js worker is larger than Workbox's 2 MB default.
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
-        globIgnores: ['smoke/**'],
+        // The share image is only for link previews, so it is not worth a place in the offline cache.
+        globIgnores: ['smoke/**', SHARE_IMAGE],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
       },

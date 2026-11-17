@@ -208,6 +208,28 @@ button:focus-visible {
   stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The 10/10 lands like a teacher's stamp once the underline is drawn. */
+  .score {
+    animation: stamp 450ms 650ms cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+  }
+
+  /* Hovering a card ticks it again. */
+  .tool-card:hover .tick path,
+  .tool-card:focus-visible .tick path {
+    animation: pen-draw 380ms ease-out;
+  }
+}
+
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.7) rotate(-14deg);
+  }
 }
 
 /* ---------- Info sections ---------- */

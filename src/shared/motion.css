@@ -1,0 +1,217 @@
+/* Shared motion. Everything is opt-in to motion, so reduced-motion users see the finished state. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The red-pen line under each heading writes itself on, left to right. */
+  .open-hint,
+  .intro-hint {
+    width: fit-content;
+    animation: write-on 900ms 200ms steps(18, end) backwards;
+  }
+
+  /* The "Pen" in the wordmark gives a little wiggle. */
+  .wordmark:hover span,
+  .wordmark:focus-visible span {
+    display: inline-block;
+    animation: wiggle 420ms ease-in-out;
+  }
+
+  /* Revealed on first scroll into view (src/shared/motion.ts adds .is-seen). */
+  .motion [data-reveal]:not(.is-seen) > * {
+    opacity: 0;
+  }
+
+  .motion [data-reveal].is-seen > * {
+    animation: rise 420ms cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+  }
+
+  .motion [data-reveal].is-seen > :nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .motion [data-reveal].is-seen > :nth-child(3) {
+    animation-delay: 180ms;
+  }
+  .motion [data-reveal].is-seen > :nth-child(4) {
+    animation-delay: 270ms;
+  }
+  .motion [data-reveal].is-seen > :nth-child(5) {
+    animation-delay: 360ms;
+  }
+  .motion [data-reveal].is-seen > :nth-child(n + 6) {
+    animation-delay: 420ms;
+  }
+
+  /* Step numbers get circled in red pen, one after another. */
+  .motion .help-steps:not(.is-seen) .help-ring path,
+  .motion .help-faq:not(.is-seen) .help-tick path {
+    stroke-dashoffset: 1;
+  }
+
+  .motion .help-steps.is-seen .help-ring path {
+    animation: pen-draw 600ms 250ms ease-out backwards;
+  }
+  .motion .help-steps.is-seen li:nth-child(2) .help-ring path {
+    animation-delay: 500ms;
+  }
+  .motion .help-steps.is-seen li:nth-child(3) .help-ring path {
+    animation-delay: 750ms;
+  }
+
+  .motion .help-faq.is-seen .help-tick path {
+    animation: pen-draw 350ms 300ms ease-out backwards;
+  }
+  .motion .help-faq.is-seen > :nth-child(2) .help-tick path {
+    animation-delay: 500ms;
+  }
+}
+
+@keyframes write-on {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes wiggle {
+  25% {
+    transform: rotate(-7deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes pen-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* ---------- "How it works" on each Tool's page (written in at build time by seo.ts) ---------- */
+
+.tool-help {
+  margin-top: 2.5rem;
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+/* At the foot of a page: a ruled-paper band, like the one at the top, in the page's own column. */
+.tool-help-foot.paper {
+  margin-top: 2rem;
+  /* This band starts mid-page, so its rules fade in at the top instead of out at the bottom. */
+  background-image:
+    linear-gradient(to top, transparent calc(100% - var(--paper-fade)), var(--paper)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--rule-gap) - 1px),
+      var(--rule) calc(var(--rule-gap) - 1px) var(--rule-gap)
+    );
+}
+
+.tool-help-foot.paper::before {
+  background: linear-gradient(to top, var(--margin-line) calc(100% - var(--paper-fade)), transparent);
+}
+
+.tool-help-foot .intro-inner {
+  padding-top: 2rem;
+  padding-bottom: 2.5rem;
+}
+
+.tool-help-foot .intro-inner > * {
+  max-width: 44rem;
+}
+
+.tool-help h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+
+.tool-help h2 + .help-faq {
+  margin-top: 0;
+}
+
+.help-steps {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.help-steps li {
+  display: grid;
+  grid-template-columns: 2.6rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.help-num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.5rem;
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--red);
+}
+
+.help-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.help-ring path,
+.help-tick path {
+  fill: none;
+  stroke: var(--red);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.help-ring path {
+  stroke-width: 2.2;
+}
+
+.help-tick path {
+  stroke-width: 3.5;
+}
+
+.help-faq {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.help-faq dt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.help-tick {
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-top: 0.05rem;
+}
+
+.help-faq dd {
+  margin: 0.2rem 0 0 1.8rem;
+  color: var(--text-muted);
+}

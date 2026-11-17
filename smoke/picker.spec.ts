@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('spins the wheel, removes picked learners, undoes and resets', async ({ page }) => {
-  await expect(page).toHaveTitle('Class picker · Red Pen')
+  await expect(page).toHaveTitle('Random name picker wheel and groups · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Class picker')
   await pasteNames(page, NAMES.join('\n'))
   await expect(page.locator('#roster-summary')).toContainText('6 of 6 here')

@@ -39,7 +39,7 @@ test('makes a worksheet with a memo, keeps it on the device, and sends nothing a
   const outside = trackRequests(page, baseURL!)
   page.on('dialog', (d) => void d.accept())
   await page.goto(WORKSHEETS)
-  await expect(page).toHaveTitle('Worksheet maker · Red Pen')
+  await expect(page).toHaveTitle('Word search and crossword maker with memo · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Worksheet maker')
   await expect(page.locator('.intro.paper h1')).toHaveText('Worksheet maker')
 

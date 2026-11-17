@@ -45,7 +45,7 @@ async function noSidewaysScroll(page: Page): Promise<void> {
 
 test('opens on the list of classes with the privacy note', async ({ page }) => {
   await page.goto(CLASSES)
-  await expect(page).toHaveTitle('Class lists · Red Pen')
+  await expect(page).toHaveTitle('Class lists with Learner IDs · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Class lists')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Class lists')
   await expect(page.locator('.intro-hint')).toContainText('✓')
