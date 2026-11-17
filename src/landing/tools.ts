@@ -34,6 +34,13 @@ export const TOOLS: readonly Tool[] = [
     group: 'Assessments and marking',
   },
   {
+    name: 'Marks analysis',
+    blurb:
+      "Paste a class's marks and see the spread, bands, pass rate and plain-language insights, with a one-page report.",
+    path: 'marks/',
+    group: 'Assessments and marking',
+  },
+  {
     name: 'Combine PDFs',
     blurb: 'Join several PDFs into one, in the order you choose.',
     path: 'combine/',

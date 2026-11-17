@@ -10,7 +10,7 @@ import { pageAnswer, type LearnerMark } from '../core/marking'
 import { formatNumber, type Assessment, type ScannedPage } from '../core/model'
 import { safeFileName } from '../core/questions-csv'
 import { planFor } from '../core/versions'
-import { A4_HEIGHT, A4_WIDTH } from './layout'
+import { A4_HEIGHT, A4_WIDTH } from '../../shared/pdf/layout'
 
 export interface MarkedSheetPage {
   scan: ScannedPage
