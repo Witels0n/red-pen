@@ -115,6 +115,7 @@ _Avoid_: Mark sheet, gradebook, register
 **Category**:
 A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or ABS is left out and the other weights share its place.
 _Avoid_: Section, component (Topic is the MCQ term for a question tag)
+
 ### Question paper grids
 
 **Grid**:
@@ -128,6 +129,7 @@ _Avoid_: Bloom level (unless the taxonomy is Bloom's), difficulty (a separate, o
 **Tolerance**:
 How many percentage points a level's or topic's share may be off its target before the Grid flags it as over or under (5 by default).
 _Avoid_: Margin, allowance
+
 ### Marks analysis
 
 **Assessment card**:
@@ -179,6 +181,7 @@ _Avoid_: Effect, mode
 **First page**:
 In Photos to PDF, a page the teacher marks as the start of a learner's work. Page 1 and each First page start a new Part.
 _Avoid_: Divider, separator
+
 **Booklet**:
 A4 pages laid out two to a side on landscape sheets, in the order that makes an A5 booklet once the sheets are printed double-sided, stacked, folded and stapled along the fold. Padded with blank pages to a multiple of 4.
 _Avoid_: Brochure, pamphlet
@@ -194,6 +197,7 @@ _Avoid_: Shingling
 **Target size**:
 The size each compressed PDF must be under (for example 2 MB, for an email). Compress a PDF tries lower resolutions and picture quality until each file fits, or says it could not.
 _Avoid_: Limit, quota
+
 **Watermark**:
 Large, faint words (for example MEMO or DRAFT) that Stamp and number draws across a page, diagonally or straight across, as real text in the PDF.
 _Avoid_: Background, overlay
@@ -285,6 +289,7 @@ _Avoid_: Constraint (in UI text), condition
 **Locked group**:
 A group kept exactly as it is when the others are re-shuffled.
 _Avoid_: Fixed group, pinned group
+
 ### Worksheets
 
 **Worksheet**:
@@ -298,6 +303,7 @@ _Avoid_: Section, exercise, question (in UI text about the whole block)
 **Word bank**:
 A box of the answers in shuffled order, printed above a fill in the blanks, vocabulary or labelling Activity when the teacher ticks it.
 _Avoid_: Word list (that is the list of words to find in a word search)
+
 ### Certificates and labels
 
 **Recipient list**:

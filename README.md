@@ -45,10 +45,10 @@ site works offline and can be installed as an app.
 - **Enforced, not promised.** The CSP blocks every connection, remote script, stylesheet and font.
   Build tests fail if any page loses the policy or references a remote host.
 - **Self-hosted everything.** Fonts, pdf.js and its worker, and all libraries are bundled.
-- **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists,
-  MCQ assessments (with their results, never the scans) and question paper grids live in IndexedDB on the device. A signature is stored only if the teacher opts in.
-- **Minimal storage.** Settings, and saved worksheets, live in `localStorage` under `red-pen.<tool>.` keys. Class lists
-  and MCQ assessments (with their results, never the scans) live in IndexedDB on the device. A signature is stored only if the teacher opts in.
+- **Minimal storage.** Settings, and saved worksheets, live in `localStorage` under `red-pen.<tool>.`
+  keys. Class lists, MCQ assessments (with their results, never the scans) and question paper grids
+  live in IndexedDB on the device. Marks pasted into Marks analysis are never stored, and Class picker names are kept
+  only until the tab closes. A signature is stored only if the teacher opts in.
 
 Details and trade-offs: [ADR 0001](docs/adr/0001-client-only-processing.md).
 

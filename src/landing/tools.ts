@@ -38,10 +38,16 @@ export const TOOLS: readonly Tool[] = [
     blurb:
       'Design a markbook with weights, Categories and CAPS levels, then download an Excel file with live formulas.',
     path: 'markbook/',
+    group: 'Assessments and marking',
+  },
+  {
     name: 'Question paper grid',
     blurb:
       'The analysis grid for a test or exam: marks per cognitive level and topic against your targets, with a one-page PDF for your HoD.',
     path: 'grid/',
+    group: 'Assessments and marking',
+  },
+  {
     name: 'Marks analysis',
     blurb:
       "Paste a class's marks and see the spread, bands, pass rate and plain-language insights, with a one-page report.",
@@ -89,6 +95,9 @@ export const TOOLS: readonly Tool[] = [
     name: 'Compress a PDF',
     blurb: 'Shrink scanned PDFs to fit email and upload limits, with an optional target size.',
     path: 'compress/',
+    group: 'PDF',
+  },
+  {
     name: 'Stamp and number',
     blurb: 'Add a MEMO or DRAFT watermark, page numbers, a header and footer with your logo and the date to PDFs.',
     path: 'stamp/',
@@ -117,9 +126,15 @@ export const TOOLS: readonly Tool[] = [
     name: 'Class picker',
     blurb: 'Spin a wheel to pick a learner fairly, or make random groups with keep-apart and keep-together rules.',
     path: 'picker/',
+    group: 'Useful stuff',
+  },
+  {
     name: 'Worksheet maker',
     blurb: 'Word searches, crosswords, matching, fill in the blanks and more, printed as a worksheet with its memo.',
     path: 'worksheets/',
+    group: 'Useful stuff',
+  },
+  {
     name: 'Certificates and labels',
     blurb: 'Certificates, desk name cards, name labels, book labels and award slips for every learner on a list.',
     path: 'certificates/',
