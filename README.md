@@ -20,6 +20,7 @@ site works offline and can be installed as an app.
 | **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.         |
 | **MCQ assessments** | Builds a multiple-choice test (with optional pictures), prints one shared shuffled paper and answer sheets for a class list or pasted names, reads scans, and gives a marksheet and item analysis. |
 | **Cover sheets**   | A QR cover sheet per learner from a class list, so a batch scan splits into one PDF per learner.      |
+| **Markbook builder** | Designs a markbook (assessments, weights, Categories, CAPS levels, class summary) and downloads an .xlsx with live Excel formulas. |
 | **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                       |
 | **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
 | **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |

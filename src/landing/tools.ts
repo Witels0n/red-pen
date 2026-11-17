@@ -34,6 +34,13 @@ export const TOOLS: readonly Tool[] = [
     group: 'Assessments and marking',
   },
   {
+    name: 'Markbook builder',
+    blurb:
+      'Design a markbook with weights, Categories and CAPS levels, then download an Excel file with live formulas.',
+    path: 'markbook/',
+    group: 'Assessments and marking',
+  },
+  {
     name: 'Combine PDFs',
     blurb: 'Join several PDFs into one, in the order you choose.',
     path: 'combine/',

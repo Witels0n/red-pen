@@ -106,6 +106,16 @@ _Avoid_: Verification, checking, moderation
 Per question: the percentage correct, how answers spread across the options, the most-chosen wrong option with its misconception note, and flags for too easy (over 90%), too hard (under 30%) and negative discrimination (the top third of the class did worse than the bottom third).
 _Avoid_: Question stats, psychometrics
 
+### Markbooks
+
+**Markbook**:
+A spreadsheet of learners' marks per assessment, made by the Markbook builder as an .xlsx with live Excel formulas for percentages, Category averages, the weighted mark, levels and a class summary. Its design (assessments, weights, options) is saved in the browser without learner names.
+_Avoid_: Mark sheet, gradebook, register
+
+**Category**:
+A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or ABS is left out and the other weights share its place.
+_Avoid_: Section, component (Topic is the MCQ term for a question tag)
+
 ### PDF tools
 
 **Part**:
