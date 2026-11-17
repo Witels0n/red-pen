@@ -23,6 +23,8 @@ export const PAGES = {
   covers: 'covers/index.html',
   markbook: 'markbook/index.html',
   scan: 'scan/index.html',
+  booklet: 'booklet/index.html',
+  compress: 'compress/index.html',
 } as const
 
 /**

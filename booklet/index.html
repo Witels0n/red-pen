@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booklet printing · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Booklet printing</h1>
+          <p class="open-hint handwritten">Fold, staple, <span class="nowrap">hand out ✓</span></p>
+          <p class="privacy-note">Your PDF is processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag a PDF here, or</p>
+            <label class="button primary" for="file-input">Choose a PDF</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace" hidden>
+        <h2>Booklet printing</h2>
+        <div class="toolbar">
+          <label class="button" for="file-input">Open another PDF</label>
+          <span id="summary" class="summary"></span>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+
+        <form id="layout-form" class="panel" novalidate>
+          <fieldset>
+            <legend>Layout</legend>
+            <label class="mode">
+              <input type="radio" name="mode" value="booklet" checked />
+              <span>
+                Booklet
+                <small>A folded, stapled booklet: A4 pages become A5, two to a side, in the right order.</small>
+              </span>
+            </label>
+            <label class="mode">
+              <input type="radio" name="mode" value="nup" />
+              <span>
+                Several pages per sheet
+                <small>Shrink 2, 4, 6 or 9 pages onto each sheet, reading across then down.</small>
+              </span>
+            </label>
+            <label class="mode">
+              <input type="radio" name="mode" value="repeat" />
+              <span>
+                Copies of each page
+                <small>2 or 4 copies of the same page on one sheet, with lines to cut along. Good for slips.</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="options">
+            <label class="field">
+              <span>Sheet size</span>
+              <select id="sheet">
+                <option value="A4">A4</option>
+                <option value="A3">A3</option>
+              </select>
+              <small id="sheet-hint"></small>
+            </label>
+
+            <label class="field" data-modes="nup">
+              <span>Pages per sheet</span>
+              <select id="nup">
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="9">9</option>
+              </select>
+            </label>
+
+            <label class="field" data-modes="repeat">
+              <span>Copies per sheet</span>
+              <select id="repeat">
+                <option value="2">2</option>
+                <option value="4">4</option>
+              </select>
+            </label>
+
+            <label class="field" data-modes="nup repeat">
+              <span>Orientation</span>
+              <select id="orientation">
+                <option value="auto">Automatic</option>
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+              </select>
+            </label>
+
+            <label class="field" data-modes="booklet">
+              <span>Printer turns the sheet on the</span>
+              <select id="flip">
+                <option value="short">Short edge (usual for booklets)</option>
+                <option value="long">Long edge</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Margin (mm)</span>
+              <input id="margin" type="number" min="0" max="30" step="1" inputmode="decimal" />
+            </label>
+
+            <label class="field" data-modes="nup repeat">
+              <span>Gap between pages (mm)</span>
+              <input id="gap" type="number" min="0" max="30" step="1" inputmode="decimal" />
+            </label>
+
+            <label class="field" data-modes="booklet">
+              <span>Creep (mm per sheet)</span>
+              <input id="creep" type="number" min="0" max="2" step="0.05" inputmode="decimal" />
+              <small>0 ignores creep. For thick booklets, about 0.1 keeps the inner pages' outer edges clear.</small>
+            </label>
+
+            <label class="check" data-modes="booklet">
+              <input id="back-cover" type="checkbox" />
+              Keep the last page as the back cover
+            </label>
+
+            <label class="check" data-modes="nup">
+              <input id="borders" type="checkbox" />
+              Thin border around each page
+            </label>
+
+            <label class="check" data-modes="repeat">
+              <input id="cut-lines" type="checkbox" />
+              Cut lines
+            </label>
+          </div>
+        </form>
+
+        <section class="panel" aria-labelledby="preview-title">
+          <div class="preview-head">
+            <h3 id="preview-title">Preview</h3>
+            <span class="spacer"></span>
+            <button type="button" id="download" class="primary">Download PDF</button>
+          </div>
+          <p id="sheet-count" class="summary" aria-live="polite"></p>
+          <p id="print-tip" class="tip"></p>
+          <p id="thick-warning" class="warning" hidden>
+            This booklet has many sheets. Folding more than about 12 sheets at once is hard; consider creep or splitting
+            it into two booklets.
+          </p>
+          <ol id="sheets" class="sheets" aria-label="First sheets"></ol>
+          <details id="order" class="order">
+            <summary>Sheet order</summary>
+            <ol id="order-list"></ol>
+          </details>
+        </section>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+    </main>
+    <script type="module" src="/src/booklet/main.ts"></script>
+  </body>
+</html>

@@ -25,6 +25,8 @@ site works offline and can be installed as an app.
 | **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
 | **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |
 | **Photos to PDF**  | Phone photos to a PDF: crop corners with perspective correction, scan looks, reorder; or a PDF per learner in a zip. |
+| **Booklet printing** | A5 booklets in the right order for double-sided printing, 2 to 9 pages per sheet, or copies of a page with cut lines. |
+| **Compress a PDF** | Shrinks scanned PDFs by redrawing pages as JPEG pictures, several files at once, with an optional target size. |
 | **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.      |
 | **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
 | **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |

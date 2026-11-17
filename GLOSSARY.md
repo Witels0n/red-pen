@@ -141,6 +141,21 @@ _Avoid_: Effect, mode
 **First page**:
 In Photos to PDF, a page the teacher marks as the start of a learner's work. Page 1 and each First page start a new Part.
 _Avoid_: Divider, separator
+**Booklet**:
+A4 pages laid out two to a side on landscape sheets, in the order that makes an A5 booklet once the sheets are printed double-sided, stacked, folded and stapled along the fold. Padded with blank pages to a multiple of 4.
+_Avoid_: Brochure, pamphlet
+
+**Sheet**:
+One piece of paper that comes out of the printer. A booklet sheet has a front and a back, each carrying two pages.
+_Avoid_: Page (a page is one page of the original PDF)
+
+**Creep**:
+How far the inner sheets of a folded booklet stick out past the outer ones. Booklet printing can move the inner pages towards the fold to allow for it, or ignore it (the default).
+_Avoid_: Shingling
+
+**Target size**:
+The size each compressed PDF must be under (for example 2 MB, for an email). Compress a PDF tries lower resolutions and picture quality until each file fits, or says it could not.
+_Avoid_: Limit, quota
 
 ### QR codes
 
