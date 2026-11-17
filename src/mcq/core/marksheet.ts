@@ -91,7 +91,9 @@ export function itemAnalysisTable(
   a: Pick<Assessment, 'questions'>,
   stats: readonly ItemStats[],
 ): (string | number | null)[][] {
-  return [
+  // The Topic column only when some question has a Topic.
+  const withTopic = topicsOf(a.questions).length > 0
+  const table = [
     [
       'Question',
       'Topic',
@@ -126,6 +128,7 @@ export function itemAnalysisTable(
       ]
     }),
   ]
+  return withTopic ? table : table.map((row) => row.filter((_, i) => i !== 1))
 }
 
 export function flagText(flag: ItemStats['flags'][number]): string {

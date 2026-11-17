@@ -8,6 +8,7 @@
 //   marks             marks for the question (default 1)
 //   topic             the Topic (optional)
 //   misconception_A to misconception_E   why a learner might choose that wrong option (optional)
+//   (pictures are not in the CSV: they are kept in the Assessment and its Assessment file)
 //   options           how many options the question has, 2 to 5 (optional: without it, the last
 //                     option letter used by an option text, the answer or a misconception, and at
 //                     least 2; or 4 when the row uses none)
@@ -22,6 +23,9 @@ import {
   MIN_OPTIONS,
   newQuestion,
   OPTION_LETTERS,
+  optionImage,
+  withOptionImage,
+  withQuestionImage,
   optionFromLetter,
   type Question,
 } from './model'
@@ -147,6 +151,26 @@ export function questionsFromCsv(text: string): QuestionsCsvResult {
     return { ok: false, problems: shown }
   }
   return { ok: true, questions }
+}
+
+/** Whether any question has a picture (which a questions CSV cannot hold). */
+export function anyImages(questions: readonly Question[]): boolean {
+  return questions.some((q) => q.image || q.optionImages?.some(Boolean))
+}
+
+/**
+ * Imported questions with the pictures of the questions they replace, matched by question number:
+ * question 3's pictures stay with the new question 3, and an option's picture stays with its letter
+ * when the new question still has that option.
+ */
+export function keepImages(previous: readonly Question[], imported: readonly Question[]): Question[] {
+  return imported.map((q, i) => {
+    const old = previous[i]
+    if (!old) return q
+    let out = withQuestionImage(q, old.image ?? null)
+    for (let k = 0; k < out.options.length; k++) out = withOptionImage(out, k, optionImage(old, k))
+    return out
+  })
 }
 
 /** "Grade 9 test" -> "Grade 9 test questions.csv". */

@@ -1,11 +1,15 @@
 // Versions: shuffled orders of questions and options, planned from a stored seed so a reprint
-// always matches. Version A is the original order. Marking maps every Version back to it.
+// always matches. Version A is the shared paper: the questions in the entered order, with each
+// question's options shuffled once when the shared shuffle is on. Marking maps every Version back
+// to the entered ("original") order, so the Memo the teacher typed stays correct.
 import type { SheetQuestion, SheetVersion } from '../../shared/omr/types'
 import {
+  hasPrintedContent,
   identityPlan,
   MAX_VERSIONS,
   VERSION_LETTERS,
   type Assessment,
+  type PrintableQuestion,
   type Question,
   type VersionPlan,
   type VersionSettings,
@@ -35,16 +39,41 @@ export function shuffled<T>(items: readonly T[], random: () => number): T[] {
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
 
+/** The settings that decide the plans. `shuffleShared` is off when left out. */
+export type PlanSettings = Pick<VersionSettings, 'count' | 'shuffleQuestions' | 'shuffleOptions' | 'seed'> &
+  Partial<Pick<VersionSettings, 'shuffleShared'>>
+
+/** Whether the shared paper's options are shuffled: asked for, and there is a question paper to print. */
+export function sharedShuffleActive(
+  questions: readonly PrintableQuestion[],
+  settings: Pick<PlanSettings, 'shuffleShared'>,
+): boolean {
+  return settings.shuffleShared === true && hasPrintedContent(questions)
+}
+
 /**
- * The plans for every Version. Deterministic: the same questions (count and options per question)
- * and settings always give the same plans.
+ * The shared paper (Version A): the entered question order, and each question's options shuffled
+ * when `shuffle` is on. Each question has its own random stream, so adding a question at the end
+ * never changes how the others print.
  */
-export function planVersions(
-  questions: readonly Pick<Question, 'options'>[],
-  settings: Pick<VersionSettings, 'count' | 'shuffleQuestions' | 'shuffleOptions' | 'seed'>,
-): VersionPlan[] {
+export function sharedPlan(questions: readonly PrintableQuestion[], seed: number, shuffle: boolean): VersionPlan {
+  if (!shuffle) return identityPlan('A', questions)
+  return {
+    version: 'A',
+    questionOrder: range(questions.length),
+    optionOrder: questions.map((q, i) =>
+      shuffled(range(q.options.length), seededRandom((seed ^ Math.imul(i + 1, 0x85ebca6b) ^ 0x5bd1e995) >>> 0)),
+    ),
+  }
+}
+
+/**
+ * The plans for every Version. Deterministic: the same questions (count, options per question and
+ * whether there is anything to print) and settings always give the same plans.
+ */
+export function planVersions(questions: readonly PrintableQuestion[], settings: PlanSettings): VersionPlan[] {
   const count = Math.max(1, Math.min(MAX_VERSIONS, Math.round(settings.count)))
-  const plans = [identityPlan('A', questions)]
+  const plans = [sharedPlan(questions, settings.seed, sharedShuffleActive(questions, settings))]
   for (let v = 1; v < count; v++) {
     // A separate stream per Version, so adding Version C never changes Version B.
     const random = seededRandom((settings.seed ^ Math.imul(v, 0x9e3779b9)) >>> 0)
@@ -60,6 +89,11 @@ export function planVersions(
   return plans
 }
 
+/** Whether a plan prints every question's options in the entered order. */
+export function keepsOptionOrder(plan: VersionPlan): boolean {
+  return plan.optionOrder.every((o) => o.every((k, i) => k === i))
+}
+
 /** Whether stored plans still fit the questions (same count and options per question) and settings. */
 export function plansFit(a: Pick<Assessment, 'questions' | 'versions'>): boolean {
   const { plans, count } = a.versions
@@ -71,10 +105,68 @@ export function plansFit(a: Pick<Assessment, 'questions' | 'versions'>): boolean
   )
 }
 
-/** The Assessment with plans that fit its questions, re-planned only when they no longer fit. */
+/** How unevenly the correct answers fall across the letters on a plan: 0 is perfectly even. */
+export function spreadScore(questions: readonly Pick<Question, 'options' | 'answer'>[], plan: VersionPlan): number {
+  const letters = Math.max(0, ...questions.map((q) => q.options.length))
+  const counts = Array.from({ length: letters }, () => 0)
+  const expected = Array.from({ length: letters }, () => 0)
+  plan.questionOrder.forEach((original, position) => {
+    const q = questions[original]
+    if (q.answer === null) return
+    counts[plan.optionOrder[position].indexOf(q.answer)]++
+    for (let k = 0; k < q.options.length; k++) expected[k] += 1 / q.options.length
+  })
+  return counts.reduce((sum, c, k) => sum + (c - expected[k]) ** 2, 0)
+}
+
+const BALANCE_TRIES = 96
+
+/**
+ * A seed for the shared paper that spreads the Memo's correct answers as evenly as it can across
+ * the letters: the best of a fixed set of candidates derived from `seed` (so it is deterministic).
+ */
+export function balancedSeed(
+  questions: readonly (PrintableQuestion & Pick<Question, 'answer'>)[],
+  seed: number,
+): number {
+  let best = seed >>> 0
+  let bestScore = Infinity
+  for (let i = 0; i < BALANCE_TRIES; i++) {
+    const candidate = i === 0 ? seed >>> 0 : (seed ^ Math.imul(i, 0x27d4eb2d)) >>> 0
+    const score = spreadScore(questions, sharedPlan(questions, candidate, true))
+    if (score < bestScore - 1e-9) {
+      best = candidate
+      bestScore = score
+      if (score < 1e-9) break
+    }
+  }
+  return best
+}
+
+/**
+ * The Assessment with plans that fit its questions, re-planned only when they no longer fit. The
+ * shared paper is also re-planned when the shared shuffle turns on or off in effect, for example
+ * when the first question text or picture is added to an answers-only Assessment. When a single
+ * shared paper is planned afresh before anything is marked, its seed is chosen so the correct
+ * answers spread evenly across the letters.
+ */
 export function refreshVersions(a: Assessment): Assessment {
-  if (plansFit(a)) return a
-  return { ...a, versions: { ...a.versions, plans: planVersions(a.questions, a.versions) } }
+  const fits = plansFit(a)
+  const active = sharedShuffleActive(a.questions, a.versions)
+  if (fits) {
+    if (active !== keepsOptionOrder(a.versions.plans[0])) return a
+    // A shuffle that happens to keep every option in place is still the right plan.
+    if (active && keepsOptionOrder(sharedPlan(a.questions, a.versions.seed, true))) return a
+  }
+  let versions = a.versions
+  if (active && versions.count === 1 && a.scans.length === 0) {
+    const seed = balancedSeed(a.questions, versions.seed)
+    if (seed !== versions.seed) versions = { ...versions, seed }
+  }
+  if (!fits || versions !== a.versions)
+    return { ...a, versions: { ...versions, plans: planVersions(a.questions, versions) } }
+  const fresh = sharedPlan(a.questions, a.versions.seed, active)
+  return { ...a, versions: { ...a.versions, plans: [fresh, ...a.versions.plans.slice(1)] } }
 }
 
 /** New Version settings, always re-planned. */

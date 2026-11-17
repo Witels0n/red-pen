@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { columnLetter, guessColumns } from '../src/classes/guess-columns'
+import { columnLetter, guessColumns } from '../src/shared/classes/guess-columns'
 
 describe('guessColumns', () => {
   it('finds first name then surname, and an ID column', () => {

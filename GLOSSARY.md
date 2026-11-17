@@ -63,7 +63,7 @@ _Avoid_: Pen colour, marker colour, annotation colour
 ### MCQ assessments
 
 **Assessment**:
-The questions, options, marks, Memo, Topics and Versions of one multiple-choice test, plus its results (the reads and Review decisions, never the scans). Saved in the browser and exportable as an Assessment file (JSON) with its Class list link.
+The questions, options, pictures, marks, Memo, Topics and Versions of one multiple-choice test, its Learner list or Class list link, plus its results (the reads and Review decisions, never the scans). Saved in the browser and exportable as an Assessment file (JSON).
 _Avoid_: Quiz, test (a Test is one learner's scanned work in the marker), exam
 
 **Memo**:
@@ -71,12 +71,24 @@ The correct option for each question. Correcting it re-marks every learner at on
 _Avoid_: Answer key, key, solutions
 
 **Topic**:
-A tag on a question (for example "Fractions"), used for per-learner and class breakdowns and for "Topics to revise".
+An optional tag on a question (for example "Fractions"), used for per-learner and class breakdowns and for "Topics to revise". Questions without one count only toward the total; an Assessment without any Topics shows no Topic columns, sections or slip parts.
 _Avoid_: Category, tag, skill
 
+**Shared paper**:
+The one question paper every learner gets by default (Version A). Its questions are in the order the teacher entered them, and each question's options are shuffled once, the same for everyone, so the correct answers spread across the letters. The teacher types the Memo in their own (entered) order; Build shows where each correct answer is "Printed as", and marking maps the printed letters back. With no question text or pictures (the teacher's own paper), the options print in the entered order.
+_Avoid_: Master copy, form
+
 **Version**:
-A shuffled order of questions and options (A, B, C, D). Version A is the original order; marking maps answers on every Version back to it. The shuffle is seeded and stored, so a reprint matches.
+A shuffled order of questions and options (A, B, C, D), an advanced option for 2 to 4 different papers. Version A is the shared paper; marking maps answers on every Version back to the entered order. The shuffle is seeded and stored, so a reprint matches.
 _Avoid_: Variant, form, paper
+
+**Learner list**:
+The learners an Assessment is written by when they do not come from a saved Class list: pasted names, a number of learners (IDs only) or an imported CSV or Excel file. Stored with the Assessment (and in its Assessment file, names included), used for printing, marking and results exactly like a Class list, and can be saved as a Class list for reuse.
+_Avoid_: Roster, embedded class
+
+**Picture**:
+An optional image in a question or in one of its options, added in Build and printed in the question booklet. Stored in the Assessment as a downscaled PNG or JPEG; it follows its option through any shuffle. Not in the questions CSV.
+_Avoid_: Image (in UI text), attachment
 
 **Answer sheet**:
 The A4 bubble sheet a learner fills in, with corner squares and a QR code holding the Assessment code, the Version, the Learner ID and the page. Never a name.

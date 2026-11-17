@@ -851,7 +851,7 @@ textarea {
 
 .option-row {
   display: grid;
-  grid-template-columns: 1.8rem 1fr 1fr;
+  grid-template-columns: 4.6rem minmax(0, 1fr) minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.4rem;
 }
@@ -1558,6 +1558,257 @@ button.sort {
   min-width: 56rem;
 }
 
+/* ---------- Pictures and the shared paper (Build) ---------- */
+
+.q-printed {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--info-soft);
+  color: var(--info-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stem-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem 1rem;
+}
+
+.stem-row .field.grow {
+  flex: 1 1 18rem;
+}
+
+.picture-field {
+  flex: 0 0 auto;
+}
+
+.option-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+
+.option-key .option-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.option-printed {
+  color: var(--info-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.picture-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  padding: 0.25rem;
+  border: 1px dashed var(--hairline);
+  border-radius: 6px;
+}
+
+.picture-slot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.picture-slot.drag {
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.picture-slot.busy {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.picture-slot.has-picture {
+  border-style: solid;
+  background: var(--surface);
+}
+
+.picture-slot .thumb {
+  display: block;
+  width: auto;
+  max-width: 7rem;
+  height: auto;
+  max-height: 4.5rem;
+  border-radius: 3px;
+  background: #fff;
+  object-fit: contain;
+}
+
+.picture-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.picture-status {
+  margin: 0.5rem 0 0;
+}
+
+.check.disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+details.advanced {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--hairline);
+}
+
+details.advanced > summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- Who is writing? (Print) ---------- */
+
+.source-choices {
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin-bottom: 0.9rem;
+}
+
+.source-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.source-body textarea {
+  min-height: 9rem;
+  font-family: inherit;
+}
+
+.current-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: var(--ok-soft);
+}
+
+.current-list .summary {
+  margin: 0;
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.save-class input {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.learner-preview {
+  max-height: 18rem;
+  overflow: auto;
+}
+
+.learner-table td.id {
+  width: 7rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.learner-table tr.problem td {
+  background: var(--red-soft);
+}
+
+.problem-text {
+  display: block;
+  color: var(--error-text);
+  font-size: 0.9rem;
+}
+
+.summary.has-problems {
+  color: var(--error-text);
+}
+
+.columns {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.columns legend {
+  padding: 0;
+  font-weight: 700;
+}
+
+.column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.4rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.column.chosen {
+  border-color: var(--red);
+}
+
+.column-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.column-title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.column-sample {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.column-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.order {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.row-fields .help.grow {
+  flex: 1 1 14rem;
+  align-self: flex-end;
+  margin: 0;
+}
+
 /* ---------- Small screens ---------- */
 
 @media (max-width: 640px) {
@@ -1584,10 +1835,10 @@ button.sort {
   }
 
   .option-row {
-    grid-template-columns: 1.6rem 1fr;
+    grid-template-columns: 3.6rem minmax(0, 1fr);
   }
 
-  .option-row > :last-child {
+  .option-row > :nth-child(n + 3) {
     grid-column: 2;
   }
 

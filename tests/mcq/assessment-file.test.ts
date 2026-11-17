@@ -35,7 +35,7 @@ describe('Assessment file', () => {
     const parsed = JSON.parse(text)
     expect(parsed).toMatchObject({
       format: FILE_FORMAT,
-      schema: 1,
+      schema: 2,
       exportedAt: '2026-11-17T08:00:00.000Z',
       className: 'Grade 7B',
     })
@@ -58,7 +58,7 @@ describe('Assessment file', () => {
       ok: false,
       problems: ['This is not a Red Pen Assessment file.'],
     })
-    const newer = assessmentFromFile(JSON.stringify({ format: FILE_FORMAT, schema: 2, assessment: {} }))
+    const newer = assessmentFromFile(JSON.stringify({ format: FILE_FORMAT, schema: 3, assessment: {} }))
     expect(newer).toEqual({ ok: false, problems: [expect.stringContaining('newer version of Red Pen')] })
   })
 

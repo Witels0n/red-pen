@@ -98,26 +98,46 @@ export function changedWhen(ms: number, now = Date.now()): string {
 
 let cancelOpenConfirm: (() => void) | null = null
 
-/** An in-page "Are you sure?" with two buttons, placed in `host`. Resolves true on confirm. */
-export function confirmInPage(host: HTMLElement, message: string, confirmLabel: string): Promise<boolean> {
+/**
+ * An in-page question with a button per choice and Cancel, placed in `host`. Resolves to the chosen
+ * value, or null on Cancel (or Escape). The first choice is drawn as `firstClass` (for example danger).
+ */
+export function choiceInPage<T extends string>(
+  host: HTMLElement,
+  message: string,
+  choices: readonly { value: T; label: string }[],
+  firstClass = 'primary',
+): Promise<T | null> {
   cancelOpenConfirm?.()
   return new Promise((resolve) => {
     const box = h('div', { class: 'confirm', role: 'alertdialog', 'aria-label': message })
-    const done = (ok: boolean) => {
+    const done = (value: T | null) => {
       cancelOpenConfirm = null
       box.remove()
-      resolve(ok)
+      resolve(value)
     }
-    cancelOpenConfirm = () => done(false)
-    const yes = h('button', { type: 'button', class: 'danger small', text: confirmLabel, onclick: () => done(true) })
-    const no = h('button', { type: 'button', class: 'small', text: 'Cancel', onclick: () => done(false) })
+    cancelOpenConfirm = () => done(null)
+    const buttons = choices.map((c, i) =>
+      h('button', {
+        type: 'button',
+        class: i === 0 ? `${firstClass} small` : 'small',
+        text: c.label,
+        onclick: () => done(c.value),
+      }),
+    )
+    const no = h('button', { type: 'button', class: 'small', text: 'Cancel', onclick: () => done(null) })
     box.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') done(false)
+      if (e.key === 'Escape') done(null)
     })
-    box.append(h('p', { text: message }), h('div', { class: 'actions' }, yes, no))
+    box.append(h('p', { text: message }), h('div', { class: 'actions' }, ...buttons, no))
     host.append(box)
     no.focus()
   })
+}
+
+/** An in-page "Are you sure?" with two buttons, placed in `host`. Resolves true on confirm. */
+export async function confirmInPage(host: HTMLElement, message: string, confirmLabel: string): Promise<boolean> {
+  return (await choiceInPage(host, message, [{ value: 'yes', label: confirmLabel }], 'danger')) === 'yes'
 }
 
 /** A way to find the focused control again after a screen is re-drawn: its id, or its name and value. */

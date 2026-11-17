@@ -1,21 +1,48 @@
-// The question booklet for one Version, and the Memo for every Version.
+// The question booklet for one Version (with pictures), and the Memo for every Version.
+import type { PDFImage, PDFPage } from 'pdf-lib'
 import type { SheetVersion } from '../../shared/omr/types'
-import { letter, marksText, totalMarks, type Assessment } from '../core/model'
-import { planFor, printedMemo } from '../core/versions'
-import { CONTENT_WIDTH, fit, Flow, footers, hline, MARGIN, MM, MUTED, newDocument, text, wrap } from './layout'
+import { imageBytes } from '../core/images'
+import { letter, marksText, optionImage, topicsOf, totalMarks, type Assessment, type VersionPlan } from '../core/model'
+import { keepsOptionOrder, planFor, printedMemo } from '../core/versions'
+import { layoutBooklet, type BookletQuestion } from './booklet-layout'
+import {
+  A4_HEIGHT,
+  A4_WIDTH,
+  CONTENT_WIDTH,
+  fit,
+  Flow,
+  footers,
+  hline,
+  MARGIN,
+  MM,
+  MUTED,
+  newDocument,
+  text,
+  wrap,
+} from './layout'
 
-const QUESTION_SIZE = 11
-const OPTION_SIZE = 10.5
-const LEADING = 1.35
+/** The booklet's questions in a Version's order, with their options in that Version's order. */
+export function bookletQuestions(a: Assessment, plan: VersionPlan): BookletQuestion[] {
+  return plan.questionOrder.map((original, position) => {
+    const q = a.questions[original]
+    return {
+      number: position + 1,
+      marks: q.marks === 1 ? '' : `(${marksText(q.marks)})`,
+      text: q.text,
+      image: q.image ?? null,
+      options: plan.optionOrder[position].map((o) => ({ text: q.options[o], image: optionImage(q, o) })),
+    }
+  })
+}
 
-/** A question booklet for one Version: questions and options in that Version's order. */
+/** A question booklet for one Version: questions, options and pictures in that Version's order. */
 export async function renderBookletPdf(a: Assessment, version: SheetVersion): Promise<Uint8Array> {
   const plan = planFor(a, version)
   if (!plan) throw new Error(`This assessment has no Version ${version}.`)
   const { doc, fonts } = await newDocument(`${a.title}, Version ${version}`)
   const versioned = a.versions.count > 1
 
-  const flow = new Flow(doc, fonts, (page) => {
+  const header = (page: PDFPage) => {
     const top = 16 * MM
     text(page, fonts, fit(fonts.bold, a.title, 10, CONTENT_WIDTH - 40 * MM), MARGIN, top, {
       font: fonts.bold,
@@ -29,86 +56,117 @@ export async function renderBookletPdf(a: Assessment, version: SheetVersion): Pr
       })
     hline(page, MARGIN, MARGIN + CONTENT_WIDTH, top + 3 * MM)
     return top + 10 * MM
-  })
+  }
 
   // Title block on the first page.
+  const first = doc.addPage([A4_WIDTH, A4_HEIGHT])
+  let y = header(first)
   const titleLines = wrap(fonts.bold, a.title, 18, CONTENT_WIDTH)
   for (const line of titleLines) {
-    text(flow.page, fonts, line, MARGIN, flow.y + 14, { font: fonts.bold, size: 18 })
-    flow.y += 18 * 1.25
+    text(first, fonts, line, MARGIN, y + 14, { font: fonts.bold, size: 18 })
+    y += 18 * 1.25
   }
   const details = [
     `${a.questions.length} question${a.questions.length === 1 ? '' : 's'}`,
     `${marksText(totalMarks(a.questions))}`,
     ...(versioned ? [`Version ${version}`] : []),
   ].join('   |   ')
-  text(flow.page, fonts, details, MARGIN, flow.y + 6, { size: 10, color: MUTED })
-  flow.y += 8 * MM
+  text(first, fonts, details, MARGIN, y + 6, { size: 10, color: MUTED })
+  y += 8 * MM
   const instructions = wrap(
     fonts.italic,
-    'Answer every question on your answer sheet: fill the circle for the answer you choose. Make sure the Version on your answer sheet matches this booklet.',
+    versioned
+      ? 'Answer every question on your answer sheet: fill the circle for the answer you choose. Make sure the Version on your answer sheet matches this booklet.'
+      : 'Answer every question on your answer sheet: fill the circle for the answer you choose.',
     9.5,
     CONTENT_WIDTH,
   )
   for (const line of instructions) {
-    text(flow.page, fonts, line, MARGIN, flow.y + 8, { font: fonts.italic, size: 9.5, color: MUTED })
-    flow.y += 9.5 * LEADING
+    text(first, fonts, line, MARGIN, y + 8, { font: fonts.italic, size: 9.5, color: MUTED })
+    y += 9.5 * 1.35
   }
-  flow.y += 6 * MM
+  y += 6 * MM
 
-  const numberWidth = 10 * MM
-  const textX = MARGIN + numberWidth
-  const textWidth = CONTENT_WIDTH - numberWidth
-  const optionX = textX + 7 * MM
-  const optionWidth = textWidth - 7 * MM
+  const layout = layoutBooklet(
+    bookletQuestions(a, plan),
+    { left: MARGIN, width: CONTENT_WIDTH, firstTop: y, top: 26 * MM, bottom: A4_HEIGHT - 20 * MM },
+    (s, size, width) => wrap(fonts.regular, s, size, width),
+  )
+  const pages = [first]
+  while (pages.length < layout.pages) {
+    const page = doc.addPage([A4_WIDTH, A4_HEIGHT])
+    header(page)
+    pages.push(page)
+  }
 
-  plan.questionOrder.forEach((original, position) => {
-    const q = a.questions[original]
-    const questionLines = q.text.trim() ? wrap(fonts.regular, q.text, QUESTION_SIZE, textWidth) : []
-    const optionLines = plan.optionOrder[position].map((o) =>
-      q.options[o].trim() ? wrap(fonts.regular, q.options[o], OPTION_SIZE, optionWidth) : [''],
-    )
-    const qHeight = Math.max(1, questionLines.length) * QUESTION_SIZE * LEADING
-    const oHeight = optionLines.reduce((s, l) => s + l.length * OPTION_SIZE * LEADING + 1.5, 0)
-    const marks = q.marks === 1 ? '' : `(${marksText(q.marks)})`
-    // Keep a question with its options when it fits on one page; a very long one may run on.
-    if (qHeight + oHeight < flow.bottom - 40 * MM) flow.ensure(qHeight + oHeight + 2 * MM)
-    else flow.ensure(qHeight + 3 * OPTION_SIZE * LEADING)
-
-    text(flow.page, fonts, `${position + 1}.`, MARGIN, flow.y + QUESTION_SIZE, {
-      font: fonts.bold,
-      size: QUESTION_SIZE,
-    })
-    if (marks)
-      text(flow.page, fonts, marks, MARGIN + CONTENT_WIDTH, flow.y + QUESTION_SIZE, {
-        size: 9,
-        color: MUTED,
-        align: 'right',
-      })
-    if (questionLines.length === 0) {
-      flow.y += QUESTION_SIZE * LEADING
+  // Each picture is embedded once, however often it is drawn.
+  const embedded = new Map<string, PDFImage>()
+  const embed = async (src: string): Promise<PDFImage> => {
+    let image = embedded.get(src)
+    if (!image) {
+      const { type, bytes } = imageBytes({ src })
+      image = type === 'image/png' ? await doc.embedPng(bytes) : await doc.embedJpg(bytes)
+      embedded.set(src, image)
     }
-    for (const line of questionLines) {
-      flow.ensure(QUESTION_SIZE * LEADING)
-      text(flow.page, fonts, line, textX, flow.y + QUESTION_SIZE, { size: QUESTION_SIZE })
-      flow.y += QUESTION_SIZE * LEADING
-    }
-    flow.y += 1.5 * MM
-    optionLines.forEach((lines, k) => {
-      flow.ensure(OPTION_SIZE * LEADING)
-      text(flow.page, fonts, letter(k), textX, flow.y + OPTION_SIZE, { font: fonts.bold, size: OPTION_SIZE })
-      lines.forEach((line, i) => {
-        if (i > 0) flow.ensure(OPTION_SIZE * LEADING)
-        text(flow.page, fonts, line, optionX, flow.y + OPTION_SIZE, { size: OPTION_SIZE })
-        flow.y += OPTION_SIZE * LEADING
+    return image
+  }
+  for (const p of layout.placed) {
+    const page = pages[p.page]
+    if (p.kind === 'text') {
+      text(page, fonts, p.text, p.x, p.y, {
+        font: p.bold ? fonts.bold : fonts.regular,
+        size: p.size,
+        ...(p.muted ? { color: MUTED } : {}),
+        ...(p.align ? { align: p.align } : {}),
       })
-      flow.y += 1.5
-    })
-    flow.y += 5 * MM
-  })
+    } else {
+      const q = a.questions[plan.questionOrder[p.question]]
+      const source = p.option === null ? q.image : optionImage(q, plan.optionOrder[p.question][p.option])
+      if (!source) continue
+      page.drawImage(await embed(source.src), {
+        x: p.x,
+        y: page.getHeight() - p.y - p.height,
+        width: p.width,
+        height: p.height,
+      })
+    }
+  }
 
   footers(doc, fonts, versioned ? `${a.title}, Version ${version}` : a.title)
   return doc.save()
+}
+
+/** One column of the Memo table: its title, where it sits, and the text per printed question. */
+export interface MemoColumn {
+  key: 'q' | 'answer' | 'entered' | 'marks' | 'topic' | 'original'
+  title: string
+  cells: string[]
+}
+
+/**
+ * The Memo for one Version as a table. "Entered as" (the letter in the teacher's own order) shows
+ * when the options print in another order; the Topic column only when the Assessment has Topics;
+ * "Original Q" only with more than one Version.
+ */
+export function memoTable(a: Assessment, plan: VersionPlan): MemoColumn[] {
+  const memo = printedMemo(a, plan)
+  const questions = plan.questionOrder.map((o) => a.questions[o])
+  const columns: MemoColumn[] = [
+    { key: 'q', title: 'Q', cells: questions.map((_, p) => String(p + 1)) },
+    { key: 'answer', title: 'Answer', cells: memo.map((m) => (m === null ? 'Not set' : letter(m))) },
+  ]
+  if (!keepsOptionOrder(plan))
+    columns.push({
+      key: 'entered',
+      title: 'Entered as',
+      cells: questions.map((q) => (q.answer === null ? '' : letter(q.answer))),
+    })
+  columns.push({ key: 'marks', title: 'Marks', cells: questions.map((q) => String(q.marks)) })
+  if (topicsOf(a.questions).length)
+    columns.push({ key: 'topic', title: 'Topic', cells: questions.map((q) => q.topic.trim()) })
+  if (a.versions.count > 1)
+    columns.push({ key: 'original', title: 'Original Q', cells: plan.questionOrder.map((o) => String(o + 1)) })
+  return columns
 }
 
 /** The Memo: for each Version, the correct letter per question as printed, with marks and Topic. */
@@ -126,51 +184,63 @@ export async function renderMemoPdf(a: Assessment): Promise<Uint8Array> {
       size: 10.5,
       color: MUTED,
     })
-    flow.y += 9 * MM
+    flow.y += 6 * MM
+    const columns = memoTable(a, plan)
+    if (columns.some((c) => c.key === 'entered')) {
+      const note = wrap(
+        fonts.italic,
+        'The options are printed in a shuffled order. Answer is the letter on the printed paper; Entered as is the letter you typed in Build.',
+        9,
+        CONTENT_WIDTH,
+      )
+      for (const line of note) {
+        text(flow.page, fonts, line, MARGIN, flow.y + 4, { font: fonts.italic, size: 9, color: MUTED })
+        flow.y += 9 * 1.35
+      }
+    }
+    flow.y += 3 * MM
 
-    const memo = printedMemo(a, plan)
-    const cols = {
+    const x: Record<MemoColumn['key'], number> = {
       q: MARGIN,
       answer: MARGIN + 14 * MM,
-      marks: MARGIN + 30 * MM,
-      topic: MARGIN + 50 * MM,
-      orig: MARGIN + CONTENT_WIDTH,
+      entered: MARGIN + 30 * MM,
+      marks: MARGIN + (columns.some((c) => c.key === 'entered') ? 52 : 30) * MM,
+      topic: MARGIN + (columns.some((c) => c.key === 'entered') ? 70 : 50) * MM,
+      original: MARGIN + CONTENT_WIDTH,
     }
     const row = 6 * MM
     const head = () => {
-      for (const [label, x, align] of [
-        ['Q', cols.q, 'left'],
-        ['Answer', cols.answer, 'left'],
-        ['Marks', cols.marks, 'left'],
-        ['Topic', cols.topic, 'left'],
-        ...(versioned ? [['Original Q', cols.orig, 'right']] : []),
-      ] as [string, number, 'left' | 'right'][]) {
-        text(flow.page, fonts, label, x, flow.y + 4, { font: fonts.bold, size: 9, color: MUTED, align })
+      for (const c of columns) {
+        text(flow.page, fonts, c.title, x[c.key], flow.y + 4, {
+          font: fonts.bold,
+          size: 9,
+          color: MUTED,
+          align: c.key === 'original' ? 'right' : 'left',
+        })
       }
       flow.y += 3 * MM
       hline(flow.page, MARGIN, MARGIN + CONTENT_WIDTH, flow.y)
       flow.y += 1 * MM
     }
     head()
-    plan.questionOrder.forEach((original, position) => {
+    plan.questionOrder.forEach((_, position) => {
       if (flow.y + row > flow.bottom) {
         flow.newPage()
         head()
       }
-      const q = a.questions[original]
       const y = flow.y + 4.2 * MM
-      text(flow.page, fonts, String(position + 1), cols.q, y, { font: fonts.bold, size: 10 })
-      const answer = memo[position]
-      text(flow.page, fonts, answer === null ? 'Not set' : letter(answer), cols.answer, y, {
-        font: answer === null ? fonts.italic : fonts.bold,
-        size: answer === null ? 9 : 11,
-      })
-      text(flow.page, fonts, String(q.marks), cols.marks, y, { size: 10 })
-      text(flow.page, fonts, fit(fonts.regular, q.topic, 10, cols.orig - cols.topic - 22 * MM), cols.topic, y, {
-        size: 10,
-      })
-      if (versioned)
-        text(flow.page, fonts, String(original + 1), cols.orig, y, { size: 10, color: MUTED, align: 'right' })
+      for (const c of columns) {
+        const cell = c.cells[position]
+        if (c.key === 'answer') {
+          const unset = cell === 'Not set'
+          text(flow.page, fonts, cell, x.answer, y, { font: unset ? fonts.italic : fonts.bold, size: unset ? 9 : 11 })
+        } else if (c.key === 'q') text(flow.page, fonts, cell, x.q, y, { font: fonts.bold, size: 10 })
+        else if (c.key === 'topic')
+          text(flow.page, fonts, fit(fonts.regular, cell, 10, x.original - x.topic - 22 * MM), x.topic, y, { size: 10 })
+        else if (c.key === 'original')
+          text(flow.page, fonts, cell, x.original, y, { size: 10, color: MUTED, align: 'right' })
+        else text(flow.page, fonts, cell, x[c.key], y, { size: 10, ...(c.key === 'entered' ? { color: MUTED } : {}) })
+      }
       flow.y += row
       hline(flow.page, MARGIN, MARGIN + CONTENT_WIDTH, flow.y, 0.3)
     })

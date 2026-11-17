@@ -1,15 +1,21 @@
 // The open Assessment and everything derived from it (collation, marks, names), kept in step.
 // Every change goes through `update`, which re-marks from the stored reads and saves shortly after.
 import { getClass, type ClassList } from '../../shared/classes'
+import { rosterFor } from '../core/learners'
 import { collate, markAll, type Collation, type LearnerMark } from '../core/marking'
-import type { Assessment } from '../core/model'
+import { upgradeAssessment, type Assessment } from '../core/model'
 import { refreshVersions } from '../core/versions'
 import { saveAssessment } from '../storage'
 
 export interface Workspace {
   assessment: Assessment
-  /** The linked Class list, when it is on this device. */
+  /**
+   * The learners in use, whatever their source: the linked Class list (when it is on this device)
+   * or the Assessment's own Learner list, as a Class list. Null when there are none.
+   */
   classList: ClassList | null
+  /** The saved Class list linked in Print, when it is on this device (even while another source is chosen). */
+  savedClass: ClassList | null
   collation: Collation
   marks: LearnerMark[]
   /** Learner ID to name, from the Class list. */
@@ -33,11 +39,12 @@ const saveListeners = new Set<(s: SaveState, message?: string) => void>()
 let saveTimer: ReturnType<typeof setTimeout> | undefined
 let saving: Promise<void> = Promise.resolve()
 
-function derive(assessment: Assessment, classList: ClassList | null): Workspace {
+function derive(assessment: Assessment, savedClass: ClassList | null): Workspace {
+  const classList = rosterFor(assessment, savedClass)
   const roster = classList ? new Set(classList.learners.map((l) => l.id)) : undefined
   const collation = collate(assessment, roster)
   const names = new Map(classList?.learners.flatMap((l) => (l.name ? [[l.id, l.name] as const] : [])) ?? [])
-  return { assessment, classList, collation, marks: markAll(assessment, collation.learners), names }
+  return { assessment, classList, savedClass, collation, marks: markAll(assessment, collation.learners), names }
 }
 
 export function workspace(): Workspace {
@@ -53,7 +60,7 @@ export async function openWorkspace(a: Assessment): Promise<Workspace> {
   await flushSave()
   let classList: ClassList | null = null
   if (a.print.classId) classList = (await getClass(a.print.classId).catch(() => undefined)) ?? null
-  current = derive(refreshVersions(a), classList)
+  current = derive(refreshVersions(upgradeAssessment(a)), classList)
   return current
 }
 
@@ -77,16 +84,19 @@ function notify(info: ChangeInfo): void {
 /** Changes the open Assessment, re-marks it, tells every screen and saves it shortly after. */
 export function update(change: (a: Assessment) => Assessment, info: ChangeInfo = {}): void {
   const w = workspace()
-  current = derive(refreshVersions(change(w.assessment)), w.classList)
+  current = derive(refreshVersions(change(w.assessment)), w.savedClass)
   notify(info)
   // Typing is saved after a pause; decisions, reads and settings straight away.
   scheduleSave(info.textOnly ? 400 : 0)
 }
 
-/** Links a Class list (or none) and re-marks against it. */
+/** Links a saved Class list (or none) as the learners and re-marks against it. */
 export function setClassList(classList: ClassList | null): void {
   const w = workspace()
-  const assessment = { ...w.assessment, print: { ...w.assessment.print, classId: classList?.id ?? null } }
+  const assessment = {
+    ...w.assessment,
+    print: { ...w.assessment.print, learnerSource: 'class' as const, classId: classList?.id ?? null },
+  }
   current = derive(assessment, classList)
   notify({})
   scheduleSave()
