@@ -11,6 +11,7 @@ import {
 } from './storage'
 import { el, plural, showMessage } from './ui/dom'
 import { exportAssessmentFile, showHome } from './ui/home'
+import { resetLearnerDrafts } from './ui/learners-panel'
 import { STEPS, type StepId, stepView } from './ui/steps'
 import { closeWorkspace, flushSave, hasWorkspace, onChange, onSaveState, openWorkspace, workspace } from './ui/state'
 
@@ -76,6 +77,7 @@ function route(): Promise<void> {
         return route()
       }
       await openWorkspace(a)
+      resetLearnerDrafts()
       window.scrollTo(0, 0)
     }
     homeView.hidden = true

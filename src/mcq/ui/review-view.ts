@@ -238,12 +238,16 @@ function learnerPicker(current: string | undefined, onPick: (id: string) => void
 
 function identityCard(item: Extract<ReviewItem, { kind: 'identity' }>): HTMLElement[] {
   const p = page(item.pageId)!
-  const { classList } = workspace()
+  const { classList, assessment } = workspace()
+  const listName =
+    assessment.print.learnerSource === 'class' && classList
+      ? `the Class list ${classList.name}`
+      : 'the list of learners'
   const reason =
     item.reason === 'unknown'
       ? 'Whose sheet is this? The code does not name a learner: a spare sheet, a Bubbled ID that could not be read, or a code that could not be read.'
       : item.reason === 'not-on-list'
-        ? `Learner ID ${item.readId} is not on the Class list${classList ? ` ${classList.name}` : ''}.`
+        ? `Learner ID ${item.readId} is not on ${listName}.`
         : `The Learner ID circles read as ${item.readId}, but not clearly.`
   const assign = (id: string) => changePage(p.id, (x) => ({ ...x, learnerId: id, learnerConfirmed: true }))
   return [

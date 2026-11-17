@@ -1,6 +1,6 @@
 // Where Assessments are kept: IndexedDB in this browser (its own database), never anywhere else.
 // Falls back to memory when the browser blocks storage, and tests use memory directly.
-import type { Assessment } from './core/model'
+import { upgradeAssessment, type Assessment } from './core/model'
 
 export interface AssessmentStorage {
   list(): Promise<Assessment[]>
@@ -123,13 +123,14 @@ async function guarded<T>(work: () => Promise<T>): Promise<T> {
   }
 }
 
-/** Every saved Assessment, most recently changed first. */
+/** Every saved Assessment, most recently changed first. Ones saved by an earlier Red Pen are brought up to date. */
 export function listAssessments(): Promise<Assessment[]> {
-  return guarded(async () => (await storage().list()).sort((a, b) => b.updatedAt - a.updatedAt))
+  return guarded(async () => (await storage().list()).map(upgradeAssessment).sort((a, b) => b.updatedAt - a.updatedAt))
 }
 
-export function getAssessment(id: string): Promise<Assessment | undefined> {
-  return guarded(() => storage().get(id))
+export async function getAssessment(id: string): Promise<Assessment | undefined> {
+  const a = await guarded(() => storage().get(id))
+  return a && upgradeAssessment(a)
 }
 
 /** Saves (adds or replaces) and returns what was stored, with `updatedAt` set to now. */

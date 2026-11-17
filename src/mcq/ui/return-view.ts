@@ -1,5 +1,6 @@
 // Return: feedback slips for every learner, and each learner's marked answer sheet in a zip.
 import { zipSync } from 'fflate'
+import { topicsOf } from '../core/model'
 import { safeFileName } from '../core/questions-csv'
 import { readTemplates } from '../core/sheets'
 import { renderFeedbackPdf, type SlipsPerPage } from '../pdf/feedback'
@@ -51,7 +52,9 @@ function feedbackPanel(): HTMLElement {
     h('h2', { id: 'feedback-title', text: 'Feedback slips' }),
     h('p', {
       class: 'help',
-      text: 'A slip per learner with their score, their marks per Topic, the Topics to revise (under 50%) and the questions to look at again, numbered as on their own Version.',
+      text: topicsOf(workspace().assessment.questions).length
+        ? 'A slip per learner with their score, their marks per Topic, the Topics to revise (under 50%) and the questions to look at again, numbered as on their own Version.'
+        : 'A slip per learner with their score and the questions to look at again, numbered as on their own Version. Add Topics in Build to show marks per Topic too.',
     }),
     choice,
     h('div', { class: 'actions' }, button),

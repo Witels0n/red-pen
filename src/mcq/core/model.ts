@@ -1,5 +1,6 @@
 // The Assessment: questions, options, marks, Memo, Topics, Versions, print settings and the
 // results of marking (reads and Review decisions, never images). Pure data and pure functions.
+import type { Learner } from '../../shared/classes/types'
 import type { Answer, IdentityMode, QuestionFlag, SheetVersion } from '../../shared/omr'
 
 export const OPTION_LETTERS = 'ABCDE'
@@ -11,6 +12,13 @@ export const MAX_QUESTIONS = 200
 export const MAX_VERSIONS = 4
 export const VERSION_LETTERS: readonly SheetVersion[] = ['A', 'B', 'C', 'D']
 export const MAX_MARKS = 100
+
+/** A picture in a question or an option: a PNG or JPEG data URL, already downscaled, with its size in pixels. */
+export interface QuestionImage {
+  src: string
+  width: number
+  height: number
+}
 
 export interface Question {
   /** Stable id, so a question keeps its identity when copied from the question bank. */
@@ -26,6 +34,10 @@ export interface Question {
   topic: string
   /** Per option, the misconception a learner who chose it probably has. Empty when none. */
   misconceptions: string[]
+  /** Optional: a picture printed with the question text in the booklet. */
+  image?: QuestionImage
+  /** Optional: a picture per option (null for none), in the same order as `options`. */
+  optionImages?: (QuestionImage | null)[]
 }
 
 /** How one Version prints the Assessment. Indexes are 0-based. */
@@ -42,17 +54,40 @@ export interface VersionSettings {
   count: number
   shuffleQuestions: boolean
   shuffleOptions: boolean
+  /**
+   * The shared paper (Version A) prints each question's options in a shuffled order, the same for
+   * everyone, so the correct answers spread across the letters. Only when the paper has question
+   * text or pictures: an answers-only Assessment always prints in the entered order.
+   */
+  shuffleShared: boolean
   /** Seeds the shuffle, so the same settings always give the same Versions. */
   seed: number
-  /** Stored, so a reprint matches what was printed before. Version A is always the original order. */
+  /** Stored, so a reprint matches what was printed before. Version A keeps the question order. */
   plans: VersionPlan[]
 }
 
 export type VersionAssignment = 'round-robin' | 'single'
 
+/** Who is writing: no list (Bubbled ID only), a saved Class list, or a Learner list kept with the Assessment. */
+export type LearnerSource = 'none' | 'class' | LearnerListSource
+export type LearnerListSource = 'pasted' | 'numbers' | 'imported'
+export const LEARNER_SOURCES: readonly LearnerSource[] = ['none', 'class', 'pasted', 'numbers', 'imported']
+
+/** Learners kept with the Assessment rather than in a saved Class list. */
+export interface LearnerList {
+  source: LearnerListSource
+  /** How many digits every Learner ID has (1 to 4). */
+  idDigits: number
+  learners: Learner[]
+  /** For an imported list: the file it came from. */
+  fileName?: string
+}
+
 export interface PrintSettings {
   mode: IdentityMode
-  /** The Class list for the QR modes (optional for Bubbled ID, where it only adds names). */
+  /** Where the learners come from. With a Learner list, it must be the Assessment's `learnerList`. */
+  learnerSource: LearnerSource
+  /** The saved Class list when `learnerSource` is 'class' (optional for Bubbled ID, where it only adds names). */
   classId: string | null
   /** Digits in a Bubbled ID (QR modes use the Class list's digits). */
   idDigits: number
@@ -113,6 +148,8 @@ export interface Assessment {
   questions: Question[]
   versions: VersionSettings
   print: PrintSettings
+  /** Learners pasted, numbered or imported for this Assessment, or null. Used when `print.learnerSource` matches. */
+  learnerList: LearnerList | null
   /** Results: every page read, with Review decisions. Images are never stored. */
   scans: ScannedPage[]
   createdAt: number
@@ -154,6 +191,7 @@ export function newQuestion(options = DEFAULT_OPTIONS, marks = 1): Question {
 export function defaultPrintSettings(): PrintSettings {
   return {
     mode: 'named-qr',
+    learnerSource: 'pasted',
     classId: null,
     idDigits: 2,
     copies: 30,
@@ -163,7 +201,10 @@ export function defaultPrintSettings(): PrintSettings {
   }
 }
 
-/** A new, unsaved Assessment. Versions are planned by `refreshVersions`. */
+/**
+ * A new, unsaved Assessment: one shared paper with the options shuffled once (it takes effect when
+ * the questions have text or pictures). Versions are planned by `refreshVersions`.
+ */
 export function newAssessment(title: string, questions = 10, now = Date.now(), seed = randomSeed()): Assessment {
   const qs = Array.from({ length: questions }, () => newQuestion())
   return {
@@ -174,17 +215,19 @@ export function newAssessment(title: string, questions = 10, now = Date.now(), s
       count: 1,
       shuffleQuestions: true,
       shuffleOptions: true,
+      shuffleShared: true,
       seed,
       plans: [identityPlan('A', qs)],
     },
     print: defaultPrintSettings(),
+    learnerList: null,
     scans: [],
     createdAt: now,
     updatedAt: now,
   }
 }
 
-/** The original order, as Version A always prints. */
+/** The original (entered) order. */
 export function identityPlan(version: SheetVersion, questions: readonly Pick<Question, 'options'>[]): VersionPlan {
   return {
     version,
@@ -200,12 +243,45 @@ function resize<T>(items: readonly T[], length: number, fill: () => T): T[] {
 /** A question with a different number of options. A Memo beyond the new options is cleared. */
 export function withOptionCount(q: Question, count: number): Question {
   const n = Math.max(MIN_OPTIONS, Math.min(MAX_OPTIONS, Math.round(count)))
-  return {
+  const out: Question = {
     ...q,
     options: resize(q.options, n, () => ''),
     misconceptions: resize(q.misconceptions, n, () => ''),
     answer: q.answer !== null && q.answer < n ? q.answer : null,
   }
+  if (q.optionImages) {
+    const images = resize(q.optionImages, n, () => null)
+    if (images.some(Boolean)) out.optionImages = images
+    else delete out.optionImages
+  }
+  return out
+}
+
+/** The picture of option k, or null. */
+export function optionImage(q: Pick<Question, 'optionImages'>, k: number): QuestionImage | null {
+  return q.optionImages?.[k] ?? null
+}
+
+/** The question with its picture set (or removed with null). */
+export function withQuestionImage(q: Question, image: QuestionImage | null): Question {
+  const out = { ...q }
+  if (image) out.image = image
+  else delete out.image
+  return out
+}
+
+/** The question with option k's picture set (or removed with null). */
+export function withOptionImage(q: Question, k: number, image: QuestionImage | null): Question {
+  const images = q.options.map((_, j) => (j === k ? image : optionImage(q, j)))
+  const out = { ...q }
+  if (images.some(Boolean)) out.optionImages = images
+  else delete out.optionImages
+  return out
+}
+
+/** Whether the question has any picture. */
+export function hasImages(q: Pick<Question, 'image' | 'optionImages'>): boolean {
+  return Boolean(q.image) || (q.optionImages?.some(Boolean) ?? false)
 }
 
 /** Adds blank questions at the end, or removes questions from the end. */
@@ -245,8 +321,20 @@ export function missingMemo(questions: readonly Question[]): number[] {
   return questions.flatMap((q, i) => (q.answer === null ? [i + 1] : []))
 }
 
-export function hasQuestionText(questions: readonly Question[]): boolean {
-  return questions.some((q) => q.text.trim() !== '' || q.options.some((o) => o.trim() !== ''))
+/** The parts of a question a question booklet prints. */
+export type PrintableQuestion = Pick<Question, 'options'> & Partial<Pick<Question, 'text' | 'image' | 'optionImages'>>
+
+/** Whether one question has text, option text or a picture to print. */
+export function questionHasContent(q: PrintableQuestion): boolean {
+  return (q.text ?? '').trim() !== '' || q.options.some((o) => o.trim() !== '') || hasImages(q)
+}
+
+/**
+ * Whether there is a question paper to print: question text, option text or pictures. Without
+ * any, the teacher uses their own paper, so the options print (and are marked) in the entered order.
+ */
+export function hasPrintedContent(questions: readonly PrintableQuestion[]): boolean {
+  return questions.some(questionHasContent)
 }
 
 /** A copy with a new id (so a new Assessment code: its sheets must be printed again) and no results. */
@@ -279,4 +367,27 @@ export function formatNumber(n: number): string {
 /** A whole-number percentage, or a dash when there is nothing to divide by. */
 export function percentText(part: number, whole: number): string {
   return whole > 0 ? `${Math.round((100 * part) / whole)}%` : '-'
+}
+
+/** The learner source an Assessment saved before Learner lists existed used. */
+export function legacyLearnerSource(print: Pick<PrintSettings, 'mode' | 'classId'>): LearnerSource {
+  return print.mode === 'bubbled-id' && !print.classId ? 'none' : 'class'
+}
+
+/**
+ * An Assessment saved by an earlier Red Pen, brought up to date without changing what it prints:
+ * the shared shuffle stays off (its sheets were printed in the entered order), and its learners
+ * still come from its Class list. An Assessment that is already current comes back unchanged.
+ */
+export function upgradeAssessment(a: Assessment): Assessment {
+  const versions: Omit<VersionSettings, 'shuffleShared'> & { shuffleShared?: boolean } = a.versions
+  const print: Omit<PrintSettings, 'learnerSource'> & { learnerSource?: LearnerSource } = a.print
+  const learnerList: LearnerList | null | undefined = a.learnerList
+  if (typeof versions.shuffleShared === 'boolean' && print.learnerSource && learnerList !== undefined) return a
+  return {
+    ...a,
+    versions: { ...versions, shuffleShared: versions.shuffleShared ?? false },
+    print: { ...print, learnerSource: print.learnerSource ?? legacyLearnerSource(print) },
+    learnerList: learnerList ?? null,
+  }
 }

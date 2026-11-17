@@ -1,5 +1,5 @@
 // The list of saved Assessments: open, duplicate, download as a file, delete; new and import.
-import { getClass } from '../../shared/classes'
+import { getClass, listClasses } from '../../shared/classes'
 import { assessmentFileName, assessmentFromFile, assessmentToFile } from '../core/assessment-file'
 import { usablePages } from '../core/marking'
 import { duplicateAssessment, newAssessment, type Assessment } from '../core/model'
@@ -16,7 +16,8 @@ function go(a: Assessment, step = 'build'): void {
 }
 
 export async function exportAssessmentFile(a: Assessment): Promise<void> {
-  const className = a.print.classId ? (await getClass(a.print.classId).catch(() => undefined))?.name : undefined
+  const linked = a.print.learnerSource === 'class' && a.print.classId
+  const className = linked ? (await getClass(a.print.classId!).catch(() => undefined))?.name : undefined
   download(assessmentToFile(a, className), assessmentFileName(a), MIME.json)
 }
 
@@ -117,7 +118,11 @@ async function importFile(file: File): Promise<void> {
 
 el('new-assessment').addEventListener('click', async () => {
   try {
-    const a = await saveAssessment(newAssessment('Untitled assessment', 20))
+    const fresh = newAssessment('Untitled assessment', 20)
+    // With Class lists on this device, start from one; otherwise from pasted names.
+    const hasClasses = (await listClasses().catch(() => [])).length > 0
+    fresh.print.learnerSource = hasClasses ? 'class' : 'pasted'
+    const a = await saveAssessment(fresh)
     go(a)
   } catch (error) {
     showMessage(homeError, errorMessage(error))

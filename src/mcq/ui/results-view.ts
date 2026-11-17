@@ -12,6 +12,7 @@ import {
 } from '../core/marksheet'
 import { formatNumber, letter, topicsOf, withQuestion } from '../core/model'
 import { safeFileName } from '../core/questions-csv'
+import { keepsOptionOrder } from '../core/versions'
 import { writeXlsx } from '../xlsx'
 import { busy, clear, download, h, MIME, plural } from './dom'
 import { memoEntry } from './memo-entry'
@@ -319,6 +320,7 @@ function bar(f: number | null, cls = ''): HTMLElement {
 
 function itemPanel(stats: ItemStats[]): HTMLElement {
   const { assessment: a } = workspace()
+  const withTopic = topicsOf(a.questions).length > 0
   const flagged = stats.filter((s) => s.flags.length).length
   const rows = stats.map((s) => {
     const q = a.questions[s.question]
@@ -343,7 +345,7 @@ function itemPanel(stats: ItemStats[]): HTMLElement {
       'tr',
       { class: s.flags.length ? 'flagged' : '' },
       h('th', { scope: 'row', text: `Q${s.question + 1}` }),
-      h('td', { text: q.topic || '-' }),
+      withTopic ? h('td', { text: q.topic || '-' }) : null,
       h('td', { class: 'strong', text: q.answer === null ? '-' : letter(q.answer) }),
       h(
         'td',
@@ -372,7 +374,11 @@ function itemPanel(stats: ItemStats[]): HTMLElement {
     h('h2', { id: 'items-title', text: 'Item analysis' }),
     h('p', {
       class: 'help',
-      text: `${flagged ? `${plural(flagged, 'question')} flagged. ` : ''}Too easy: over 90% correct. Too hard: under 30%. "Top third did worse": the strongest third of the class (by total) got it right less often than the weakest third, which usually means the question or the Memo needs a second look. Discrimination is the share correct in the top third minus the bottom third.`,
+      text: `${flagged ? `${plural(flagged, 'question')} flagged. ` : ''}${
+        a.versions.plans.some((p) => !keepsOptionOrder(p))
+          ? 'Option letters here are in the order you entered them in Build (the Memo order), not as printed. '
+          : ''
+      }Too easy: over 90% correct. Too hard: under 30%. "Top third did worse": the strongest third of the class (by total) got it right less often than the weakest third, which usually means the question or the Memo needs a second look. Discrimination is the share correct in the top third minus the bottom third.`,
     }),
     h(
       'div',
@@ -388,7 +394,7 @@ function itemPanel(stats: ItemStats[]): HTMLElement {
             {},
             [
               'Question',
-              'Topic',
+              ...(withTopic ? ['Topic'] : []),
               'Memo',
               'Correct',
               'Answers chosen',
@@ -409,6 +415,7 @@ function topicsPanel(marks: LearnerMark[]): HTMLElement | null {
   const topics = topicSummaries(a, marks)
   if (topics.length === 0) return null
   const who = (id: string) => names.get(id) ?? `Learner ID ${id}`
+  const untagged = a.questions.filter((q) => !q.topic.trim()).length
   return h(
     'section',
     { class: 'panel', id: 'topics', 'aria-labelledby': 'topics-title' },
@@ -417,6 +424,13 @@ function topicsPanel(marks: LearnerMark[]): HTMLElement | null {
       class: 'help',
       text: "The class share of the marks per Topic, and the learners under 50% in it. Each learner's Topic percentages are in the marksheet.",
     }),
+    untagged
+      ? h('p', {
+          class: 'help',
+          id: 'untagged-note',
+          text: `${plural(untagged, 'question has', 'questions have')} no Topic, so ${untagged === 1 ? 'it does' : 'they do'} not count toward any Topic (only toward the total).`,
+        })
+      : null,
     h(
       'div',
       { class: 'table-wrap' },
@@ -496,7 +510,7 @@ function render(target: HTMLElement): void {
         ['Marksheet', 'marksheet'],
         ['Heatmap', 'heatmap'],
         ['Item analysis', 'item-analysis'],
-        ['Topics', 'topics'],
+        ...(topicsOf(a.questions).length ? [['Topics', 'topics']] : []),
       ].map(([label, id]) =>
         h('a', {
           href: `#a/${encodeURIComponent(a.id)}/results`,

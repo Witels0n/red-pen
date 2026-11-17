@@ -112,3 +112,37 @@ A and B in parallel (B needs only the Learner ID type from A). Then C and D in p
 
 Live camera scanning inside the page (photos are taken with the phone's own camera app and uploaded),
 handwriting recognition, sharing results online, maths typesetting in questions.
+
+## Changes after first release
+
+Asked for by teachers after the first release (2026-11-17):
+
+1. **Learners without a saved Class list.** Print asks "Who is writing?": a saved Class list, pasted
+   names (one per line, Learner IDs 1, 2, 3... with a digit count that fits), numbers only ("How many
+   learners?") or an imported CSV or Excel file (sheet, header row, name columns in order, optional
+   ID column, preview with row problems). The result is a **Learner list** stored with the
+   Assessment and used for printing, marking, Review, results and returns exactly like a Class list.
+   "Save as a Class list" keeps it for reuse. Bubbled ID still works with no list; a list adds names.
+   Note: a Learner list's names are in the Assessment file, unlike a Class list's.
+2. **Pictures in questions.** A picture per question and per option: added by file picker, drag and
+   drop or paste, downscaled to at most 1000 px on the longer side and re-encoded (PNG with
+   transparency, otherwise JPEG at 0.85). Stored as data URLs; the Assessment file carries them and
+   checks them on import (PNG or JPEG only, at most 3 MB each). The question booklet embeds them
+   (options with pictures in two columns, kept together across page breaks; picture-only options
+   allowed). They follow their option through any shuffle. The questions CSV has no pictures: on
+   import the teacher chooses whether to keep the pictures by question number.
+3. **One shared, shuffled paper by default.** New Assessments have 1 Version, 4 options and
+   "Shuffle the options once (same for everyone)" on: Version A (the **shared paper**) keeps the
+   question order and shuffles each question's options with a stored seed, chosen so the correct
+   answers spread evenly across the letters. The Memo stays in the teacher's entered order; Build
+   shows a "Printed as" letter per question, the Memo PDF shows both letters, and marking maps back
+   as for Versions. "Shuffle again" warns when results exist. Without question text or pictures,
+   the shuffle is off and explained. Versions (2 to 4) remain under an advanced section.
+4. **Topics are optional everywhere.** With no Topics, the marksheet, its exports, the item
+   analysis, the Memo PDF, the results and the feedback slips leave out every Topic part.
+
+**Assessment file schema 2.** Adds `versions.shuffleShared`, `print.learnerSource`
+(`none`, `class`, `pasted`, `numbers` or `imported`), `assessment.learnerList` and optional
+`questions[].image` and `questions[].optionImages`. A schema 1 file (and an Assessment saved in the
+browser before this change) is read with the shared shuffle off and its learners from its Class
+list (or none, for Bubbled ID without one), so sheets printed before still mark correctly.

@@ -1,15 +1,17 @@
-// Print: Sheet identity, Class list, spares, Versions; downloads for the Answer sheets, the question
-// booklets and the Memo; and a preview of the first sheet.
+// Print: Sheet identity, who is writing (a Class list, pasted names, numbers or a file), spares,
+// Versions; downloads for the Answer sheets, the question booklets and the Memo; and a preview of
+// the first sheet.
 import { listClasses, MAX_ID_DIGITS, MIN_ID_DIGITS, type ClassList } from '../../shared/classes'
 import { renderAnswerSheetsPdf, type IdentityMode } from '../../shared/omr'
 import { loadPdf } from '../../shared/pdf/pdf-worker'
-import { hasQuestionText, missingMemo, type PrintSettings } from '../core/model'
+import { hasPrintedContent, missingMemo, type PrintSettings } from '../core/model'
 import { safeFileName } from '../core/questions-csv'
 import { printRun } from '../core/sheets'
 import { versionLetters } from '../core/versions'
 import { renderBookletPdf, renderMemoPdf } from '../pdf/booklet'
 import { busy, clear, download, errorMessage, focusKey, h, MIME, plural, restoreFocus } from './dom'
-import { setClassList, update, workspace, type ChangeInfo } from './state'
+import { learnersPanel } from './learners-panel'
+import { update, workspace, type ChangeInfo } from './state'
 
 const MODES: { mode: IdentityMode; title: string; text: string }[] = [
   {
@@ -88,6 +90,9 @@ function modePanel(): HTMLElement {
     input.addEventListener('change', () => {
       const change: Partial<PrintSettings> = { mode: m.mode }
       if (m.mode === 'bubbled-id' && workspace().classList) change.idDigits = workspace().classList!.idDigits
+      // A sheet per learner needs learners: "No list" only suits Bubbled ID.
+      if (m.mode !== 'bubbled-id' && workspace().assessment.print.learnerSource === 'none')
+        change.learnerSource = 'pasted'
       setPrint(change)
     })
     group.append(
@@ -111,38 +116,11 @@ function modePanel(): HTMLElement {
   )
 }
 
-function learnersPanel(): HTMLElement {
+/** Spare sheets (QR modes), or the Learner ID digits and the number of sheets (Bubbled ID). */
+function sheetControls(): HTMLElement[] {
   const { assessment: a, classList } = workspace()
   const p = a.print
-  const qr = p.mode !== 'bubbled-id'
-  const select = h(
-    'select',
-    { id: 'class-select' },
-    h('option', { value: '', text: qr ? 'Choose a Class list' : 'None (Learner IDs only)' }),
-  )
-  for (const c of classes)
-    select.append(
-      h('option', {
-        value: c.id,
-        text: `${c.name} (${plural(c.learners.length, 'learner')})`,
-        selected: c.id === p.classId,
-      }),
-    )
-  select.addEventListener('change', () => {
-    const chosen = classes.find((c) => c.id === select.value) ?? null
-    setClassList(chosen)
-    if (chosen && p.mode === 'bubbled-id') setPrint({ idDigits: chosen.idDigits })
-  })
-  const missingClass = p.classId && !classList
-  const rows: HTMLElement[] = [
-    h(
-      'label',
-      { class: 'field grow' },
-      h('span', { text: qr ? 'Class list' : 'Class list (optional, for names in the results)' }),
-      select,
-    ),
-  ]
-  if (qr) {
+  if (p.mode !== 'bubbled-id') {
     const spares = h('input', {
       type: 'number',
       min: 0,
@@ -157,58 +135,36 @@ function learnersPanel(): HTMLElement {
       spares.value = String(n)
       setPrint({ spares: n })
     })
-    rows.push(h('label', { class: 'field narrow' }, h('span', { text: 'Spare sheets' }), spares))
-  } else {
-    const digits = h('select', { id: 'id-digits', disabled: Boolean(classList) })
-    for (let d = MIN_ID_DIGITS; d <= MAX_ID_DIGITS; d++)
-      digits.append(h('option', { value: d, text: String(d), selected: d === p.idDigits }))
-    digits.addEventListener('change', () => setPrint({ idDigits: Number(digits.value) }))
-    const copies = h('input', {
-      type: 'number',
-      min: 1,
-      max: 999,
-      step: 1,
-      value: p.copies,
-      inputmode: 'numeric',
-      id: 'copies',
-    })
-    copies.addEventListener('change', () => {
-      const n = Math.max(1, Math.min(999, Math.round(Number(copies.value) || 1)))
-      copies.value = String(n)
-      setPrint({ copies: n })
-    })
-    rows.push(
-      h('label', { class: 'field narrow' }, h('span', { text: 'Learner ID digits' }), digits),
-      h('label', { class: 'field narrow' }, h('span', { text: 'Sheets' }), copies),
-    )
+    return [
+      h('label', { class: 'field narrow' }, h('span', { text: 'Spare sheets' }), spares),
+      h('p', {
+        class: 'help grow',
+        text: 'Spare sheets have a blank name line, for learners who join late. In Review you choose whose they are.',
+      }),
+    ]
   }
-  return h(
-    'section',
-    { class: 'panel' },
-    h('h2', { text: 'Learners' }),
-    h('div', { class: 'row-fields' }, rows),
-    classes.length === 0
-      ? h(
-          'p',
-          { class: 'help' },
-          'No Class lists on this device yet. ',
-          h('a', { href: `${import.meta.env.BASE_URL}classes/#new`, text: 'Make one in Class lists' }),
-          '.',
-        )
-      : null,
-    missingClass
-      ? h('p', {
-          class: 'warning',
-          text: 'The Class list this assessment used is not on this device. Choose another, or import it in Class lists.',
-        })
-      : null,
-    qr
-      ? h('p', {
-          class: 'help',
-          text: 'Spare sheets have a blank name line, for learners who join late. In Review you choose whose they are.',
-        })
-      : null,
-  )
+  const digits = h('select', { id: 'id-digits', disabled: Boolean(classList) })
+  for (let d = MIN_ID_DIGITS; d <= MAX_ID_DIGITS; d++)
+    digits.append(h('option', { value: d, text: String(d), selected: d === p.idDigits }))
+  digits.addEventListener('change', () => setPrint({ idDigits: Number(digits.value) }))
+  const copies = h('input', {
+    type: 'number',
+    min: 1,
+    max: 999,
+    step: 1,
+    value: p.copies,
+    inputmode: 'numeric',
+    id: 'copies',
+  })
+  copies.addEventListener('change', () => {
+    const n = Math.max(1, Math.min(999, Math.round(Number(copies.value) || 1)))
+    copies.value = String(n)
+    setPrint({ copies: n })
+  })
+  return [
+    h('label', { class: 'field narrow' }, h('span', { text: 'Learner ID digits' }), digits),
+    h('label', { class: 'field narrow' }, h('span', { text: 'Sheets' }), copies),
+  ]
 }
 
 function versionsPanel(): HTMLElement | null {
@@ -276,7 +232,7 @@ function downloadsPanel(previewHost: HTMLElement): HTMLElement {
       download(bytes, `${safeFileName(assessment.title)} answer sheets.pdf`, MIME.pdf)
     }),
   )
-  const booklets = hasQuestionText(a.questions)
+  const booklets = hasPrintedContent(a.questions)
     ? versionLetters(a).map((v) => {
         const b = h('button', {
           type: 'button',
@@ -316,9 +272,12 @@ function downloadsPanel(previewHost: HTMLElement): HTMLElement {
         })
       : null,
     h('div', { class: 'actions' }, sheets, ...booklets, memo),
-    hasQuestionText(a.questions)
+    hasPrintedContent(a.questions)
       ? null
-      : h('p', { class: 'help', text: 'Add question text in Build to print a question booklet.' }),
+      : h('p', {
+          class: 'help',
+          text: 'No question text or pictures: use your own question paper, with the options in the order you entered them. Add question text or pictures in Build to print a question booklet.',
+        }),
     h('p', { class: 'help', text: 'Print at actual size (100%), not "fit to page". Black and white is fine.' }),
     status,
   )
@@ -337,7 +296,14 @@ async function render(root: HTMLElement): Promise<void> {
     h(
       'div',
       { class: 'print-layout' },
-      h('div', { class: 'print-settings' }, modePanel(), learnersPanel(), versionsPanel(), downloadsPanel(previewHost)),
+      h(
+        'div',
+        { class: 'print-settings' },
+        modePanel(),
+        learnersPanel(classes, sheetControls(), () => void render(root)),
+        versionsPanel(),
+        downloadsPanel(previewHost),
+      ),
       h(
         'aside',
         { class: 'panel print-preview', 'aria-label': 'Preview' },

@@ -62,8 +62,14 @@ describe('printRun', () => {
     ])
   })
 
-  it('needs a Class list for the QR modes', () => {
-    expect(() => printRun(assessment(3), null)).toThrow(/Choose a Class list/)
+  it('needs learners for the QR modes, and says how to give them for each source', () => {
+    const a = assessment(3)
+    expect(() => printRun(a, null)).toThrow(/Paste the names/)
+    expect(() => printRun({ ...a, print: { ...a.print, learnerSource: 'class' } }, null)).toThrow(/Choose a Class list/)
+    expect(() => printRun({ ...a, print: { ...a.print, learnerSource: 'numbers' } }, null)).toThrow(/how many learners/)
+    expect(() => printRun({ ...a, print: { ...a.print, learnerSource: 'none' } }, null)).toThrow(
+      /choose who is writing/,
+    )
   })
 })
 

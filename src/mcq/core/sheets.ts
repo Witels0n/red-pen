@@ -49,6 +49,21 @@ export interface PrintRun {
   perVersion: Partial<Record<SheetVersion, number>>
 }
 
+function missingLearnersMessage(p: PrintSettings): string {
+  switch (p.learnerSource) {
+    case 'class':
+      return 'Choose a Class list for sheets with a QR code per learner.'
+    case 'none':
+      return 'Sheets with a QR code per learner need a list of learners: choose who is writing.'
+    case 'pasted':
+      return 'Paste the names and choose "Use these names".'
+    case 'numbers':
+      return 'Enter how many learners are writing.'
+    case 'imported':
+      return 'Choose a spreadsheet, pick its columns and choose "Use these learners".'
+  }
+}
+
 /** Every Answer sheet to print. Throws with a sentence for the teacher when the settings cannot print. */
 export function printRun(a: Assessment, classList: ClassList | null): PrintRun {
   const p = a.print
@@ -59,8 +74,8 @@ export function printRun(a: Assessment, classList: ClassList | null): PrintRun {
     for (let i = 0; i < p.copies; i++)
       specs.push(spec(a, versionForSheet(a, i), { mode: 'bubbled-id', idDigits: p.idDigits }))
   } else {
-    if (!classList) throw new Error('Choose a Class list for sheets with a QR code per learner.')
-    if (classList.learners.length === 0 && p.spares === 0) throw new Error('The Class list has no learners.')
+    if (!classList) throw new Error(missingLearnersMessage(p))
+    if (classList.learners.length === 0 && p.spares === 0) throw new Error('The list has no learners.')
     classList.learners.forEach((l, i) => {
       const version = versionForSheet(a, i)
       learners.push({ learnerId: l.id, ...(l.name ? { name: l.name } : {}), version })

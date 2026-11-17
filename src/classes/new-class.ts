@@ -13,7 +13,7 @@ import {
   type Learner,
 } from '../shared/classes'
 import { el, errorMessage, go, h, learnerCount, showMessage } from './dom'
-import { columnLetter, guessColumns } from './guess-columns'
+import { columnLetter, guessColumns } from '../shared/classes/guess-columns'
 
 type Method = 'names' | 'numbers' | 'import'
 

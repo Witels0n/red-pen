@@ -21,6 +21,8 @@ export {
 } from './class-list'
 export type { ChangeDigitsResult } from './class-list'
 export { detectDelimiter, parseCsv, writeCsv } from './csv'
+export { columnLetter, guessColumns } from './guess-columns'
+export type { ColumnGuess } from './guess-columns'
 export type { CsvDelimiter, ParseCsvOptions } from './csv'
 export { CLASS_CSV_HEADER, classFileName, classFromCsv, classToCsv } from './class-csv'
 export type { ClassCsvResult } from './class-csv'

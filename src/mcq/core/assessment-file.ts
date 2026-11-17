@@ -1,6 +1,21 @@
-// The Assessment file: one JSON file with the Assessment, its Class list link and its results
-// (reads and Review decisions; never scans). Versioned, and checked thoroughly on import.
+// The Assessment file: one JSON file with the Assessment (including its pictures, as data URLs),
+// its Class list link or its own Learner list, and its results (reads and Review decisions; never
+// scans). Versioned, and checked thoroughly on import.
+//
+// Schema history:
+//   1  The first release.
+//   2  Adds versions.shuffleShared (the shared paper's options shuffled once), print.learnerSource
+//      and assessment.learnerList (learners kept with the Assessment), and optional pictures:
+//      questions[].image and questions[].optionImages. A schema 1 file is read with the shared
+//      shuffle off and its learners from its Class list (or none, for Bubbled ID without one), so
+//      the sheets it printed still mark correctly.
+import { isIdDigits, learnerNumber, type Learner } from '../../shared/classes/types'
+import { checkImageSrc } from './images'
+import { MAX_LEARNERS } from './learners'
 import {
+  legacyLearnerSource,
+  LEARNER_SOURCES,
+  letter,
   MAX_MARKS,
   MAX_OPTIONS,
   MAX_QUESTIONS,
@@ -10,8 +25,10 @@ import {
   VERSION_LETTERS,
   type Assessment,
   type Decision,
+  type LearnerList,
   type PrintSettings,
   type Question,
+  type QuestionImage,
   type ScannedPage,
   type StoredRead,
   type VersionPlan,
@@ -19,14 +36,17 @@ import {
 import { safeFileName } from './questions-csv'
 
 export const FILE_FORMAT = 'red-pen-mcq-assessment'
-export const FILE_SCHEMA = 1
+export const FILE_SCHEMA = 2
 
 export interface AssessmentFile {
   format: typeof FILE_FORMAT
   schema: number
   exportedAt: string
   assessment: Assessment
-  /** For people reading the file: the linked Class list's name. Learner names are never in the file. */
+  /**
+   * For people reading the file: the linked Class list's name. A Class list's learners are not in
+   * the file; a Learner list kept with the Assessment (assessment.learnerList) is, names included.
+   */
   className?: string
 }
 
@@ -50,7 +70,16 @@ export type AssessmentFileResult = { ok: true; assessment: Assessment } | { ok: 
 /** "assessment.questions[3].marks" -> "Question 4: marks". */
 function readablePath(path: string): string {
   const p = path
+    .replace(
+      /^assessment\.questions\[(\d+)\]\.optionImages\[(\d+)\]$/,
+      (_, i, k) => `Question ${Number(i) + 1}: the picture for option ${letter(Number(k))}`,
+    )
+    .replace(/^assessment\.questions\[(\d+)\]\.image$/, (_, i) => `Question ${Number(i) + 1}: the picture`)
     .replace(/^assessment\.questions\[(\d+)\]\.?/, (_, i) => `Question ${Number(i) + 1}: `)
+    .replace(
+      /^assessment\.learnerList\.learners\[(\d+)\]\.?/,
+      (_, i) => `Learner ${Number(i) + 1} in the Learner list: `,
+    )
     .replace(/^assessment\.scans\[(\d+)\]\.?/, (_, i) => `Scanned page ${Number(i) + 1}: `)
     .replace(/^assessment\.?/, '')
   return (p.endsWith(': ') ? p.slice(0, -2) : p) || 'The assessment'
@@ -123,15 +152,63 @@ function checkQuestion(c: Checker, v: unknown, path: string): Question {
     c.array(o.misconceptions, `${path}.misconceptions`, options.length, options.length) ?? options.map(() => '')
   ).map((t, k) => c.string(t, `${path}.misconceptions[${k}]`))
   const answer = o.answer === null ? null : c.number(o.answer, `${path}.answer`, 0, options.length - 1, true)
-  return {
+  const q: Question = {
     id: c.string(o.id, `${path}.id`, 100) || newId(),
     text: c.string(o.text, `${path}.text`),
     options,
     answer,
     marks: c.number(o.marks, `${path}.marks`, 0.5, MAX_MARKS),
-    topic: c.string(o.topic, `${path}.topic`, 200),
+    // A Topic is optional: an empty one, or none at all, is fine.
+    topic: o.topic === undefined ? '' : c.string(o.topic, `${path}.topic`, 200),
     misconceptions,
   }
+  if (o.image !== undefined && o.image !== null) {
+    const image = checkImage(c, o.image, `${path}.image`)
+    if (image) q.image = image
+  }
+  if (o.optionImages !== undefined && o.optionImages !== null) {
+    const list = c.array(o.optionImages, `${path}.optionImages`, options.length, options.length)
+    if (list) {
+      const images = list.map((v, k) => (v === null ? null : checkImage(c, v, `${path}.optionImages[${k}]`)))
+      if (images.some(Boolean)) q.optionImages = images
+    }
+  }
+  return q
+}
+
+/** A picture: a PNG or JPEG data URL within the size cap. Its width and height are read from the picture. */
+function checkImage(c: Checker, v: unknown, path: string): QuestionImage | null {
+  const o = c.object(v, path)
+  if (!o) return null
+  const result = checkImageSrc(o.src)
+  if (!result.ok) {
+    c.fail(path, result.problem)
+    return null
+  }
+  return result.image
+}
+
+function checkLearnerList(c: Checker, v: unknown, path: string): LearnerList | null {
+  if (v === null || v === undefined) return null
+  const o = c.object(v, path) ?? {}
+  const source = c.oneOf(o.source, ['pasted', 'numbers', 'imported'] as const, `${path}.source`)
+  const idDigits = c.number(o.idDigits, `${path}.idDigits`, 1, 4, true)
+  const seen = new Set<string>()
+  const learners = (c.array(o.learners, `${path}.learners`, 0, MAX_LEARNERS) ?? []).map((l, i): Learner => {
+    const lp = `${path}.learners[${i}]`
+    const lo = c.object(l, lp) ?? {}
+    const id = c.string(lo.id, `${lp}.id`, 10)
+    const n = learnerNumber(id)
+    if (!isIdDigits(idDigits) || n === null || n < 1 || id.length !== idDigits)
+      c.fail(`${lp}.id`, `must be a Learner ID of ${idDigits} digit${idDigits === 1 ? '' : 's'}`)
+    else if (seen.has(id)) c.fail(`${lp}.id`, `is used twice (${id})`)
+    seen.add(id)
+    if (lo.name === undefined || lo.name === '') return { id }
+    return { id, name: c.string(lo.name, `${lp}.name`, 300) }
+  })
+  const list: LearnerList = { source, idDigits, learners }
+  if (o.fileName !== undefined) list.fileName = c.string(o.fileName, `${path}.fileName`, 500)
+  return list
 }
 
 function checkPlan(c: Checker, v: unknown, path: string, questions: Question[], index: number): VersionPlan {
@@ -150,11 +227,17 @@ function checkPlan(c: Checker, v: unknown, path: string, questions: Question[], 
   return { version, questionOrder, optionOrder }
 }
 
-function checkPrint(c: Checker, v: unknown, path: string): PrintSettings {
+function checkPrint(c: Checker, v: unknown, path: string, schema: number): PrintSettings {
   const o = c.object(v, path) ?? {}
+  const mode = c.oneOf(o.mode, ['named-qr', 'id-qr', 'bubbled-id'] as const, `${path}.mode`)
+  const classId = o.classId === null ? null : c.string(o.classId, `${path}.classId`, 100)
   return {
-    mode: c.oneOf(o.mode, ['named-qr', 'id-qr', 'bubbled-id'] as const, `${path}.mode`),
-    classId: o.classId === null ? null : c.string(o.classId, `${path}.classId`, 100),
+    mode,
+    learnerSource:
+      schema < 2
+        ? legacyLearnerSource({ mode, classId })
+        : c.oneOf(o.learnerSource, LEARNER_SOURCES, `${path}.learnerSource`),
+    classId,
     idDigits: c.number(o.idDigits, `${path}.idDigits`, 1, 4, true),
     copies: c.number(o.copies, `${path}.copies`, 0, 9999, true),
     spares: c.number(o.spares, `${path}.spares`, 0, 999, true),
@@ -252,6 +335,7 @@ export function assessmentFromFile(text: string): AssessmentFileResult {
     return { ok: false, problems: ['This file was made by a newer version of Red Pen. Reload the page to update it.'] }
   }
 
+  const schema = root.schema
   const c = new Checker()
   const a = c.object(root.assessment, 'assessment') ?? {}
   const questions = (c.array(a.questions, 'assessment.questions', 1, MAX_QUESTIONS) ?? []).map((q, i) =>
@@ -270,10 +354,13 @@ export function assessmentFromFile(text: string): AssessmentFileResult {
       count,
       shuffleQuestions: c.boolean(v.shuffleQuestions, 'assessment.versions.shuffleQuestions'),
       shuffleOptions: c.boolean(v.shuffleOptions, 'assessment.versions.shuffleOptions'),
+      // Schema 1 sheets were printed in the entered order: keep it that way.
+      shuffleShared: schema < 2 ? false : c.boolean(v.shuffleShared, 'assessment.versions.shuffleShared'),
       seed: c.number(v.seed, 'assessment.versions.seed', 0, 2 ** 32 - 1, true),
       plans,
     },
-    print: checkPrint(c, a.print, 'assessment.print'),
+    print: checkPrint(c, a.print, 'assessment.print', schema),
+    learnerList: schema < 2 ? null : checkLearnerList(c, a.learnerList, 'assessment.learnerList'),
     scans: (c.array(a.scans, 'assessment.scans', 0, 5000) ?? []).map((s, i) =>
       checkScan(c, s, `assessment.scans[${i}]`),
     ),
