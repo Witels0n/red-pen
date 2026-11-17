@@ -14,7 +14,14 @@ const SITE_NAME = 'Red Pen'
 /** The link-preview image, served from public/. 1200 by 630, as Open Graph expects. */
 export const SHARE_IMAGE = 'og-image.png'
 const LANDING_PLACEHOLDER = '<div id="tool-groups"></div>'
-const TICK = '<svg class="tick" viewBox="0 0 30 30" aria-hidden="true"><path d="M5 16 L12 23 L26 5" /></svg>'
+const TICK_PATH = '<path pathLength="1" d="M5 16 L12 23 L26 5" />'
+const TICK = `<svg class="tick" viewBox="0 0 30 30" aria-hidden="true">${TICK_PATH}</svg>`
+/** A hand-drawn red-pen ring, drawn around each step number as it scrolls into view. */
+const RING =
+  '<svg class="help-ring" viewBox="0 0 44 42" aria-hidden="true">' +
+  '<path pathLength="1" d="M28 5 C 12 3, 3 13, 5 24 C 7 35, 23 40, 34 34 C 43 28, 42 11, 30 6 C 25 4, 19 5, 15 8" /></svg>'
+/** On a file tool's opening screen the help goes right under the drop zone, so it leaves with that screen. */
+const OPEN_ERROR = '<p id="open-error" class="error" role="alert" hidden></p>'
 
 export function escapeHtml(text: string): string {
   return text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
@@ -44,7 +51,7 @@ export function renderToolGroups(tools: readonly Tool[], base: string): string {
   return groupTools(tools)
     .map(
       ({ group, tools }) =>
-        `<section class="tool-group"><h3>${escapeHtml(group)}</h3><div class="tool-grid">` +
+        `<section class="tool-group"><h3>${escapeHtml(group)}</h3><div class="tool-grid" data-reveal>` +
         tools
           .map(
             (t) =>
@@ -55,6 +62,49 @@ export function renderToolGroups(tools: readonly Tool[], base: string): string {
         '</div></section>',
     )
     .join('')
+}
+
+/** A Tool's "How it works" steps and questions, as HTML. */
+function renderToolHelpBody(tool: Tool): string {
+  const steps = tool.help.steps
+    .map(
+      (step, i) =>
+        `<li><span class="help-num">${i + 1}${RING}</span><span class="help-text">${escapeHtml(step)}</span></li>`,
+    )
+    .join('')
+  const questions = tool.help.questions
+    .map(
+      ({ q, a }) =>
+        `<div><dt><svg class="help-tick" viewBox="0 0 30 30" aria-hidden="true">${TICK_PATH}</svg>${escapeHtml(q)}</dt>` +
+        `<dd>${escapeHtml(a)}</dd></div>`,
+    )
+    .join('')
+  return (
+    `<h2 id="tool-help-title">How it works</h2><ol class="help-steps" data-reveal>${steps}</ol>` +
+    `<h2>Questions</h2><dl class="help-faq" data-reveal>${questions}</dl>`
+  )
+}
+
+/**
+ * Puts a Tool's help on its page. On a file tool it goes right under the drop zone, so it leaves
+ * with the opening screen. Otherwise it is a ruled-paper band at the foot of the page that uses
+ * the page's own .intro-inner column, so it lines up with the band at the top.
+ */
+export function insertToolHelp(html: string, tool: Tool): string {
+  const body = renderToolHelpBody(tool)
+  if (html.includes(OPEN_ERROR)) {
+    return html.replace(
+      OPEN_ERROR,
+      `${OPEN_ERROR}<section class="tool-help" aria-labelledby="tool-help-title">${body}</section>`,
+    )
+  }
+  if (html.split('</main>').length !== 2) throw new Error(`${tool.path}index.html needs exactly one </main>`)
+  if (!html.includes('class="intro-inner"')) throw new Error(`${tool.path}index.html has no .intro-inner column`)
+  return html.replace(
+    '</main>',
+    `<section class="tool-help tool-help-foot paper" aria-labelledby="tool-help-title">` +
+      `<div class="intro-inner">${body}</div></section></main>`,
+  )
 }
 
 function readTitle(html: string): string {
@@ -168,6 +218,8 @@ export function seo(site: Site): Plugin {
         if (!html.includes(LANDING_PLACEHOLDER)) throw new Error(`index.html has no ${LANDING_PLACEHOLDER}`)
         html = html.replace(LANDING_PLACEHOLDER, `<div id="tool-groups">${renderToolGroups(TOOLS, site.base)}</div>`)
       }
+      const tool = toolForPage(file)
+      if (tool) html = insertToolHelp(html, tool)
       return { html, tags: headTags(site, file, html) }
     },
     generateBundle() {

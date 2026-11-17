@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { build } from 'vite'
 import { BASE, ORIGIN, PAGES } from '../vite.config'
 import { TOOLS } from '../src/landing/tools'
+import { escapeHtml } from '../seo'
 
 // Seam: the production build output (what GitHub Pages serves).
 // See docs/adr/0001-client-only-processing.md and docs/adr/0002-multi-page-offline-site.md.
@@ -111,6 +112,15 @@ describe('production build', () => {
 
   it('writes every tool link into the landing page, so it works without JavaScript', () => {
     for (const t of TOOLS) expect(pages['index.html']).toContain(`class="tool-card" href="${BASE}${t.path}"`)
+  })
+
+  it('writes "How it works" onto every Tool page', () => {
+    for (const t of TOOLS) {
+      const html = pages[`${t.path}index.html`]
+      expect(html, t.name).toContain('<h2 id="tool-help-title">How it works</h2>')
+      expect(html, t.name).toContain(escapeHtml(t.help.steps[0]))
+    }
+    expect(pages['index.html']).not.toContain('tool-help')
   })
 
   it('ships a sitemap of every page, and a robots.txt that points at it', () => {

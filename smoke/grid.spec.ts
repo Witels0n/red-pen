@@ -27,7 +27,7 @@ function levelRow(page: Page, n: number) {
 
 test('builds a grid, checks it against targets and exports it', async ({ page }) => {
   await page.goto(GRID)
-  await expect(page).toHaveTitle('Question paper grid · Red Pen')
+  await expect(page).toHaveTitle('Question paper analysis grid (CAPS) · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Question paper grid')
   await expect(page.locator('#no-grids')).toBeVisible()
 

@@ -39,7 +39,7 @@ test('makes certificates from a Class list and labels from pasted rows, with not
   await makeClass(page, 'Grade 8A', LEARNERS)
 
   await page.goto(PAGE)
-  await expect(page).toHaveTitle('Certificates and labels · Red Pen')
+  await expect(page).toHaveTitle('Certificates and name labels for a class · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Certificates and labels')
   await expect(page.locator('#class-select option:checked')).toHaveText('Grade 8A (3 learners)')
   await expect(page.locator('#source-summary')).toHaveText('3 learners, 3 pages.')

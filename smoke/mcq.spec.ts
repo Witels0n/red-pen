@@ -93,7 +93,7 @@ test('builds, prints, scans, reviews and returns an MCQ assessment', async ({ pa
 
   // Build: 12 questions, two Topics, the Memo typed in, two Versions.
   await page.goto(MCQ)
-  await expect(page).toHaveTitle('MCQ assessments · Red Pen')
+  await expect(page).toHaveTitle('MCQ tests with scannable answer sheets · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('MCQ assessments')
   await page.locator('#new-assessment').click()
   await expect(page.locator('#step-build')).toBeVisible()

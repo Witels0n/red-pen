@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { TOOLS } from '../src/landing/tools'
-import { escapeHtml, headTags, pageUrl, renderToolGroups, robotsTxt, sitemapXml, toolForPage } from '../seo'
+import {
+  escapeHtml,
+  headTags,
+  insertToolHelp,
+  pageUrl,
+  renderToolGroups,
+  robotsTxt,
+  sitemapXml,
+  toolForPage,
+} from '../seo'
 
 const site = {
   origin: 'https://example.org',
@@ -67,8 +76,54 @@ describe('renderToolGroups', () => {
   })
 
   it('escapes names and blurbs', () => {
-    const html = renderToolGroups([{ name: 'A <b>', blurb: 'x & "y"', path: 'a/', group: 'Classroom' }], '/')
+    const html = renderToolGroups(
+      [
+        {
+          name: 'A <b>',
+          blurb: 'x & "y"',
+          path: 'a/',
+          group: 'Classroom',
+          help: { steps: ['', '', ''], questions: [] },
+        },
+      ],
+      '/',
+    )
     expect(html).toContain('<b>A &lt;b&gt;</b><span>x &amp; &quot;y&quot;</span>')
+  })
+})
+
+describe('insertToolHelp', () => {
+  const mark = toolForPage('mark/index.html')!
+  const openError = '<p id="open-error" class="error" role="alert" hidden></p>'
+
+  it("goes under a file tool's drop zone, so it leaves with the opening screen", () => {
+    const html = insertToolHelp(
+      `<main><section id="open-screen">${openError}</section><section></section></main>`,
+      mark,
+    )
+    expect(html.indexOf('class="tool-help"')).toBeGreaterThan(html.indexOf(openError))
+    expect(html.indexOf('class="tool-help"')).toBeLessThan(html.indexOf('</section>'))
+  })
+
+  it("otherwise goes at the foot of the page, in the page's own column", () => {
+    const html = insertToolHelp('<main><section><div class="intro-inner"></div></section></main>', mark)
+    expect(html).toMatch(/<\/section><section class="tool-help tool-help-foot paper"[^>]*><div class="intro-inner">/)
+    expect(html).toMatch(/<\/div><\/section><\/main>$/)
+  })
+
+  it('writes the three steps and both questions, escaped', () => {
+    const tool = {
+      ...mark,
+      help: { steps: ['<one>', 'two', 'three'] as const, questions: [{ q: 'Q & A?', a: 'Yes' }] },
+    }
+    const html = insertToolHelp('<main><div class="intro-inner"></div></main>', tool)
+    expect(html.match(/<li>/g)).toHaveLength(3)
+    expect(html).toContain('&lt;one&gt;')
+    expect(html).toContain('Q &amp; A?</dt><dd>Yes</dd>')
+  })
+
+  it('refuses a page with no place to put it', () => {
+    expect(() => insertToolHelp('<div></div>', mark)).toThrow(/<\/main>/)
   })
 })
 

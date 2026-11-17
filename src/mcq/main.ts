@@ -58,6 +58,9 @@ function selectTab(step: StepId): void {
 
 let routing = Promise.resolve()
 
+/** The page's own title, from mcq/index.html, restored on the list of assessments. */
+const HOME_TITLE = document.title
+
 function route(): Promise<void> {
   routing = routing.then(async () => {
     const target = stepFromHash()
@@ -66,7 +69,7 @@ function route(): Promise<void> {
       closeWorkspace()
       workView.hidden = true
       homeView.hidden = false
-      document.title = 'MCQ assessments · Red Pen'
+      document.title = HOME_TITLE
       await showHome()
       return
     }

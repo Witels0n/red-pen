@@ -1,5 +1,6 @@
 import './tokens.css'
 import './site-header.css'
+import './motion'
 
 export interface SiteHeaderOptions {
   /** The tool's name, shown after the wordmark. Omit on the landing page. */

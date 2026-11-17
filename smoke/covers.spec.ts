@@ -79,7 +79,7 @@ test('prints Cover sheets from a Class list and splits a batch scan at them, wit
 
   // Print
   await page.goto(COVERS)
-  await expect(page).toHaveTitle('Cover sheets · Red Pen')
+  await expect(page).toHaveTitle('QR cover sheets to split a class scan · Red Pen')
   await expect(page.locator('.site-header .tool-name')).toHaveText('Cover sheets')
   await expect(page.locator('.intro.paper h1')).toHaveText('Cover sheets')
   await expect(page.locator('.privacy-note')).toContainText('never uploaded')
