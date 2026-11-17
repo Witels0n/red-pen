@@ -106,6 +106,56 @@ _Avoid_: Verification, checking, moderation
 Per question: the percentage correct, how answers spread across the options, the most-chosen wrong option with its misconception note, and flags for too easy (over 90%), too hard (under 30%) and negative discrimination (the top third of the class did worse than the bottom third).
 _Avoid_: Question stats, psychometrics
 
+### Markbooks
+
+**Markbook**:
+A spreadsheet of learners' marks per assessment, made by the Markbook builder as an .xlsx with live Excel formulas for percentages, Category averages, the weighted mark, levels and a class summary. Its design (assessments, weights, options) is saved in the browser without learner names.
+_Avoid_: Mark sheet, gradebook, register
+
+**Category**:
+A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or ABS is left out and the other weights share its place.
+_Avoid_: Section, component (Topic is the MCQ term for a question tag)
+
+### Question paper grids
+
+**Grid**:
+The analysis of one test or exam paper that an HoD asks for: each question's marks, Cognitive level and topic, with totals and shares against targets. Saved in the browser and exported as a one-page PDF or an Excel file.
+_Avoid_: Analysis grid (in UI text), blueprint, spec
+
+**Cognitive level**:
+How demanding a question is, from a chosen taxonomy (CAPS levels, Bloom's revised, Barrett's, or the teacher's own levels). Each level has a target percentage of the paper, remembered per teacher.
+_Avoid_: Bloom level (unless the taxonomy is Bloom's), difficulty (a separate, optional column)
+
+**Tolerance**:
+How many percentage points a level's or topic's share may be off its target before the Grid flags it as over or under (5 by default).
+_Avoid_: Margin, allowance
+
+### Marks analysis
+
+**Assessment card**:
+One column of pasted or imported marks in Marks analysis, with its name, "out of", counts of marks, absent and unreadable cells, and a tick box to include it. Not saved: marks and names are kept only while the page is open.
+_Avoid_: Assessment (that is an MCQ assessment), series, column (in UI text)
+
+**Out of**:
+The total a column's raw marks are out of, from its heading (`Test 1 (40)`), typed on the card, or per cell (`34/50`). Without one, values from 0 to 100 are assumed to be percentages.
+_Avoid_: Maximum, total (that is the marker's annotation)
+
+**Unreadable mark**:
+A cell that is not a mark or an absence (a word, a negative number, or more than its "out of"). Left out of the figures and listed under its card to correct in place.
+_Avoid_: Error, invalid value
+
+**Calculated column**:
+A column whose heading says Average, Avg, Total or Term mark. Analysed like any other, but left out of improved and dropped.
+_Avoid_: Formula column, derived column
+
+**Band scheme**:
+How percentages are grouped for the band chart: CAPS 7 levels (the default), 10% bands, symbols (A to H) or custom cut-offs. A mark is banded by its exact percentage, before rounding.
+_Avoid_: Grade scale, levels (unless CAPS)
+
+**Insight**:
+A short, tentatively worded observation worked out from the figures (for example a wide spread or a ceiling), with its thresholds fixed in code and explained on the page.
+_Avoid_: Finding, diagnosis
+
 ### PDF tools
 
 **Part**:
@@ -119,6 +169,54 @@ _Avoid_: Selection, interval
 **Turn**:
 A quarter rotation the teacher gives a page in Organise pages. It is added to the rotation the page already has and stored in the saved PDF, so the page itself is never redrawn.
 _Avoid_: Re-render, flip
+
+**Crop corners**:
+The four handles the teacher places on the corners of the sheet in a photo, in Photos to PDF. The page inside them is straightened (perspective corrected) into a rectangle. Suggested automatically when the sheet stands out from the background, otherwise the whole photo.
+_Avoid_: Crop box, selection
+
+**Look**:
+How a photographed page is finished in Photos to PDF: Original, Greyscale, Black and white (crisp text, judged against each pixel's surroundings) or Enhanced colour (even light, white paper). Called a filter in code.
+_Avoid_: Effect, mode
+
+**First page**:
+In Photos to PDF, a page the teacher marks as the start of a learner's work. Page 1 and each First page start a new Part.
+_Avoid_: Divider, separator
+
+**Booklet**:
+A4 pages laid out two to a side on landscape sheets, in the order that makes an A5 booklet once the sheets are printed double-sided, stacked, folded and stapled along the fold. Padded with blank pages to a multiple of 4.
+_Avoid_: Brochure, pamphlet
+
+**Sheet**:
+One piece of paper that comes out of the printer. A booklet sheet has a front and a back, each carrying two pages.
+_Avoid_: Page (a page is one page of the original PDF)
+
+**Creep**:
+How far the inner sheets of a folded booklet stick out past the outer ones. Booklet printing can move the inner pages towards the fold to allow for it, or ignore it (the default).
+_Avoid_: Shingling
+
+**Target size**:
+The size each compressed PDF must be under (for example 2 MB, for an email). Compress a PDF tries lower resolutions and picture quality until each file fits, or says it could not.
+_Avoid_: Limit, quota
+
+**Watermark**:
+Large, faint words (for example MEMO or DRAFT) that Stamp and number draws across a page, diagonally or straight across, as real text in the PDF.
+_Avoid_: Background, overlay
+
+**Stamped page**:
+A page that Stamp and number adds its watermark, page number, header and footer to: every page, odd or even pages, or custom pages. Page numbers count only stamped pages, so a cover page can be left out.
+_Avoid_: Marked page, selected page
+
+**Redaction box**:
+A black or white box the teacher draws over something that must not be seen (usually a learner's name), on one page or on every page. Saving turns each page with a box into a picture with the box painted on, so what was under it is gone from the file. One box layout applies to every file in a batch.
+_Avoid_: Mask, cover, blackout
+
+**Anonymised name**:
+The name a redacted file is given in place of the learner's, such as "Learner 07", also written in labelled Redaction boxes. Numbers are given out in a shuffled order by default, so they do not follow the class list.
+_Avoid_: Code name, alias
+
+**Anonymisation key**:
+The CSV that links each original file name to its Anonymised name. Downloaded separately from the redacted files and kept apart from them.
+_Avoid_: Mapping, lookup
 
 ### QR codes
 
@@ -173,3 +271,49 @@ _Avoid_: Student number, learner number, index
 **Cover sheet**:
 An A4 page with a learner's name (optional), Learner ID and a QR code holding only the Learner ID, stapled to the front of a written test. A class's tests are scanned in one batch, and Split a PDF starts a new part at each Cover sheet, named after the learner when the Class list is on the device. Printed by the Cover sheets Tool.
 _Avoid_: Title page, front page, separator sheet
+
+### Class picker
+
+**Wheel**:
+The spinning wheel in the Class picker. Its slices are the learners who are here today, or the options of a custom wheel (for example topics, or Yes and No), saved on the device. The winner is chosen first with the browser's secure random numbers, then the wheel spins to land on it. Long lists show as a ticker instead.
+_Avoid_: Spinner, randomiser
+
+**After picked**:
+Whether a picked learner comes off the wheel ("Remove") or stays on for another turn ("Keep in"). Set for the whole wheel, and optionally per learner. Undo puts a removed learner back.
+_Avoid_: Replacement, elimination
+
+**Group rule**:
+A rule for random groups: keep apart (these learners are all in different groups) or keep together (all in one group). Rules are always kept; when they cannot be, the Class picker says why instead of making groups.
+_Avoid_: Constraint (in UI text), condition
+
+**Locked group**:
+A group kept exactly as it is when the others are re-shuffled.
+_Avoid_: Fixed group, pinned group
+
+### Worksheets
+
+**Worksheet**:
+A printable page or pages made in the Worksheet maker: a heading (title, instructions, optional Name, Class and Date lines, and the total marks, added up automatically) and one or more Activities. Printed as a PDF with its Memo pages after it. Saved in the browser on this device only (localStorage), with any pictures downscaled.
+_Avoid_: Handout, activity sheet
+
+**Activity**:
+One numbered section of a Worksheet, of one type: word search, crossword, match the columns, fill in the blanks, true or false, unscramble the words, vocabulary or label the diagram. Each shows its marks (marks each item times the number of items). Its shuffles and layout come from a stored seed, so a saved Worksheet prints the same every time; Shuffle picks a new seed.
+_Avoid_: Section, exercise, question (in UI text about the whole block)
+
+**Word bank**:
+A box of the answers in shuffled order, printed above a fill in the blanks, vocabulary or labelling Activity when the teacher ticks it.
+_Avoid_: Word list (that is the list of words to find in a word search)
+
+### Certificates and labels
+
+**Recipient list**:
+The people a batch of certificates or labels is made for, one row each, from a Class list, pasted rows or a CSV/XLSX file. Each column is a merge field. Never stored by the Tool.
+_Avoid_: Mailing list, data source (in UI text)
+
+**Merge field**:
+A placeholder in braces, such as `{Name}`, `{Award}` or `{Date}`, filled in per learner from the column with that title (case does not matter). A field no column has prints as typed, so a typo shows on the preview. `{{` and `}}` print a literal brace.
+_Avoid_: Tag, variable, placeholder (in UI text)
+
+**Product**:
+What Certificates and labels prints: certificates, desk name cards (folded tent cards, two per A4 sheet), name labels (sticker sheets), book labels or award slips (four per A4 page).
+_Avoid_: Template, output

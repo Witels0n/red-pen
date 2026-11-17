@@ -6,12 +6,8 @@ const tool = (name: string, group: Tool['group']): Tool => ({ name, blurb: '', p
 
 describe('groupTools', () => {
   it('keeps the display order of groups and leaves out empty groups', () => {
-    const groups = groupTools([
-      tool('qr', 'Useful stuff'),
-      tool('mark', 'Assessments and marking'),
-      tool('split', 'Useful stuff'),
-    ])
-    expect(groups.map((g) => g.group)).toEqual(['Assessments and marking', 'Useful stuff'])
+    const groups = groupTools([tool('qr', 'Classroom'), tool('mark', 'Set and mark'), tool('split', 'Classroom')])
+    expect(groups.map((g) => g.group)).toEqual(['Set and mark', 'Classroom'])
     expect(groups[1].tools.map((t) => t.name)).toEqual(['qr', 'split'])
   })
 })

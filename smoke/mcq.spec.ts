@@ -245,6 +245,14 @@ test('builds, prints, scans, reviews and returns an MCQ assessment', async ({ pa
   await page.locator('#tab-build').click()
   await noSidewaysScroll(page)
 
+  // "Analyse these marks" hands the percentages and names to Marks analysis.
+  await page.locator('#tab-results').click()
+  await page.locator('#analyse-marks').click()
+  await expect(page).toHaveURL(/\/red-pen\/marks\/$/)
+  await expect(page.locator('#cards .card-name')).toHaveValue('Fractions and decimals')
+  await expect(page.locator('#cards .card-counts')).toHaveText('4 marks, 0 absent')
+  await expect(page.locator('#marks-text')).toHaveValue(/Lerato Khumalo\t50%/)
+
   expect(foreign).toEqual([])
   expect(errors).toEqual([])
 })

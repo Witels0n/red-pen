@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Markbook builder · Red Pen</title>
+    <meta
+      name="description"
+      content="Design a markbook with weights, Categories, CAPS levels and class averages, and download it as an Excel file with live formulas. Nothing is uploaded."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section class="intro paper" aria-labelledby="markbook-title">
+        <div class="intro-inner">
+          <h1 id="markbook-title">Markbook builder</h1>
+          <p class="intro-hint handwritten">Type the marks, Excel does the <span class="nowrap">sums ✓</span></p>
+          <p class="intro-text">
+            Set up your assessments, weights and Categories, then download an Excel markbook with live formulas for
+            percentages, Category averages, the weighted mark, CAPS levels and a class summary.
+          </p>
+          <p class="privacy-note">
+            Everything is made in your browser. Learner names are never uploaded and are not saved with your design.
+          </p>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <section class="panel" aria-labelledby="start-title">
+          <h2 id="start-title">Start from</h2>
+          <div class="row">
+            <label class="field grow">
+              <span>Layout</span>
+              <select id="preset-select"></select>
+            </label>
+            <button type="button" id="use-preset">Use this layout</button>
+          </div>
+          <p id="preset-help" class="help"></p>
+          <div class="row saved-row">
+            <label class="field grow">
+              <span>Saved designs</span>
+              <select id="saved-select"></select>
+            </label>
+            <button type="button" id="load-saved">Load</button>
+            <button type="button" id="delete-saved">Delete</button>
+          </div>
+          <p id="start-status" class="status" role="status"></p>
+        </section>
+
+        <section class="panel" aria-labelledby="learners-title">
+          <h2 id="learners-title">Learners</h2>
+          <div class="segmented" role="radiogroup" aria-label="Where the learners come from">
+            <label><input type="radio" name="source" value="class" /><span>Class list</span></label>
+            <label><input type="radio" name="source" value="paste" /><span>Paste names</span></label>
+            <label><input type="radio" name="source" value="blank" checked /><span>Blank rows</span></label>
+          </div>
+          <div class="source" data-source="class" hidden>
+            <label class="field">
+              <span>Class list</span>
+              <select id="class-select"></select>
+            </label>
+            <p id="no-classes" class="help" hidden>
+              No Class lists on this device yet. <a href="../classes/#new">Make one in Class lists</a>, or paste names
+              instead.
+            </p>
+          </div>
+          <div class="source" data-source="paste" hidden>
+            <label class="field">
+              <span>Names, one per line</span>
+              <textarea
+                id="names-text"
+                rows="6"
+                spellcheck="false"
+                placeholder="Thandi Mokoena&#10;Sipho Dlamini"
+              ></textarea>
+            </label>
+            <p class="help">Pasted names go into the download only. They are not saved in this browser.</p>
+          </div>
+          <div class="source" data-source="blank">
+            <label class="field narrow">
+              <span>Number of rows</span>
+              <input id="blank-rows" type="number" inputmode="numeric" min="1" max="500" step="1" value="40" />
+            </label>
+          </div>
+          <p id="learner-summary" class="help"></p>
+        </section>
+
+        <section class="panel" aria-labelledby="assessments-title">
+          <h2 id="assessments-title">Assessments</h2>
+          <div class="row">
+            <label class="field grow">
+              <span>Markbook title</span>
+              <input id="title" type="text" maxlength="80" />
+            </label>
+            <label class="field grow">
+              <span>Weighted mark name</span>
+              <input id="mark-label" type="text" maxlength="40" placeholder="Term mark" />
+            </label>
+          </div>
+          <label class="check">
+            <input id="use-categories" type="checkbox" />
+            Group assessments into Categories (for example Tests, Assignments, Exam)
+          </label>
+
+          <div id="categories-block" hidden>
+            <h3>Categories</h3>
+            <p class="help">Category weights are shares of the weighted mark and should add up to 100%.</p>
+            <ul id="category-list" class="edit-list"></ul>
+            <div class="list-foot">
+              <button type="button" id="add-category">Add a Category</button>
+              <span id="category-total" class="total"></span>
+            </div>
+          </div>
+
+          <h3>Assessment columns</h3>
+          <p id="assessment-help" class="help"></p>
+          <ul id="assessment-list" class="edit-list"></ul>
+          <div class="list-foot">
+            <button type="button" id="add-assessment">Add an assessment</button>
+            <span id="assessment-total" class="total"></span>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="calc-title">
+          <h2 id="calc-title">Calculated columns</h2>
+          <div class="options">
+            <label class="check"
+              ><input id="show-percentages" type="checkbox" /> A percentage column per assessment</label
+            >
+            <label class="field narrow">
+              <span>Rounded mark</span>
+              <select id="rounding">
+                <option value="none">No rounded column</option>
+                <option value="whole">Whole number</option>
+                <option value="one">One decimal</option>
+              </select>
+            </label>
+            <label class="check"><input id="show-level" type="checkbox" /> CAPS achievement level (1 to 7)</label>
+            <div class="row">
+              <label class="check"><input id="show-result" type="checkbox" /> Pass or fail</label>
+              <label class="field inline">
+                <span>Pass mark (%)</span>
+                <input id="pass-mark" type="number" inputmode="decimal" min="0" max="100" step="any" />
+              </label>
+            </div>
+            <label class="check"><input id="show-summary" type="checkbox" /> Class summary rows at the bottom</label>
+          </div>
+          <p class="help">
+            Levels and pass or fail use the unrounded mark. A blank mark or ABS is left out, and the other weights share
+            its place. Type 0 for a learner who scored nothing.
+          </p>
+        </section>
+
+        <section class="panel" aria-labelledby="preview-title">
+          <div class="preview-head">
+            <h2 id="preview-title">Preview</h2>
+            <label class="check"><input id="show-formulas" type="checkbox" /> Show formulas</label>
+          </div>
+          <p id="preview-caption" class="help"></p>
+          <div class="sheet-scroll" tabindex="0" role="region" aria-label="Preview of the markbook sheet">
+            <table id="preview" class="sheet"></table>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="download-title">
+          <h2 id="download-title">Download</h2>
+          <ul id="problems" class="problems" role="status"></ul>
+          <div class="actions">
+            <button type="button" id="download" class="primary">Download Excel markbook</button>
+          </div>
+          <p id="download-status" class="status" role="status"></p>
+          <div class="save-design">
+            <label class="field grow">
+              <span>Save this design as</span>
+              <input id="save-name" type="text" maxlength="60" />
+            </label>
+            <button type="button" id="save-design">Save design</button>
+          </div>
+          <p class="help">Designs are saved in this browser without learner names, ready for next term.</p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/src/markbook/main.ts"></script>
+  </body>
+</html>

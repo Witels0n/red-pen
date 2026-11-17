@@ -15,17 +15,50 @@ site works offline and can be installed as an app.
 
 ## Tools
 
-| Tool               | What it does                                                                                          |
-| ------------------ | ----------------------------------------------------------------------------------------------------- |
-| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.         |
+### Set and mark
+
+| Tool | What it does |
+| --- | --- |
+| **Question paper grid** | Analysis grid for a paper: marks per cognitive level (CAPS, Bloom's, Barrett's or custom) and topic against targets, a level by topic matrix, and a one-page PDF or Excel file for the HoD. |
 | **MCQ assessments** | Builds a multiple-choice test (with optional pictures), prints one shared shuffled paper and answer sheets for a class list or pasted names, reads scans, and gives a marksheet and item analysis. |
 | **Cover sheets**   | A QR cover sheet per learner from a class list, so a batch scan splits into one PDF per learner.      |
+| **Mark a test**    | Ticks, crosses, reasons, subtotals, totals and notes on a scanned test; exports a marked PDF.         |
+| **Photos to PDF**  | Phone photos to a PDF: crop corners with perspective correction, scan looks, reorder; or a PDF per learner in a zip. |
+
+### Marks and results
+
+| Tool | What it does |
+| --- | --- |
+| **Marks analysis** | Pasted or imported marks (or MCQ results) as bands, box plots, stats and insights per assessment and across them; a one-page PDF report and CSVs. |
+| **Markbook builder** | Designs a markbook (assessments, weights, Categories, CAPS levels, class summary) and downloads an .xlsx with live Excel formulas. |
+
+### PDF basics
+
+| Tool | What it does |
+| --- | --- |
 | **Combine PDFs**   | Joins several PDFs into one, in a chosen order.                                                       |
 | **Split a PDF**    | Splits by page, every N pages, at cover sheets (named per learner) or custom ranges; downloads a zip. |
 | **Organise pages** | Rotates, reorders and deletes pages, storing rotation in the PDF rather than redrawing pages.         |
+| **Compress a PDF** | Shrinks scanned PDFs by redrawing pages as JPEG pictures, several files at once, with an optional target size. |
 | **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.      |
+
+### Print and share
+
+| Tool | What it does |
+| --- | --- |
+| **Booklet printing** | A5 booklets in the right order for double-sided printing, 2 to 9 pages per sheet, or copies of a page with cut lines. |
+| **Stamp and number** | Adds a watermark (MEMO, DRAFT and more), page numbers, a header and footer with a logo and the date to one or many PDFs. |
+| **Redact and anonymise** | Truly removes what is under black or white boxes (repeatable on every page), and renames a class set to Learner 01, 02 and so on, with a separate anonymisation key. |
 | **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
+
+### Classroom
+
+| Tool | What it does |
+| --- | --- |
 | **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
+| **Class picker**   | A fair spinning wheel (learners or custom options) and random groups with rules, locks and a projector view. |
+| **Worksheet maker** | Word search, crossword, matching, fill in the blanks, true or false, unscramble, vocabulary and labelling activities, printed with a memo; saved on the device. |
+| **Certificates and labels** | Mail merge from a class list, pasted rows or CSV/XLSX: certificates, desk name cards, name and book labels, award slips; one PDF or a zip per learner. |
 
 ## Privacy by design
 
@@ -34,8 +67,10 @@ site works offline and can be installed as an app.
 - **Enforced, not promised.** The CSP blocks every connection, remote script, stylesheet and font.
   Build tests fail if any page loses the policy or references a remote host.
 - **Self-hosted everything.** Fonts, pdf.js and its worker, and all libraries are bundled.
-- **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists
-  and MCQ assessments (with their results, never the scans) live in IndexedDB on the device. A signature is stored only if the teacher opts in.
+- **Minimal storage.** Settings, and saved worksheets, live in `localStorage` under `red-pen.<tool>.`
+  keys. Class lists, MCQ assessments (with their results, never the scans) and question paper grids
+  live in IndexedDB on the device. Marks pasted into Marks analysis are never stored, and Class picker names are kept
+  only until the tab closes. A signature is stored only if the teacher opts in.
 
 Details and trade-offs: [ADR 0001](docs/adr/0001-client-only-processing.md).
 

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Marks analysis · Red Pen</title>
+    <meta
+      name="description"
+      content="Paste a class's marks and see the spread, bands, pass rate and plain-language insights, with a one-page report. Nothing is uploaded."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="marks-app">
+      <section class="intro paper" aria-labelledby="marks-title">
+        <div class="intro-inner">
+          <h1 id="marks-title">Marks analysis</h1>
+          <p class="intro-hint handwritten">The whole class at a <span class="nowrap">glance ✓</span></p>
+          <p class="privacy-note">
+            Marks and names are worked out in this browser and never uploaded or saved. Close the page and they are
+            gone.
+          </p>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <p id="handoff-note" class="status-note" role="status" hidden></p>
+
+        <section class="panel" aria-labelledby="input-title">
+          <h2 id="input-title">Your marks</h2>
+          <label class="field">
+            <span>Paste from a spreadsheet</span>
+            <textarea
+              id="marks-text"
+              rows="7"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="Name&#9;Test 1 (40)&#9;Test 2 (50)&#10;Thandi Mokoena&#9;34&#9;41&#10;Sipho Dlamini&#9;ABS&#9;28,5"
+            ></textarea>
+          </label>
+          <p class="help">
+            Copy one or more columns in Excel or Google Sheets and paste them here. Put the total in the heading, such
+            as Test 1 (40), or type it on the assessment below.
+          </p>
+          <div class="actions">
+            <label class="button" for="file-input">Import CSV or Excel</label>
+            <button type="button" id="sample">Try sample marks</button>
+            <button type="button" id="clear-marks">Clear</button>
+          </div>
+          <p id="import-error" class="error" role="alert" hidden></p>
+          <label class="field" id="sheet-field" hidden>
+            <span>Sheet</span>
+            <select id="sheet-select"></select>
+          </label>
+          <div class="layout-checks" id="layout-checks" hidden>
+            <label class="check"><input id="header-row" type="checkbox" /> First row is headings</label>
+            <label class="check"><input id="names-column" type="checkbox" /> First column is names</label>
+          </div>
+          <input id="file-input" type="file" hidden />
+        </section>
+
+        <section id="cards-section" aria-labelledby="cards-title" hidden>
+          <h2 id="cards-title">Check each assessment</h2>
+          <ul id="cards" class="cards"></ul>
+        </section>
+
+        <section class="panel" id="settings-panel" aria-labelledby="settings-title" hidden>
+          <h2 id="settings-title">Bands and pass mark</h2>
+          <div class="settings-grid">
+            <fieldset class="plain">
+              <legend>Bands</legend>
+              <div class="segmented" role="radiogroup" aria-label="Band scheme">
+                <label><input type="radio" name="scheme" value="caps" /><span>CAPS 7 levels</span></label>
+                <label><input type="radio" name="scheme" value="tens" /><span>10% bands</span></label>
+                <label><input type="radio" name="scheme" value="symbols" /><span>Symbols (A to H)</span></label>
+                <label><input type="radio" name="scheme" value="custom" /><span>Custom</span></label>
+              </div>
+              <label class="field" id="cutoffs-field" hidden>
+                <span>Cut-offs (the lowest % of each band after the first)</span>
+                <input id="cutoffs" type="text" inputmode="decimal" placeholder="30, 40, 50, 60, 70, 80" />
+              </label>
+              <p id="cutoffs-error" class="error" role="alert" hidden></p>
+            </fieldset>
+            <fieldset class="plain">
+              <legend>Pass mark</legend>
+              <div class="segmented" role="radiogroup" aria-label="Pass mark">
+                <label><input type="radio" name="pass" value="30" /><span>30%</span></label>
+                <label><input type="radio" name="pass" value="40" /><span>40%</span></label>
+                <label><input type="radio" name="pass" value="50" /><span>50%</span></label>
+                <label><input type="radio" name="pass" value="custom" /><span>Other</span></label>
+              </div>
+              <label class="field narrow" id="pass-field" hidden>
+                <span>Pass mark (%)</span>
+                <input id="pass-mark" type="number" min="1" max="100" step="1" inputmode="numeric" />
+              </label>
+            </fieldset>
+          </div>
+        </section>
+
+        <section id="results-section" aria-labelledby="results-title" hidden>
+          <h2 id="results-title">Results</h2>
+          <div id="results"></div>
+        </section>
+
+        <section class="panel" id="export-panel" aria-labelledby="export-title" hidden>
+          <h2 id="export-title">Report and downloads</h2>
+          <p class="help">
+            A one-page A4 report for your HoD. Class, subject and comments go only into the PDF and are not kept.
+          </p>
+          <div class="row-fields">
+            <label class="field grow">
+              <span>Class (optional)</span>
+              <input id="report-class" type="text" placeholder="For example Grade 9B" />
+            </label>
+            <label class="field grow">
+              <span>Subject (optional)</span>
+              <input id="report-subject" type="text" placeholder="For example Mathematics" />
+            </label>
+          </div>
+          <label class="field">
+            <span>Comments <output id="comments-count" for="report-comments"></output></span>
+            <textarea id="report-comments" rows="4" maxlength="600"></textarea>
+          </label>
+          <label class="check" id="names-check"
+            ><input id="report-names" type="checkbox" /> Add a second page listing learners below the pass mark</label
+          >
+          <p class="help" id="names-help">The report has no names unless you tick this.</p>
+          <div class="actions">
+            <button type="button" class="primary" id="download-report">Download report (PDF)</button>
+            <button type="button" id="download-summary">Summary (CSV)</button>
+            <button type="button" id="download-learners">Learner percentages (CSV)</button>
+          </div>
+          <p id="export-status" class="status-line" role="status" hidden></p>
+        </section>
+
+        <details class="panel how">
+          <summary>How these are worked out</summary>
+          <ul>
+            <li>
+              Every mark becomes a percentage of its "out of". Bands use the exact percentage before rounding, so 29.6%
+              is in the 0-29 band. Figures are shown to one decimal place.
+            </li>
+            <li>
+              Absent learners (blank, ABS, A, AB, - or X) are counted but left out of the figures. Anything else that is
+              not a mark is listed under its assessment for you to correct.
+            </li>
+            <li>
+              SD is the population standard deviation in percentage points: under 10 is a tight spread, 10 to 18 is
+              typical and over 18 is wide. The quartiles split the marks into four equal groups; an outlier is more than
+              1.5 times the middle half's spread beyond it.
+            </li>
+            <li>
+              A skew is noted when the average and the median are 5 or more points apart. Two groups are looked for from
+              15 marks, as two peaks in 10% steps with few marks between. Over 30% in the top or bottom band is noted
+              too. With fewer than 5 marks, these patterns are not shown.
+            </li>
+            <li>
+              Learners are matched across assessments by row: the names are only labels. Improved and dropped use only
+              learners with both marks, and leave out calculated columns (Average, Total, Term mark).
+            </li>
+            <li>The insights are prompts for your own judgement, not verdicts.</li>
+          </ul>
+        </details>
+      </div>
+    </main>
+    <script type="module" src="/src/marks/main.ts"></script>
+  </body>
+</html>

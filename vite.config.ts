@@ -21,6 +21,17 @@ export const PAGES = {
   classes: 'classes/index.html',
   mcq: 'mcq/index.html',
   covers: 'covers/index.html',
+  markbook: 'markbook/index.html',
+  scan: 'scan/index.html',
+  booklet: 'booklet/index.html',
+  compress: 'compress/index.html',
+  picker: 'picker/index.html',
+  grid: 'grid/index.html',
+  worksheets: 'worksheets/index.html',
+  certificates: 'certificates/index.html',
+  stamp: 'stamp/index.html',
+  redact: 'redact/index.html',
+  marks: 'marks/index.html',
 } as const
 
 /**

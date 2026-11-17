@@ -1,7 +1,8 @@
-// Small typesetting helpers for the MCQ PDFs (pdf-lib, standard fonts, nothing remote): word
-// wrapping, a flowing page writer with page breaks, and page footers.
+// Small typesetting helpers for Red Pen's PDFs (the MCQ booklet and slips, the Marks analysis report),
+// with pdf-lib and standard fonts, nothing remote: word wrapping, a flowing page writer with page
+// breaks, and page footers.
 import { PDFDocument, PDFFont, PDFPage, rgb, StandardFonts, type RGB } from 'pdf-lib'
-import { A4_HEIGHT, A4_WIDTH, MM } from '../../shared/omr/layout'
+import { A4_HEIGHT, A4_WIDTH, MM } from '../omr/layout'
 
 export { A4_HEIGHT, A4_WIDTH, MM }
 
