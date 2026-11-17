@@ -9,13 +9,17 @@ body {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-family: system-ui, sans-serif;
   background: #e9e9ec;
   color: #1d1d20;
 }
 
+/* The shared Red Pen header sits above the app; the app fills the rest of the window. */
 #app {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 [hidden] {
@@ -23,9 +27,35 @@ body {
 }
 
 #open-screen {
-  max-width: 36rem;
+  min-height: 100%;
+  overflow: auto;
+}
+
+.open-inner {
+  max-width: 38rem;
   margin: 0 auto;
-  padding: 3rem 1rem;
+  padding: 3rem 1rem 3rem 4.5rem;
+}
+
+@media (max-width: 640px) {
+  .open-inner {
+    padding-left: 2.5rem;
+  }
+}
+
+#open-screen h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+}
+
+.open-hint {
+  margin: 0.25rem 0 1.25rem;
+  font-size: 1.4rem;
+  transform: rotate(-2deg);
+  transform-origin: left;
 }
 
 #privacy-note {

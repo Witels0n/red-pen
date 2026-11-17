@@ -1,0 +1,66 @@
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  min-height: var(--header-height);
+  padding-block: 0.4rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--surface);
+  color: var(--text);
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-body);
+}
+
+.site-header .wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.site-header .wordmark span {
+  color: var(--red);
+}
+
+.site-header .tagline,
+.site-header .tool-name {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.site-header .tool-name::before {
+  content: '/';
+  margin-right: 0.75rem;
+  color: var(--hairline);
+}
+
+.site-header .spacer {
+  flex: 1;
+}
+
+.update-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.update-note button {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--red);
+  border-radius: 4px;
+  background: var(--red);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.site-header a:focus-visible,
+.site-header button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

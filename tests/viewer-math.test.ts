@@ -6,7 +6,7 @@ import {
   layoutPages,
   stepZoom,
   visiblePages,
-} from '../src/viewer-math'
+} from '../src/mark/viewer-math'
 
 // Seam: pure zoom / layout / visibility math. Scale = CSS pixels per PDF page unit.
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { looksLikePdf } from '../src/pdf-file'
+import { looksLikePdf } from '../src/mark/pdf-file'
 
 const bytes = (s: string) => new TextEncoder().encode(s)
 

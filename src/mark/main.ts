@@ -1,3 +1,6 @@
+import './styles.css'
+import { mountSiteHeader } from '../shared/site-header'
+import { registerOffline } from '../shared/pwa'
 import { attachAnnotationLayer, type AnnotationLayer } from './annotation-layer'
 import { attachSelection, type Selection } from './selection'
 import { attachHistoryKeys } from './history-keys'
@@ -14,6 +17,8 @@ import { looksLikePdf } from './pdf-file'
 import { loadPdf } from './pdf-worker'
 import { getOpenedTest, setOpenedTest } from './session'
 import { createViewer, type Viewer } from './viewer'
+
+registerOffline(mountSiteHeader({ toolName: 'Mark a test' }))
 
 function el<T extends HTMLElement>(id: string): T {
   return document.getElementById(id) as T

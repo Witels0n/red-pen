@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { INK_PRESETS, INK_STORAGE_KEY, createInk, type InkStorage } from '../src/ink'
+import { INK_PRESETS, INK_STORAGE_KEY, createInk, type InkStorage } from '../src/mark/ink'
 
 function memoryStorage(initial: Record<string, string> = {}): InkStorage & { data: Record<string, string> } {
   const data = { ...initial }
