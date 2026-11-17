@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMarkingModel } from '../src/marking-model'
+import { createMarkingModel } from '../src/mark/marking-model'
 
 describe('marking model: placing Ticks', () => {
   it('starts with no Annotations', () => {

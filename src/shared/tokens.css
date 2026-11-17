@@ -1,0 +1,99 @@
+/* Red Pen design tokens, shared by every page.
+   Layout concept: a sheet of lined exam paper with a red margin, marked up in red pen.
+   Pages that are work surfaces (the marker) pin light mode with <html data-theme="light">. */
+@import '@fontsource/bricolage-grotesque/latin-600.css';
+@import '@fontsource/bricolage-grotesque/latin-800.css';
+@import '@fontsource/atkinson-hyperlegible/latin-400.css';
+@import '@fontsource/atkinson-hyperlegible/latin-700.css';
+@import '@fontsource/gochi-hand/latin-400.css';
+
+:root {
+  --paper: #fdfdfb;
+  --surface: #ffffff;
+  --text: #1b2330;
+  --text-muted: #4a5361;
+  --rule: #c9dcef;
+  --margin-line: #e89aa0;
+  --edge: #1b2330;
+  --hairline: #d9dde3;
+  --red: #d3212d;
+  --red-soft: #fdecee;
+  --focus: #2a5bd7;
+
+  --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+  --font-hand: 'Gochi Hand', 'Comic Sans MS', cursive;
+
+  --rule-gap: 28px;
+  --header-height: 3rem;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #1a1f27;
+    --surface: #232934;
+    --text: #e8ebf0;
+    --text-muted: #a9b1bd;
+    --rule: #2c3644;
+    --margin-line: #7a3a40;
+    --edge: #a9b1bd;
+    --hairline: #343c48;
+    --red: #ff5a63;
+    --red-soft: #3a2125;
+    --focus: #7ea2ff;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper: #1a1f27;
+  --surface: #232934;
+  --text: #e8ebf0;
+  --text-muted: #a9b1bd;
+  --rule: #2c3644;
+  --margin-line: #7a3a40;
+  --edge: #a9b1bd;
+  --hairline: #343c48;
+  --red: #ff5a63;
+  --red-soft: #3a2125;
+  --focus: #7ea2ff;
+  color-scheme: dark;
+}
+
+/* Ruled exam paper with a red margin line. Used by the landing hero and every tool's empty screen. */
+.paper {
+  position: relative;
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--rule-gap) - 1px),
+    var(--rule) calc(var(--rule-gap) - 1px) var(--rule-gap)
+  );
+}
+
+.paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 44px;
+  width: 2px;
+  background: var(--margin-line);
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .paper::before {
+    left: 20px;
+  }
+}
+
+.handwritten {
+  font-family: var(--font-hand);
+  color: var(--red);
+}
+
+.nowrap {
+  white-space: nowrap;
+}

@@ -1,8 +1,20 @@
-# PDF Marker
+# Red Pen
 
-A tool for teachers to mark scanned learner tests: they place annotations on the pages of a scanned test and export a marked copy.
+A site of tools for teachers. Every tool runs entirely in the browser. The first tool is the marker: teachers place annotations on the pages of a scanned test and export a marked copy.
 
 ## Language
+
+### The site
+
+**Red Pen**:
+The whole site: the landing page plus every tool.
+_Avoid_: App, platform, PDF Marker (the old name of the site)
+
+**Tool**:
+One job on its own page (for example "Mark a test"), listed on the landing page.
+_Avoid_: App, feature, module
+
+### Marking
 
 **Test**:
 One learner's scanned work, supplied as a single PDF.

@@ -1,8 +1,8 @@
 import { PDFArray, PDFDocument, PDFRawStream, PDFStream, decodePDFRawStream, degrees, type PDFPage } from 'pdf-lib'
 import { describe, expect, it } from 'vitest'
-import { INK_PRESETS } from '../src/ink'
-import { createMarkingModel } from '../src/marking-model'
-import { exportMarkedPdf, markedFileName, toPageSpace } from '../src/export'
+import { INK_PRESETS } from '../src/mark/ink'
+import { createMarkingModel } from '../src/mark/marking-model'
+import { exportMarkedPdf, markedFileName, toPageSpace } from '../src/mark/export'
 
 async function fixture(): Promise<Uint8Array> {
   const doc = await PDFDocument.create()

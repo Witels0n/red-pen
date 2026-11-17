@@ -1,14 +1,47 @@
-# pdf-marker
+# Red Pen
 
-Lightweight, minimalist tool for marking scanned PDF tests: click for ticks, right-click for crosses, drag in subtotals and text.
+Free tools for teachers. Every tool runs entirely in the browser: files are never uploaded, and each
+page blocks itself from making network requests (see `docs/adr/0001-client-only-processing.md`).
+After one visit the whole site works offline and can be installed as an app
+(see `docs/adr/0002-multi-page-offline-site.md`).
 
-Learner PDFs never leave the browser; see `docs/adr/0001-client-only-processing.md`.
+Live at `https://witels0n.github.io/red-pen/`.
+
+## Tools
+
+| Tool        | Page              | Source       |
+| ----------- | ----------------- | ------------ |
+| Mark a test | `/red-pen/mark/`  | `src/mark/`  |
+
+The landing page (`index.html`, `src/landing/`) lists them.
+
+## Layout
+
+```
+index.html            landing page
+mark/index.html       Mark a test
+src/shared/           header, design tokens, self-hosted fonts, ruled-paper style, offline (PWA)
+src/landing/          landing page code and the list of tools (tools.ts)
+src/mark/             the marker
+public/               icons (the web app manifest is generated in vite.config.ts)
+design/icon.svg       source for the app icons
+redirect/             the page that keeps the old /pdf-marker/ URL working (published separately)
+```
+
+## Adding a tool
+
+1. Create `<tool>/index.html` and `src/<tool>/main.ts`. Call `mountSiteHeader({ toolName })` and
+   `registerOffline(header)` from `src/shared/`, and give the open screen `class="paper"`.
+2. Add the page to `PAGES` in `vite.config.ts`.
+3. Add an entry to `TOOLS` in `src/landing/tools.ts`.
+
+The build tests check that every page carries the CSP and is precached for offline use.
 
 ## Development
 
 ```
 npm install
-npm run dev          # dev server at http://localhost:5173/pdf-marker/
+npm run dev          # dev server at http://localhost:5173/red-pen/
 npm run build        # type-check + production build into dist/
 ```
 
@@ -25,4 +58,5 @@ Vitest tests live in `tests/`, Playwright specs in `smoke/`.
 ## Deploy
 
 Pushing to `main` runs `.github/workflows/deploy.yml` (test, build, publish to GitHub Pages).
-In the repo settings, set Pages source to "GitHub Actions". The site is served under `/pdf-marker/`.
+In the repo settings, set Pages source to "GitHub Actions". The site is served under `/red-pen/`
+(`BASE` in `vite.config.ts`).

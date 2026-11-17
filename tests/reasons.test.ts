@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_REASONS, REASONS_STORAGE_KEY, createReasonsList, type ReasonsStorage } from '../src/reasons'
+import { DEFAULT_REASONS, REASONS_STORAGE_KEY, createReasonsList, type ReasonsStorage } from '../src/mark/reasons'
 
 /** A plain in-memory stand-in for localStorage. */
 function memoryStorage(initial: Record<string, string> = {}): ReasonsStorage & { data: Record<string, string> } {

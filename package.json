@@ -1,5 +1,5 @@
 {
-  "name": "pdf-marker",
+  "name": "red-pen",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,9 @@
     "test:smoke": "playwright test"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/bricolage-grotesque": "^5.3.0",
+    "@fontsource/gochi-hand": "^5.3.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289"
   },
@@ -20,6 +23,8 @@
     "@types/node": "^26.6.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.1",
-    "vitest": "^5.0.3"
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.3",
+    "workbox-window": "^7.4.1"
   }
 }

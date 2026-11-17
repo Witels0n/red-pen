@@ -1,50 +1,85 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-ZA">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDF Marker</title>
-    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Red Pen</title>
+    <meta name="description" content="Free tools for teachers: marking, PDFs and the classroom. Everything runs in your browser, so files are never uploaded." />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
   </head>
   <body>
-    <main id="app">
-      <section id="open-screen">
-        <h1>PDF Marker</h1>
-        <p id="privacy-note">
-          Your PDF is not uploaded and not stored on any server. It never leaves your computer and
-          is processed only in your browser. This is called client-side processing. You can verify
-          this by disconnecting from the internet and opening a PDF. Now that you have loaded the page
-          you can run this app offline.
-        </p>
-        <div id="drop-zone">
-          <p>Drag a scanned test (PDF) here, or</p>
-          <label class="button" for="file-input">Choose a PDF</label>
+    <main id="landing">
+      <section class="hero paper" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <div class="score handwritten" aria-hidden="true">10<br />/ 10</div>
+          <h1 id="hero-title">
+            Less admin, more
+            <span class="underlined">teaching.<svg viewBox="0 0 200 16" preserveAspectRatio="none" aria-hidden="true"><path d="M2 10 C 50 3, 110 14, 198 5" /></svg></span>
+          </h1>
+          <p class="scrawl handwritten">Nothing leaves your <span class="nowrap">computer ✓</span></p>
+          <p class="lede">
+            Free tools for marking, PDFs and the classroom. Everything runs in your browser, so learner
+            work is never uploaded.
+          </p>
         </div>
-        <p id="open-error" class="error" role="alert" hidden></p>
       </section>
 
-      <section id="viewer-screen" hidden>
-        <header id="toolbar">
-          <label class="button" for="file-input">Open another PDF</label>
-          <span id="file-name"></span>
-          <span class="tool" id="tool-subtotal" data-tool="subtotal" data-ghost="Subtotal" role="button" tabindex="0" title="Drag onto the page">Subtotal</span>
-          <span class="tool" id="tool-total" data-tool="total" data-ghost="Total" role="button" tabindex="0" title="Drag onto the page">Total</span>
-          <span class="tool" id="tool-text" data-tool="text" data-ghost="Text note" role="button" tabindex="0" title="Drag onto the page">Text note</span>
-          <span id="ink-swatches" role="radiogroup" aria-label="Ink colour"></span>
-          <span class="spacer"></span>
-          <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>
-          <span id="zoom-level">100%</span>
-          <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
-          <button type="button" id="zoom-fit">Fit width</button>
-          <button type="button" id="edit-reasons">Edit reasons</button>
-          <button type="button" id="export">Export marked PDF</button>
-        </header>
-        <p id="viewer-error" class="error" role="alert" hidden></p>
-        <div id="viewer"></div>
+      <section class="tools" aria-labelledby="tools-title">
+        <h2 id="tools-title" class="visually-hidden">Tools</h2>
+        <div id="tool-groups"></div>
       </section>
 
-      <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+      <section class="info" id="privacy" aria-labelledby="privacy-title">
+        <h2 id="privacy-title">How your files stay private</h2>
+        <ol class="points">
+          <li>
+            <b>Your files open in your browser.</b>
+            <span>Every tool works on your own computer. Nothing is uploaded or stored on a server.</span>
+          </li>
+          <li>
+            <b>The site blocks itself from sending data.</b>
+            <span>Each page tells your browser to refuse any connection it tries to make, so this is enforced, not just promised.</span>
+          </li>
+          <li>
+            <b>You can check this yourself.</b>
+            <span>Once a page has loaded, turn off your Wi-Fi and use the tool. It still works.</span>
+          </li>
+        </ol>
+        <p class="aside">
+          For school IT staff: the technical details are in
+          <a href="https://github.com/Witels0n/red-pen/blob/main/docs/adr/0001-client-only-processing.md" target="_blank" rel="noopener">the privacy decision record</a>.
+        </p>
+      </section>
+
+      <section class="info" id="install" aria-labelledby="install-title">
+        <h2 id="install-title">Install Red Pen</h2>
+        <p>Install Red Pen like an app and it works fully offline, even when the school Wi-Fi is down.</p>
+        <p id="install-available" hidden>
+          <button type="button" id="install-button" class="primary">Install Red Pen</button>
+        </p>
+        <p id="install-installed" hidden>Red Pen is installed on this device.</p>
+        <div id="install-manual">
+          <p>Your browser installs it from its own menu:</p>
+          <ul>
+            <li><b>iPhone or iPad (Safari):</b> tap Share, then Add to Home Screen.</li>
+            <li><b>Android (Chrome):</b> tap the ⋮ menu, then Install app or Add to Home screen.</li>
+            <li><b>Computer (Chrome or Edge):</b> click the install icon at the right of the address bar.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="info" id="about" aria-labelledby="about-title">
+        <h2 id="about-title">About</h2>
+        <p><span class="handwritten made-by">Made by a teacher, for teachers.</span></p>
+        <p>Red Pen is free and open source. If something doesn't work, or there's a tool you wish you had, let me know.</p>
+        <p class="links">
+          <a href="https://github.com/Witels0n/red-pen/issues/new?title=Tool%20idea%3A%20" target="_blank" rel="noopener">Suggest a tool</a>
+          <a href="https://github.com/Witels0n/red-pen/issues/new?title=Problem%3A%20" target="_blank" rel="noopener">Report a problem</a>
+        </p>
+      </section>
     </main>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/landing/main.ts"></script>
   </body>
 </html>

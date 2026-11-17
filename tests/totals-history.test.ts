@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMarkingModel } from '../src/marking-model'
+import { createMarkingModel } from '../src/mark/marking-model'
 
 describe('Subtotals', () => {
   it('counts Ticks above it on the page, back to the start of the Test', () => {
