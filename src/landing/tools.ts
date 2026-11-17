@@ -70,6 +70,12 @@ export const TOOLS: readonly Tool[] = [
     path: 'classes/',
     group: 'Useful stuff',
   },
+  {
+    name: 'Certificates and labels',
+    blurb: 'Certificates, desk name cards, name labels, book labels and award slips for every learner on a list.',
+    path: 'certificates/',
+    group: 'Useful stuff',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */

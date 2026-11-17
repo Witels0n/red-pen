@@ -173,3 +173,17 @@ _Avoid_: Student number, learner number, index
 **Cover sheet**:
 An A4 page with a learner's name (optional), Learner ID and a QR code holding only the Learner ID, stapled to the front of a written test. A class's tests are scanned in one batch, and Split a PDF starts a new part at each Cover sheet, named after the learner when the Class list is on the device. Printed by the Cover sheets Tool.
 _Avoid_: Title page, front page, separator sheet
+
+### Certificates and labels
+
+**Recipient list**:
+The people a batch of certificates or labels is made for, one row each, from a Class list, pasted rows or a CSV/XLSX file. Each column is a merge field. Never stored by the Tool.
+_Avoid_: Mailing list, data source (in UI text)
+
+**Merge field**:
+A placeholder in braces, such as `{Name}`, `{Award}` or `{Date}`, filled in per learner from the column with that title (case does not matter). A field no column has prints as typed, so a typo shows on the preview. `{{` and `}}` print a literal brace.
+_Avoid_: Tag, variable, placeholder (in UI text)
+
+**Product**:
+What Certificates and labels prints: certificates, desk name cards (folded tent cards, two per A4 sheet), name labels (sticker sheets), book labels or award slips (four per A4 page).
+_Avoid_: Template, output

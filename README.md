@@ -26,6 +26,7 @@ site works offline and can be installed as an app.
 | **Sign and fill**  | Fills PDF form fields, detects lines and boxes on scanned forms, and adds dates and a signature.      |
 | **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
 | **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
+| **Certificates and labels** | Mail merge from a class list, pasted rows or CSV/XLSX: certificates, desk name cards, name and book labels, award slips; one PDF or a zip per learner. |
 
 ## Privacy by design
 
