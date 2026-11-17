@@ -20,6 +20,24 @@ export const TOOLS: readonly Tool[] = [
     path: 'mark/',
     group: 'Marking',
   },
+  {
+    name: 'Combine PDFs',
+    blurb: 'Join several PDFs into one, in the order you choose.',
+    path: 'combine/',
+    group: 'PDF',
+  },
+  {
+    name: 'Split a PDF',
+    blurb: 'Cut one PDF into smaller files: per page, every few pages (one per learner) or custom ranges.',
+    path: 'split/',
+    group: 'PDF',
+  },
+  {
+    name: 'Organise pages',
+    blurb: 'Rotate, reorder and delete pages of a PDF, then save a tidy copy.',
+    path: 'organise/',
+    group: 'PDF',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */

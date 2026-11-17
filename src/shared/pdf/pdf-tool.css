@@ -1,0 +1,255 @@
+/* Shared look of the PDF Tools (Combine, Split, Organise).
+   The open screen is ruled paper; once a file is open the surface is plain and calm.
+   Colours come from the design tokens, so light and dark mode both work. */
+
+:root {
+  --ok: #2a7a3b;
+  --ok-soft: #f1f8f3;
+  --error-text: #8a1a20;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ok: #6cc584;
+    --ok-soft: #1f2b25;
+    --error-text: #ffb3b8;
+  }
+}
+
+:root[data-theme='dark'] {
+  --ok: #6cc584;
+  --ok-soft: #1f2b25;
+  --error-text: #ffb3b8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Open screen */
+
+.open-screen {
+  flex: 1;
+}
+
+.open-inner {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: 3rem 16px 3rem 4.5rem;
+}
+
+@media (max-width: 640px) {
+  .open-inner {
+    padding-left: 2.5rem;
+  }
+}
+
+.open-screen h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.open-hint {
+  margin: 0.25rem 0 1.25rem;
+  font-size: 1.4rem;
+  transform: rotate(-2deg);
+  transform-origin: left;
+}
+
+.privacy-note {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--ok);
+  background: var(--ok-soft);
+}
+
+.drop-zone {
+  margin-top: 1.5rem;
+  padding: 2.5rem 1rem;
+  border: 2px dashed var(--text-muted);
+  border-radius: 8px;
+  text-align: center;
+  background: var(--surface);
+}
+
+.drop-zone p {
+  margin: 0 0 0.75rem;
+}
+
+body.drag-over .drop-zone,
+body.drag-over .workspace {
+  outline: 2px dashed var(--focus);
+  outline-offset: 4px;
+}
+
+/* Controls */
+
+.button,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button:hover,
+button:hover:not(:disabled) {
+  border-color: var(--text-muted);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.button.primary,
+button.primary {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+  font-weight: 700;
+}
+
+.button:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button.icon {
+  min-width: 2.25rem;
+  padding: 0.35rem;
+}
+
+input[type='text'],
+input[type='number'] {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.error {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 4px solid var(--red);
+  background: var(--red-soft);
+  color: var(--error-text);
+  white-space: pre-line;
+}
+
+/* Workspace: the calm screen once a file is open */
+
+.workspace {
+  width: 100%;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.25rem 16px 3rem;
+}
+
+.workspace h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.toolbar .spacer {
+  flex: 1;
+}
+
+.summary {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.drag-handle {
+  color: var(--text-muted);
+  cursor: grab;
+  user-select: none;
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+.drop-before {
+  box-shadow: 0 -3px 0 var(--focus);
+}
+
+.drop-after {
+  box-shadow: 0 3px 0 var(--focus);
+}

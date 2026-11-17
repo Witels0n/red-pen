@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organise pages · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Organise pages</h1>
+          <p class="open-hint handwritten">Turn, reorder and tidy up a <span class="nowrap">scan ✓</span></p>
+          <p class="privacy-note">Your PDF is processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag a PDF here, or</p>
+            <label class="button primary" for="file-input">Choose a PDF</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace" hidden>
+        <h2>Organise pages</h2>
+        <div class="toolbar">
+          <label class="button" for="file-input">Open another PDF</label>
+          <span id="summary" class="summary"></span>
+          <span class="spacer"></span>
+          <button type="button" id="rotate-all-left">↺ Rotate all left</button>
+          <button type="button" id="rotate-all-right">↻ Rotate all right</button>
+          <button type="button" id="reset">Start over</button>
+          <button type="button" id="save" class="primary">Save PDF</button>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+        <p class="list-hint">Drag pages into order, or use the arrow buttons. Page numbers are from the original PDF.</p>
+        <ol id="page-grid" class="page-grid"></ol>
+        <p id="status" class="visually-hidden" role="status"></p>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+    </main>
+    <script type="module" src="/src/organise/main.ts"></script>
+  </body>
+</html>

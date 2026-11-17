@@ -1,6 +1,6 @@
 # Red Pen
 
-A site of tools for teachers. Every tool runs entirely in the browser. The first tool is the marker: teachers place annotations on the pages of a scanned test and export a marked copy.
+A site of tools for teachers. Every tool runs entirely in the browser. The first tool is the marker: teachers place annotations on the pages of a scanned test and export a marked copy. The PDF tools combine, split and organise PDFs.
 
 ## Language
 
@@ -59,3 +59,17 @@ _Avoid_: Comment, label
 **Ink colour**:
 The single colour in which every annotation of a test is drawn, on screen and in the exported copy. Chosen by the teacher from a fixed set (red by default); changing it recolours all annotations, including those already placed. Remembered in the browser between tests.
 _Avoid_: Pen colour, marker colour, annotation colour
+
+### PDF tools
+
+**Part**:
+One of the PDFs a split produces, named after the original with a number (for example `class-part-03.pdf`). All parts download together in one .zip.
+_Avoid_: Chunk, piece, segment
+
+**Range**:
+A run of pages written as the teacher types it: a single page (`7`) or a first and last page (`4-6`), counted from 1. Custom ranges are separated by commas and each one becomes a part.
+_Avoid_: Selection, interval
+
+**Turn**:
+A quarter rotation the teacher gives a page in Organise pages. It is added to the rotation the page already has and stored in the saved PDF, so the page itself is never redrawn.
+_Avoid_: Re-render, flip
