@@ -27,6 +27,7 @@ export const PAGES = {
   compress: 'compress/index.html',
   picker: 'picker/index.html',
   grid: 'grid/index.html',
+  worksheets: 'worksheets/index.html',
 } as const
 
 /**

@@ -103,6 +103,9 @@ export const TOOLS: readonly Tool[] = [
     name: 'Class picker',
     blurb: 'Spin a wheel to pick a learner fairly, or make random groups with keep-apart and keep-together rules.',
     path: 'picker/',
+    name: 'Worksheet maker',
+    blurb: 'Word searches, crosswords, matching, fill in the blanks and more, printed as a worksheet with its memo.',
+    path: 'worksheets/',
     group: 'Useful stuff',
   },
 ]

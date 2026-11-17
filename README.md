@@ -32,6 +32,7 @@ site works offline and can be installed as an app.
 | **QR codes**       | Links, Wi-Fi, email and contact cards, with colours, module shapes, a logo, and PNG or SVG export.    |
 | **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
 | **Class picker**   | A fair spinning wheel (learners or custom options) and random groups with rules, locks and a projector view. |
+| **Worksheet maker** | Word search, crossword, matching, fill in the blanks, true or false, unscramble, vocabulary and labelling activities, printed with a memo; saved on the device. |
 
 ## Privacy by design
 
@@ -42,6 +43,8 @@ site works offline and can be installed as an app.
 - **Self-hosted everything.** Fonts, pdf.js and its worker, and all libraries are bundled.
 - **Minimal storage.** Settings live in `localStorage` under `red-pen.<tool>.` keys. Class lists,
   MCQ assessments (with their results, never the scans) and question paper grids live in IndexedDB on the device. A signature is stored only if the teacher opts in.
+- **Minimal storage.** Settings, and saved worksheets, live in `localStorage` under `red-pen.<tool>.` keys. Class lists
+  and MCQ assessments (with their results, never the scans) live in IndexedDB on the device. A signature is stored only if the teacher opts in.
 
 Details and trade-offs: [ADR 0001](docs/adr/0001-client-only-processing.md).
 
