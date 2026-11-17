@@ -1,0 +1,101 @@
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+legend {
+  margin-bottom: 0.5rem;
+  padding: 0;
+  font-weight: 700;
+}
+
+.mode {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+}
+
+.mode > input[type='radio'] {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0.45rem 0 0;
+  accent-color: var(--red);
+  flex-shrink: 0;
+}
+
+.mode > span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  line-height: 2.25rem;
+}
+
+.mode small {
+  flex-basis: 100%;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+#every-size {
+  width: 5em;
+}
+
+#ranges-text {
+  width: 16rem;
+  max-width: 100%;
+}
+
+.preview-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.preview-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.preview-head .spacer {
+  flex: 1;
+}
+
+#preview-count {
+  margin: 0.75rem 0 0.25rem;
+}
+
+.preview {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.preview li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.preview li:last-child {
+  border-bottom: 0;
+}
+
+.part-name {
+  overflow-wrap: anywhere;
+}
+
+.part-range {
+  color: var(--text-muted);
+}

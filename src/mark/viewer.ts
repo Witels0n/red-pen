@@ -1,4 +1,4 @@
-import type { PdfDocument, PdfPage, RenderTask } from './pdf-worker'
+import type { PdfDocument, PdfPage, RenderTask } from '../shared/pdf/pdf-worker'
 import {
   clampZoom,
   fitToWidthScale,

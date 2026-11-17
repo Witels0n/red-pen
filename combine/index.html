@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Combine PDFs · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Combine PDFs</h1>
+          <p class="open-hint handwritten">Many PDFs in, one PDF <span class="nowrap">out ✓</span></p>
+          <p class="privacy-note">Your PDFs are processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag PDFs here, or</p>
+            <label class="button primary" for="file-input">Choose PDFs</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace" hidden>
+        <h2>Combine PDFs</h2>
+        <div class="toolbar">
+          <label class="button" for="file-input">Add more PDFs</label>
+          <span id="summary" class="summary"></span>
+          <span class="spacer"></span>
+          <button type="button" id="combine" class="primary">Combine and download</button>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+        <p class="list-hint">Drag the files into order, or use the arrows. The first file comes first.</p>
+        <ol id="file-list" class="file-list"></ol>
+        <p id="status" class="visually-hidden" role="status"></p>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden />
+    </main>
+    <script type="module" src="/src/combine/main.ts"></script>
+  </body>
+</html>
