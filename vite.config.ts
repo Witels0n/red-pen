@@ -21,6 +21,7 @@ export const PAGES = {
   classes: 'classes/index.html',
   mcq: 'mcq/index.html',
   covers: 'covers/index.html',
+  picker: 'picker/index.html',
 } as const
 
 /**
