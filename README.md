@@ -12,6 +12,7 @@ Live at `https://witels0n.github.io/red-pen/`.
 | Tool        | Page              | Source       |
 | ----------- | ----------------- | ------------ |
 | Mark a test | `/red-pen/mark/`  | `src/mark/`  |
+| QR codes    | `/red-pen/qr/`    | `src/qr/`    |
 
 The landing page (`index.html`, `src/landing/`) lists them.
 
@@ -20,9 +21,11 @@ The landing page (`index.html`, `src/landing/`) lists them.
 ```
 index.html            landing page
 mark/index.html       Mark a test
+qr/index.html         QR codes
 src/shared/           header, design tokens, self-hosted fonts, ruled-paper style, offline (PWA)
 src/landing/          landing page code and the list of tools (tools.ts)
 src/mark/             the marker
+src/qr/               the QR code maker (payloads, renderer, export, settings, editor)
 public/               icons (the web app manifest is generated in vite.config.ts)
 design/icon.svg       source for the app icons
 redirect/             the page that keeps the old /pdf-marker/ URL working (published separately)

@@ -59,3 +59,29 @@ _Avoid_: Comment, label
 **Ink colour**:
 The single colour in which every annotation of a test is drawn, on screen and in the exported copy. Chosen by the teacher from a fixed set (red by default); changing it recolours all annotations, including those already placed. Remembered in the browser between tests.
 _Avoid_: Pen colour, marker colour, annotation colour
+
+### QR codes
+
+**Content type**:
+What a QR code holds: a link, plain text, Wi-Fi details, an email or a contact card. Each has its own fields.
+_Avoid_: Mode, format
+
+**Payload**:
+The exact text a QR code carries, built from the content (for example `WIFI:T:WPA;S:Room 12;P:secret;;`). Its length in bytes decides whether it fits.
+_Avoid_: Data, value
+
+**Module**:
+One dark or light square of a QR code's grid. Drawn as a square, rounded shape or dot.
+_Avoid_: Pixel, dot (except as the shape name)
+
+**Eye**:
+One of the three large squares in the corners of a QR code (the finder patterns) that scanners look for first.
+_Avoid_: Corner, anchor
+
+**Quiet zone**:
+The empty border around a QR code, measured in modules. Scanners need it to find the code.
+_Avoid_: Padding, margin (in UI text)
+
+**Error correction**:
+How much of a QR code can be covered or damaged and still scan: L, M, Q or H. Adding a logo sets it to H.
+_Avoid_: Redundancy, quality

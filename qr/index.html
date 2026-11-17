@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>QR codes · Red Pen</title>
+    <meta name="description" content="Make QR codes for links, Wi-Fi, email and contact cards, with your own colours and logo. Nothing is uploaded." />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="qr-app">
+      <section class="qr-intro paper" aria-labelledby="qr-title">
+        <div class="intro-inner">
+          <h1 id="qr-title">QR codes</h1>
+          <p class="intro-hint handwritten">Point, scan, <span class="nowrap">done ✓</span></p>
+          <p class="intro-text">
+            Codes for a link, your classroom Wi-Fi, an email or a contact card. Everything is made in
+            your browser: nothing you type or upload leaves this device.
+          </p>
+        </div>
+      </section>
+
+      <div class="editor">
+        <section class="preview-pane" aria-labelledby="preview-title">
+          <h2 id="preview-title" class="visually-hidden">Preview</h2>
+          <div id="preview" class="preview" aria-live="off"></div>
+          <p id="preview-empty" class="preview-empty" hidden></p>
+          <p id="payload-info" class="payload-info"></p>
+          <div id="warnings" class="warnings" role="status"></div>
+          <div class="export">
+            <label class="field inline">
+              <span>Size</span>
+              <select id="export-size">
+                <option value="256">256 × 256 px</option>
+                <option value="512">512 × 512 px</option>
+                <option value="1024">1024 × 1024 px</option>
+                <option value="2048">2048 × 2048 px (print)</option>
+              </select>
+            </label>
+            <div class="export-buttons">
+              <button type="button" id="download-png" class="primary">Download PNG</button>
+              <button type="button" id="download-svg">Download SVG</button>
+              <button type="button" id="copy-image" hidden>Copy image</button>
+            </div>
+            <p id="export-status" class="export-status" role="status"></p>
+          </div>
+        </section>
+
+        <form id="settings" class="settings" autocomplete="off" novalidate>
+          <fieldset class="panel">
+            <legend>Content</legend>
+            <div class="segmented" role="radiogroup" aria-label="What the code holds">
+              <label><input type="radio" name="type" value="link" checked /><span>Link</span></label>
+              <label><input type="radio" name="type" value="text" /><span>Text</span></label>
+              <label><input type="radio" name="type" value="wifi" /><span>Wi-Fi</span></label>
+              <label><input type="radio" name="type" value="email" /><span>Email</span></label>
+              <label><input type="radio" name="type" value="contact" /><span>Contact</span></label>
+            </div>
+
+            <div class="fields" data-type="link">
+              <label class="field">
+                <span>Web address</span>
+                <input id="link-url" type="text" inputmode="url" spellcheck="false" value="https://example.com" />
+              </label>
+              <p class="help">https:// is added if you leave it out.</p>
+            </div>
+
+            <div class="fields" data-type="text" hidden>
+              <label class="field">
+                <span>Text</span>
+                <textarea id="text-body" rows="4"></textarea>
+              </label>
+            </div>
+
+            <div class="fields" data-type="wifi" hidden>
+              <label class="field">
+                <span>Network name</span>
+                <input id="wifi-ssid" type="text" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Password</span>
+                <input id="wifi-password" type="text" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Security</span>
+                <select id="wifi-security">
+                  <option value="WPA">WPA / WPA2 / WPA3</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">None (open network)</option>
+                </select>
+              </label>
+              <label class="check"><input id="wifi-hidden" type="checkbox" /> Hidden network</label>
+            </div>
+
+            <div class="fields" data-type="email" hidden>
+              <label class="field">
+                <span>Email address</span>
+                <input id="email-address" type="email" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Subject</span>
+                <input id="email-subject" type="text" />
+              </label>
+              <label class="field">
+                <span>Message</span>
+                <textarea id="email-body" rows="3"></textarea>
+              </label>
+            </div>
+
+            <div class="fields" data-type="contact" hidden>
+              <label class="field">
+                <span>Name</span>
+                <input id="contact-name" type="text" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Phone</span>
+                <input id="contact-phone" type="tel" />
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input id="contact-email" type="email" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Organisation</span>
+                <input id="contact-org" type="text" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="panel">
+            <legend>Style</legend>
+            <div class="row">
+              <label class="field colour">
+                <span>Code colour</span>
+                <input id="fg" type="color" value="#1b2330" />
+              </label>
+              <label class="field colour">
+                <span>Background</span>
+                <input id="bg" type="color" value="#ffffff" />
+              </label>
+              <button type="button" id="swap-colours" class="small">Swap</button>
+            </div>
+            <div class="row">
+              <label class="field">
+                <span>Modules</span>
+                <select id="module-shape">
+                  <option value="square">Square</option>
+                  <option value="rounded">Rounded</option>
+                  <option value="dots">Dots</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Corner eyes</span>
+                <select id="eye-style">
+                  <option value="square">Square</option>
+                  <option value="rounded">Rounded</option>
+                </select>
+              </label>
+            </div>
+            <label class="field">
+              <span>Quiet zone <output id="margin-value" for="margin"></output></span>
+              <input id="margin" type="range" min="0" max="10" step="1" />
+            </label>
+            <label class="field">
+              <span>Error correction</span>
+              <select id="ecl">
+                <option value="L">L: low (7%), smallest code</option>
+                <option value="M">M: medium (15%)</option>
+                <option value="Q">Q: quartile (25%)</option>
+                <option value="H">H: high (30%), survives smudges</option>
+              </select>
+            </label>
+            <p id="ecl-note" class="help" hidden>Set to H while a logo is in place, so the code still scans.</p>
+          </fieldset>
+
+          <fieldset class="panel">
+            <legend>Logo</legend>
+            <div id="logo-empty">
+              <label class="button" for="logo-input">Add a logo</label>
+              <p class="help">PNG, JPG or SVG from this device. It stays on your device.</p>
+            </div>
+            <div id="logo-set" hidden>
+              <div class="logo-row">
+                <img id="logo-thumb" alt="" />
+                <span id="logo-name"></span>
+                <button type="button" id="remove-logo" class="small">Remove logo</button>
+              </div>
+              <label class="field">
+                <span>Logo size <output id="logo-size-value" for="logo-size"></output></span>
+                <input id="logo-size" type="range" min="0.1" max="0.22" step="0.01" />
+              </label>
+              <label class="check"><input id="logo-padding" type="checkbox" /> Padding box behind the logo</label>
+            </div>
+            <p id="logo-error" class="error" role="alert" hidden></p>
+            <input id="logo-input" type="file" accept="image/png,image/jpeg,image/svg+xml,.png,.jpg,.jpeg,.svg" hidden />
+          </fieldset>
+        </form>
+      </div>
+    </main>
+    <script type="module" src="/src/qr/main.ts"></script>
+  </body>
+</html>

@@ -20,6 +20,12 @@ export const TOOLS: readonly Tool[] = [
     path: 'mark/',
     group: 'Marking',
   },
+  {
+    name: 'QR codes',
+    blurb: 'Codes for a link, your classroom Wi-Fi, an email or a contact card, with your colours and school logo.',
+    path: 'qr/',
+    group: 'Classroom',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */
