@@ -254,3 +254,16 @@ _Avoid_: Section, exercise, question (in UI text about the whole block)
 **Word bank**:
 A box of the answers in shuffled order, printed above a fill in the blanks, vocabulary or labelling Activity when the teacher ticks it.
 _Avoid_: Word list (that is the list of words to find in a word search)
+### Certificates and labels
+
+**Recipient list**:
+The people a batch of certificates or labels is made for, one row each, from a Class list, pasted rows or a CSV/XLSX file. Each column is a merge field. Never stored by the Tool.
+_Avoid_: Mailing list, data source (in UI text)
+
+**Merge field**:
+A placeholder in braces, such as `{Name}`, `{Award}` or `{Date}`, filled in per learner from the column with that title (case does not matter). A field no column has prints as typed, so a typo shows on the preview. `{{` and `}}` print a literal brace.
+_Avoid_: Tag, variable, placeholder (in UI text)
+
+**Product**:
+What Certificates and labels prints: certificates, desk name cards (folded tent cards, two per A4 sheet), name labels (sticker sheets), book labels or award slips (four per A4 page).
+_Avoid_: Template, output

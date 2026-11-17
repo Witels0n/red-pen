@@ -33,6 +33,7 @@ site works offline and can be installed as an app.
 | **Class lists**    | Class lists from typed names, numbers only, or CSV/XLSX import; stored only on the device.            |
 | **Class picker**   | A fair spinning wheel (learners or custom options) and random groups with rules, locks and a projector view. |
 | **Worksheet maker** | Word search, crossword, matching, fill in the blanks, true or false, unscramble, vocabulary and labelling activities, printed with a memo; saved on the device. |
+| **Certificates and labels** | Mail merge from a class list, pasted rows or CSV/XLSX: certificates, desk name cards, name and book labels, award slips; one PDF or a zip per learner. |
 
 ## Privacy by design
 

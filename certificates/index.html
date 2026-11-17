@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Certificates and labels · Red Pen</title>
+    <meta
+      name="description"
+      content="Certificates, desk name cards, name labels, book labels and award slips for every learner on a list, as one PDF."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section class="intro paper" aria-labelledby="page-title">
+        <div class="intro-inner">
+          <h1 id="page-title">Certificates and labels</h1>
+          <p class="intro-hint handwritten">One list, one for every <span class="nowrap">learner ✓</span></p>
+          <p class="privacy-note">
+            Names, logos and signatures stay in this browser and are never uploaded. The PDF is made on this device.
+          </p>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <p id="storage-error" class="error" role="alert" hidden></p>
+
+        <div class="layout">
+          <div class="settings-column">
+            <section class="panel" aria-labelledby="source-title">
+              <h2 id="source-title"><span class="step">1</span> Learners</h2>
+              <div class="segmented" role="radiogroup" aria-label="Where the names come from">
+                <label><input type="radio" name="source" value="class" checked /><span>Class list</span></label>
+                <label><input type="radio" name="source" value="paste" /><span>Paste names</span></label>
+                <label><input type="radio" name="source" value="file" /><span>CSV or Excel</span></label>
+              </div>
+
+              <div id="source-class" class="source-body">
+                <label class="field" id="class-field">
+                  <span>Class list</span>
+                  <select id="class-select"></select>
+                </label>
+                <p id="no-classes" class="help" hidden>
+                  No Class lists on this device yet. <a href="../classes/#new">Make one in Class lists</a>, or paste
+                  names instead.
+                </p>
+              </div>
+
+              <div id="source-paste" class="source-body" hidden>
+                <label class="field">
+                  <span>One learner per line</span>
+                  <textarea
+                    id="paste-text"
+                    rows="6"
+                    spellcheck="false"
+                    placeholder="Name&#9;Award&#10;Thandi Mokoena&#9;Top achiever&#10;Sipho Dlamini&#9;Best effort"
+                  ></textarea>
+                </label>
+                <p class="help">
+                  Paste a column of names, or rows copied from a spreadsheet. A first row of titles (such as Name,
+                  Award, Mark) gives you merge fields like {Award}.
+                </p>
+              </div>
+
+              <div id="source-file" class="source-body" hidden>
+                <div class="file-row">
+                  <label class="button" for="file-input">Choose a CSV or Excel file</label>
+                  <input id="file-input" type="file" hidden />
+                  <span id="file-name" class="file-name">No file chosen</span>
+                </div>
+                <label class="field" id="sheet-field" hidden>
+                  <span>Sheet</span>
+                  <select id="sheet-select"></select>
+                </label>
+                <label class="check"><input id="header-row" type="checkbox" checked /> Row 1 holds column titles</label>
+                <p class="help">Each column becomes a merge field named after its title. Read here, never uploaded.</p>
+              </div>
+
+              <p id="source-error" class="error" role="alert" hidden></p>
+              <p id="source-summary" class="summary" aria-live="polite"></p>
+              <div class="fields-row">
+                <span class="fields-label">Merge fields</span>
+                <div
+                  id="field-chips"
+                  class="chips"
+                  aria-label="Merge fields: tap one to add it to the box you are typing in"
+                ></div>
+              </div>
+            </section>
+
+            <section class="panel" aria-labelledby="product-title">
+              <h2 id="product-title"><span class="step">2</span> What to make</h2>
+              <div id="products" class="products" role="radiogroup" aria-labelledby="product-title"></div>
+            </section>
+
+            <form id="settings" class="panel settings" autocomplete="off" novalidate aria-labelledby="wording-title">
+              <h2 id="wording-title"><span class="step">3</span> Wording and look</h2>
+
+              <!-- Certificates -->
+              <div class="product-fields" data-product="certificate">
+                <fieldset class="group">
+                  <legend>Design</legend>
+                  <div id="designs" class="segmented"></div>
+                </fieldset>
+                <fieldset class="group">
+                  <legend>Page</legend>
+                  <div class="segmented">
+                    <label
+                      ><input type="radio" name="orientation" value="landscape" checked /><span>Landscape</span></label
+                    >
+                    <label><input type="radio" name="orientation" value="portrait" /><span>Portrait</span></label>
+                  </div>
+                </fieldset>
+                <label class="field"
+                  ><span>School (optional)</span
+                  ><input
+                    id="c-school"
+                    class="template"
+                    type="text"
+                    maxlength="120"
+                    placeholder="For example Sunnyside Primary School"
+                /></label>
+                <label class="field"
+                  ><span>Title</span><input id="c-title" class="template" type="text" maxlength="120"
+                /></label>
+                <label class="field"
+                  ><span>Line above the name</span><input id="c-intro" class="template" type="text" maxlength="160"
+                /></label>
+                <label class="field"
+                  ><span>Name</span><input id="c-name" class="template" type="text" maxlength="120"
+                /></label>
+                <label class="check"><input id="c-script" type="checkbox" checked /> Name in script lettering</label>
+                <label class="field"
+                  ><span>Wording</span><textarea id="c-body" class="template" rows="3" maxlength="600"></textarea>
+                </label>
+                <label class="field"
+                  ><span>Date line</span><input id="c-date" class="template" type="text" maxlength="80"
+                /></label>
+                <fieldset class="group">
+                  <legend>Signature lines</legend>
+                  <div class="pair">
+                    <label class="field"
+                      ><span>Name 1</span
+                      ><input id="c-sig1-name" class="template" type="text" maxlength="80" placeholder="Ms N. Dube"
+                    /></label>
+                    <label class="field"
+                      ><span>Role 1</span><input id="c-sig1-role" class="template" type="text" maxlength="80"
+                    /></label>
+                    <label class="field"
+                      ><span>Name 2</span
+                      ><input id="c-sig2-name" class="template" type="text" maxlength="80" placeholder="Mr P. Naidoo"
+                    /></label>
+                    <label class="field"
+                      ><span>Role 2</span><input id="c-sig2-role" class="template" type="text" maxlength="80"
+                    /></label>
+                  </div>
+                  <p class="help">Leave a name and role empty to leave that line out.</p>
+                </fieldset>
+                <div class="picture-row" data-picture="signature">
+                  <span class="picture-label">Signature picture</span>
+                  <label class="button" for="signature-input">Add</label>
+                  <input id="signature-input" type="file" accept="image/*" hidden />
+                  <img id="signature-thumb" class="thumb" alt="" hidden />
+                  <button type="button" id="signature-remove" hidden>Remove</button>
+                  <p class="help">Goes above the first signature line. White paper turns see-through. Not saved.</p>
+                </div>
+              </div>
+
+              <!-- Desk name cards -->
+              <div class="product-fields" data-product="desk" hidden>
+                <label class="field"
+                  ><span>Name</span><input id="d-line1" class="template" type="text" maxlength="120"
+                /></label>
+                <label class="field"
+                  ><span>Second line (optional)</span
+                  ><input id="d-line2" class="template" type="text" maxlength="120" placeholder="For example {Class}"
+                /></label>
+                <label class="check"><input id="d-both" type="checkbox" checked /> Name on both sides</label>
+                <p class="help">Cut along the middle of the sheet, then fold each card along its dotted line.</p>
+              </div>
+
+              <!-- Name labels and book labels share the sheet fields -->
+              <div class="product-fields" data-product="labels" hidden>
+                <label class="field"
+                  ><span>Name</span><input id="l-line1" class="template" type="text" maxlength="120"
+                /></label>
+                <label class="field"
+                  ><span>Second line (optional)</span><input id="l-line2" class="template" type="text" maxlength="120"
+                /></label>
+              </div>
+              <div class="product-fields" data-product="book" hidden>
+                <label class="field"
+                  ><span>Heading</span><input id="b-heading" class="template" type="text" maxlength="80"
+                /></label>
+                <div class="book-rows">
+                  <span class="book-head">Line</span><span class="book-head">Filled in with</span>
+                  <input id="b-row1-label" class="template" type="text" maxlength="40" aria-label="Line 1 title" />
+                  <input
+                    id="b-row1-value"
+                    class="template"
+                    type="text"
+                    maxlength="120"
+                    aria-label="Line 1 filled in with"
+                  />
+                  <input id="b-row2-label" class="template" type="text" maxlength="40" aria-label="Line 2 title" />
+                  <input
+                    id="b-row2-value"
+                    class="template"
+                    type="text"
+                    maxlength="120"
+                    aria-label="Line 2 filled in with"
+                  />
+                  <input id="b-row3-label" class="template" type="text" maxlength="40" aria-label="Line 3 title" />
+                  <input
+                    id="b-row3-value"
+                    class="template"
+                    type="text"
+                    maxlength="120"
+                    aria-label="Line 3 filled in with"
+                  />
+                </div>
+                <p class="help">Leave "Filled in with" empty for a line the learner writes on.</p>
+              </div>
+              <div class="product-fields" data-product="labels book" hidden>
+                <label class="field">
+                  <span>Label sheet</span>
+                  <select id="sheet-preset"></select>
+                </label>
+                <details id="grid-details" class="grid-details">
+                  <summary>Sizes and margins (mm)</summary>
+                  <div class="grid-fields">
+                    <label class="field"
+                      ><span>Across</span
+                      ><input id="g-columns" type="number" min="1" max="20" step="1" inputmode="numeric"
+                    /></label>
+                    <label class="field"
+                      ><span>Down</span><input id="g-rows" type="number" min="1" max="20" step="1" inputmode="numeric"
+                    /></label>
+                    <label class="field"
+                      ><span>Label width</span
+                      ><input id="g-width" type="number" min="10" step="0.1" inputmode="decimal"
+                    /></label>
+                    <label class="field"
+                      ><span>Label height</span
+                      ><input id="g-height" type="number" min="10" step="0.1" inputmode="decimal"
+                    /></label>
+                    <label class="field"
+                      ><span>Top margin</span><input id="g-top" type="number" min="0" step="0.1" inputmode="decimal"
+                    /></label>
+                    <label class="field"
+                      ><span>Left margin</span><input id="g-left" type="number" min="0" step="0.1" inputmode="decimal"
+                    /></label>
+                    <label class="field"
+                      ><span>Pitch across</span
+                      ><input id="g-pitch-x" type="number" min="10" step="0.01" inputmode="decimal"
+                    /></label>
+                    <label class="field"
+                      ><span>Pitch down</span
+                      ><input id="g-pitch-y" type="number" min="10" step="0.01" inputmode="decimal"
+                    /></label>
+                  </div>
+                  <p class="help">
+                    Pitch is from the start of one label to the start of the next. Changing a size makes it a custom
+                    sheet.
+                  </p>
+                </details>
+                <div class="pair">
+                  <label class="field"
+                    ><span>Labels already used</span
+                    ><input id="g-skip" type="number" min="0" step="1" inputmode="numeric"
+                  /></label>
+                  <label class="field"
+                    ><span>Copies per learner</span
+                    ><input id="g-copies" type="number" min="1" max="100" step="1" inputmode="numeric"
+                  /></label>
+                </div>
+                <label class="check"
+                  ><input id="g-outlines" type="checkbox" /> Print label outlines (for plain paper)</label
+                >
+              </div>
+
+              <!-- Award slips -->
+              <div class="product-fields" data-product="slips" hidden>
+                <label class="field"
+                  ><span>Title</span><input id="s-title" class="template" type="text" maxlength="80"
+                /></label>
+                <label class="field"
+                  ><span>Wording</span><textarea id="s-body" class="template" rows="3" maxlength="400"></textarea>
+                </label>
+                <div class="pair">
+                  <label class="field"
+                    ><span>Under the signature</span><input id="s-signed" class="template" type="text" maxlength="80"
+                  /></label>
+                  <label class="field"
+                    ><span>Bottom right</span><input id="s-footer" class="template" type="text" maxlength="80"
+                  /></label>
+                </div>
+              </div>
+
+              <!-- Shared look -->
+              <label class="field">
+                <span>Date for {Date}</span>
+                <input id="date" type="date" />
+              </label>
+              <div class="product-fields" data-product="desk labels book slips" hidden>
+                <label class="field">
+                  <span>Lettering</span>
+                  <select id="lettering"></select>
+                </label>
+              </div>
+              <fieldset class="group">
+                <legend>Colours</legend>
+                <div id="themes" class="swatches"></div>
+              </fieldset>
+              <div class="picture-row product-fields" data-product="certificate book slips" data-picture="logo">
+                <span class="picture-label">School logo</span>
+                <label class="button" for="logo-input">Add</label>
+                <input id="logo-input" type="file" accept="image/*" hidden />
+                <img id="logo-thumb" class="thumb" alt="" hidden />
+                <button type="button" id="logo-remove" hidden>Remove</button>
+                <p class="help">PNG or JPEG. Remembered in this browser for next time.</p>
+              </div>
+              <p id="picture-error" class="error" role="alert" hidden></p>
+            </form>
+          </div>
+
+          <section class="panel preview-panel" aria-labelledby="preview-title">
+            <h2 id="preview-title">Preview</h2>
+            <p id="preview-caption" class="help"></p>
+            <div id="sheet-preview" class="sheet-preview">
+              <canvas id="preview-canvas" role="img" aria-label="The first page"></canvas>
+            </div>
+            <ul id="warnings" class="warnings" hidden></ul>
+            <p id="layout-error" class="error" role="alert" hidden></p>
+            <p id="download-error" class="error" role="alert" hidden></p>
+            <div class="actions">
+              <button type="button" id="download" class="primary">Download PDF</button>
+              <button type="button" id="download-zip">Download .zip</button>
+            </div>
+            <p id="download-help" class="help">Print on A4 at actual size (100%).</p>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/certificates/main.ts"></script>
+  </body>
+</html>

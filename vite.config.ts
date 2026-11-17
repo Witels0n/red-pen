@@ -28,6 +28,7 @@ export const PAGES = {
   picker: 'picker/index.html',
   grid: 'grid/index.html',
   worksheets: 'worksheets/index.html',
+  certificates: 'certificates/index.html',
 } as const
 
 /**

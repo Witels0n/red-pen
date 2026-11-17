@@ -106,6 +106,9 @@ export const TOOLS: readonly Tool[] = [
     name: 'Worksheet maker',
     blurb: 'Word searches, crosswords, matching, fill in the blanks and more, printed as a worksheet with its memo.',
     path: 'worksheets/',
+    name: 'Certificates and labels',
+    blurb: 'Certificates, desk name cards, name labels, book labels and award slips for every learner on a list.',
+    path: 'certificates/',
     group: 'Useful stuff',
   },
 ]
