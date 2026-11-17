@@ -106,6 +106,20 @@ _Avoid_: Verification, checking, moderation
 Per question: the percentage correct, how answers spread across the options, the most-chosen wrong option with its misconception note, and flags for too easy (over 90%), too hard (under 30%) and negative discrimination (the top third of the class did worse than the bottom third).
 _Avoid_: Question stats, psychometrics
 
+### Question paper grids
+
+**Grid**:
+The analysis of one test or exam paper that an HoD asks for: each question's marks, Cognitive level and topic, with totals and shares against targets. Saved in the browser and exported as a one-page PDF or an Excel file.
+_Avoid_: Analysis grid (in UI text), blueprint, spec
+
+**Cognitive level**:
+How demanding a question is, from a chosen taxonomy (CAPS levels, Bloom's revised, Barrett's, or the teacher's own levels). Each level has a target percentage of the paper, remembered per teacher.
+_Avoid_: Bloom level (unless the taxonomy is Bloom's), difficulty (a separate, optional column)
+
+**Tolerance**:
+How many percentage points a level's or topic's share may be off its target before the Grid flags it as over or under (5 by default).
+_Avoid_: Margin, allowance
+
 ### PDF tools
 
 **Part**:

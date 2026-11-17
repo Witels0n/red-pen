@@ -34,6 +34,13 @@ export const TOOLS: readonly Tool[] = [
     group: 'Assessments and marking',
   },
   {
+    name: 'Question paper grid',
+    blurb:
+      'The analysis grid for a test or exam: marks per cognitive level and topic against your targets, with a one-page PDF for your HoD.',
+    path: 'grid/',
+    group: 'Assessments and marking',
+  },
+  {
     name: 'Combine PDFs',
     blurb: 'Join several PDFs into one, in the order you choose.',
     path: 'combine/',
