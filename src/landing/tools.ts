@@ -39,6 +39,12 @@ export const TOOLS: readonly Tool[] = [
     group: 'PDF',
   },
   {
+    name: 'Sign and fill',
+    blurb: 'Fill in a PDF form or permission slip, add the date and your signature, then download it.',
+    path: 'sign/',
+    group: 'PDF',
+  },
+  {
     name: 'QR codes',
     blurb: 'Codes for a link, your classroom Wi-Fi, an email or a contact card, with your colours and school logo.',
     path: 'qr/',
