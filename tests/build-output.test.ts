@@ -83,6 +83,13 @@ describe('production build', () => {
     expect(urls.some((u) => /^assets\/pdf\.worker.*\.mjs$/.test(u))).toBe(true)
   })
 
+  it('leaves out the test-only pages that only the smoke build has', () => {
+    const files = readdirSync(outDir, { recursive: true }).map(String)
+    expect(files.filter((f) => /smoke|harness/.test(f))).toEqual([])
+    const sw = readFileSync(join(outDir, 'sw.js'), 'utf8')
+    expect(sw).not.toMatch(/smoke|harness/)
+  })
+
   it('ships a manifest scoped to the site', () => {
     const manifest = JSON.parse(readFileSync(join(outDir, 'manifest.webmanifest'), 'utf8'))
     expect(manifest.name).toBe('Red Pen')
