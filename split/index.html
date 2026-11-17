@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split a PDF · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Split a PDF</h1>
+          <p class="open-hint handwritten">One scan, one file per <span class="nowrap">learner ✓</span></p>
+          <p class="privacy-note">Your PDF is processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag a PDF here, or</p>
+            <label class="button primary" for="file-input">Choose a PDF</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace" hidden>
+        <h2>Split a PDF</h2>
+        <div class="toolbar">
+          <label class="button" for="file-input">Open another PDF</label>
+          <span id="summary" class="summary"></span>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+
+        <form id="split-form" class="panel" novalidate>
+          <fieldset>
+            <legend>How to split</legend>
+            <label class="mode">
+              <input type="radio" name="mode" value="each" />
+              <span>One file per page</span>
+            </label>
+            <label class="mode">
+              <input type="radio" name="mode" value="every" checked />
+              <span>
+                A new file every
+                <input id="every-size" type="number" min="1" step="1" value="2" inputmode="numeric" aria-label="Pages per file" />
+                pages
+                <small>One file per learner, when a class was scanned in one batch.</small>
+              </span>
+            </label>
+            <label class="mode">
+              <input type="radio" name="mode" value="ranges" />
+              <span>
+                Custom ranges
+                <input id="ranges-text" type="text" placeholder="1-3, 4-6, 7" autocomplete="off" spellcheck="false" aria-label="Page ranges" aria-describedby="plan-error" />
+              </span>
+            </label>
+          </fieldset>
+        </form>
+
+        <section class="panel" aria-labelledby="preview-title">
+          <div class="preview-head">
+            <h3 id="preview-title">Files in the download</h3>
+            <span class="spacer"></span>
+            <button type="button" id="download" class="primary">Download .zip</button>
+          </div>
+          <p id="plan-error" class="error" aria-live="polite" hidden></p>
+          <p id="preview-count" class="summary"></p>
+          <ol id="preview" class="preview"></ol>
+        </section>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+    </main>
+    <script type="module" src="/src/split/main.ts"></script>
+  </body>
+</html>

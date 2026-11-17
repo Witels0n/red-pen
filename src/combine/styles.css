@@ -1,0 +1,61 @@
+.list-hint {
+  margin: 1rem 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.file-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: file;
+}
+
+.file-item {
+  counter-increment: file;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.file-item::before {
+  content: counter(file);
+  min-width: 1.5em;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.file-name {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.file-pages {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .file-item .drag-handle {
+    display: none;
+  }
+}

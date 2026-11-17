@@ -13,6 +13,9 @@ export const BASE = '/red-pen/'
 export const PAGES = {
   landing: 'index.html',
   mark: 'mark/index.html',
+  combine: 'combine/index.html',
+  split: 'split/index.html',
+  organise: 'organise/index.html',
 } as const
 
 // Enforces ADR 0001: the browser itself refuses any network request from the page.
