@@ -1,5 +1,6 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { PDFDocument, rgb } from 'pdf-lib'
+import { TOOLS, groupTools } from '../src/landing/tools'
 
 const HOME = '/red-pen/'
 const MARK = '/red-pen/mark/'
@@ -44,7 +45,7 @@ test.describe('landing page', () => {
 
   test('only shows tool groups that have tools', async ({ page }) => {
     await page.goto(HOME)
-    await expect(page.locator('.tool-group h3')).toHaveText(['Marking'])
+    await expect(page.locator('.tool-group h3')).toHaveText(groupTools(TOOLS).map((g) => g.group))
   })
 
   test('explains privacy, install and how to give feedback', async ({ page }) => {
@@ -99,7 +100,7 @@ test.describe('offline', () => {
 
     await context.setOffline(true)
     await page.reload()
-    await expect(page.locator('.tool-card')).toHaveCount(1)
+    await expect(page.locator('.tool-card')).toHaveCount(TOOLS.length)
 
     await page.goto(MARK)
     await page.locator('#file-input').setInputFiles({ name: 'learner.pdf', mimeType: 'application/pdf', buffer: await fixturePdf() })

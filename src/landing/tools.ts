@@ -20,6 +20,12 @@ export const TOOLS: readonly Tool[] = [
     path: 'mark/',
     group: 'Marking',
   },
+  {
+    name: 'Sign and fill',
+    blurb: 'Fill in a PDF form or permission slip, add the date and your signature, then download it.',
+    path: 'sign/',
+    group: 'PDF',
+  },
 ]
 
 /** The groups that have at least one Tool, each with its Tools, in display order. */

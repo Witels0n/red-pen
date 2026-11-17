@@ -59,3 +59,17 @@ _Avoid_: Comment, label
 **Ink colour**:
 The single colour in which every annotation of a test is drawn, on screen and in the exported copy. Chosen by the teacher from a fixed set (red by default); changing it recolours all annotations, including those already placed. Remembered in the browser between tests.
 _Avoid_: Pen colour, marker colour, annotation colour
+
+### Signing and filling
+
+**Form field**:
+A fillable field built into a PDF (an AcroForm text box, checkbox, radio button or dropdown). Sign and fill shows each one as an input over the page, writes the values in on save and then flattens the form.
+_Avoid_: Widget, input (outside code)
+
+**Detected box**:
+A place on a flat or scanned page that looks like it is meant to be filled in, found by image processing (no OCR): a line to write on, a box or table cell, or a small tick box. Shown as a dashed outline; clicking one places text sized to fit, or ticks the tick box. A helper only: the teacher can click anywhere.
+_Avoid_: Field (that is a form field), zone, hotspot
+
+**Signature**:
+The teacher's (or parent's) handwritten name as an image with a transparent background, made by drawing, typing in a script font or uploading a picture. **Initials** are made the same way. Kept only for the current visit unless the teacher ticks "Remember on this device".
+_Avoid_: E-signature, digital signature (Red Pen does not add cryptographic signatures)

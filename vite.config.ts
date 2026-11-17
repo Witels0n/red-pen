@@ -13,6 +13,7 @@ export const BASE = '/red-pen/'
 export const PAGES = {
   landing: 'index.html',
   mark: 'mark/index.html',
+  sign: 'sign/index.html',
 } as const
 
 // Enforces ADR 0001: the browser itself refuses any network request from the page.

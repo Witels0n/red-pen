@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-ZA" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign and fill · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main id="app">
+      <section id="open-screen" class="paper">
+        <div class="open-inner">
+          <h1>Sign and fill</h1>
+          <p class="open-hint handwritten">Fill in the form, sign it, <span class="nowrap">done ✓</span></p>
+          <p id="privacy-note">
+            Your PDF is processed in your browser and never uploaded, and your signature stays on this device.
+          </p>
+          <div id="drop-zone">
+            <p>Drag a form, permission slip or letter (PDF) here, or</p>
+            <label class="button" for="file-input">Choose a PDF</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="viewer-screen" hidden>
+        <div id="toolbar" role="toolbar" aria-label="Sign and fill tools">
+          <div class="tb-group">
+            <label class="button" for="file-input">Open another PDF</label>
+            <span id="file-name"></span>
+          </div>
+          <div class="tb-group" id="tools" role="group" aria-label="What a click adds">
+            <button type="button" class="tool" data-tool="text" aria-pressed="true">Text</button>
+            <button type="button" class="tool" data-tool="tick" aria-pressed="false">Tick</button>
+            <button type="button" class="tool" data-tool="cross" aria-pressed="false">Cross</button>
+            <button type="button" class="tool" data-tool="date" aria-pressed="false">Date</button>
+            <select id="date-style" aria-label="Date format">
+              <option value="long"></option>
+              <option value="iso"></option>
+            </select>
+            <button type="button" class="tool" data-tool="initials" aria-pressed="false">Initials</button>
+            <button type="button" class="tool" data-tool="signature" aria-pressed="false">Signature</button>
+          </div>
+          <div class="tb-group">
+            <span id="ink" role="radiogroup" aria-label="Ink colour">
+              <button type="button" class="swatch swatch-black" data-ink="black" role="radio" aria-checked="true" aria-label="Black ink"></button>
+              <button type="button" class="swatch swatch-blue" data-ink="blue" role="radio" aria-checked="false" aria-label="Blue ink"></button>
+            </span>
+            <label class="tb-size">Size <input id="text-size" type="number" min="5" max="72" step="0.5" value="12" /></label>
+            <label class="tb-check"><input id="show-detected" type="checkbox" checked /> Show detected boxes</label>
+          </div>
+          <div class="tb-group">
+            <button type="button" id="undo" aria-label="Undo" title="Undo (Ctrl+Z)">Undo</button>
+            <button type="button" id="redo" aria-label="Redo" title="Redo (Ctrl+Y)">Redo</button>
+            <button type="button" id="delete" title="Delete the selected item (Delete)" disabled>Delete</button>
+          </div>
+          <div class="tb-group">
+            <button type="button" id="zoom-out" aria-label="Zoom out">&minus;</button>
+            <span id="zoom-level">100%</span>
+            <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+            <button type="button" id="zoom-fit">Fit width</button>
+          </div>
+          <span class="spacer"></span>
+          <button type="button" id="save" class="primary">Download signed PDF</button>
+        </div>
+        <p id="hint" role="status"></p>
+        <p id="viewer-error" class="error" role="alert" hidden></p>
+        <div id="viewer"></div>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+    </main>
+    <script type="module" src="/src/sign/main.ts"></script>
+  </body>
+</html>
