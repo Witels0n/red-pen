@@ -16,6 +16,7 @@ export const PAGES = {
   combine: 'combine/index.html',
   split: 'split/index.html',
   organise: 'organise/index.html',
+  qr: 'qr/index.html',
 } as const
 
 // Enforces ADR 0001: the browser itself refuses any network request from the page.
