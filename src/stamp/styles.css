@@ -1,0 +1,259 @@
+.stamp-workspace {
+  max-width: 76rem;
+}
+
+.stamp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.stamp-form {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.preview-panel {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 0.75rem;
+  min-width: 0;
+}
+
+.stamp-form .panel:first-child,
+.preview-panel {
+  margin-top: 1rem;
+}
+
+.preview-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#preview-file {
+  max-width: 100%;
+  flex-basis: 100%;
+}
+
+#preview-page {
+  min-width: 7.5em;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.preview-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: min(72vh, 52rem);
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+#preview {
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+}
+
+.preview-note {
+  min-height: 1.5em;
+  margin: 0.5rem 0 0;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 760px) {
+  .stamp-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* On a phone the preview stays in view at the top while the settings scroll under it. */
+  .preview-panel {
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 2;
+    top: 0;
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .stamp-form {
+    grid-row: 2;
+  }
+
+  .preview-frame {
+    height: 30vh;
+  }
+}
+
+fieldset.panel {
+  min-width: 0;
+}
+
+legend {
+  padding: 0 0.25rem;
+  font-weight: 700;
+}
+
+.panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.file-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.file-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.file-list li:last-child {
+  border-bottom: 0;
+}
+
+.file-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.file-pages {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.25rem;
+  cursor: pointer;
+}
+
+.check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--red);
+}
+
+#range {
+  width: 16rem;
+  max-width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.field > span {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.field select,
+.preview-nav select,
+.field input[type='text'],
+.field input[type='number'] {
+  width: 100%;
+  min-height: 2.25rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.field input[type='color'] {
+  width: 100%;
+  height: 2.25rem;
+  padding: 0.15rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.field input[type='range'] {
+  width: 100%;
+  min-height: 2.25rem;
+  accent-color: var(--red);
+}
+
+select:disabled,
+input:disabled {
+  opacity: 0.5;
+}
+
+select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+
+#logo-preview {
+  max-width: 6rem;
+  max-height: 3rem;
+  padding: 0.2rem;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.help {
+  margin: 0.6rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.field-error {
+  margin: 0.4rem 0 0;
+  color: var(--error-text);
+  font-size: 0.95rem;
+}

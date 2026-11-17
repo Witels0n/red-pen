@@ -169,6 +169,25 @@ _Avoid_: Shingling
 **Target size**:
 The size each compressed PDF must be under (for example 2 MB, for an email). Compress a PDF tries lower resolutions and picture quality until each file fits, or says it could not.
 _Avoid_: Limit, quota
+**Watermark**:
+Large, faint words (for example MEMO or DRAFT) that Stamp and number draws across a page, diagonally or straight across, as real text in the PDF.
+_Avoid_: Background, overlay
+
+**Stamped page**:
+A page that Stamp and number adds its watermark, page number, header and footer to: every page, odd or even pages, or custom pages. Page numbers count only stamped pages, so a cover page can be left out.
+_Avoid_: Marked page, selected page
+
+**Redaction box**:
+A black or white box the teacher draws over something that must not be seen (usually a learner's name), on one page or on every page. Saving turns each page with a box into a picture with the box painted on, so what was under it is gone from the file. One box layout applies to every file in a batch.
+_Avoid_: Mask, cover, blackout
+
+**Anonymised name**:
+The name a redacted file is given in place of the learner's, such as "Learner 07", also written in labelled Redaction boxes. Numbers are given out in a shuffled order by default, so they do not follow the class list.
+_Avoid_: Code name, alias
+
+**Anonymisation key**:
+The CSV that links each original file name to its Anonymised name. Downloaded separately from the redacted files and kept apart from them.
+_Avoid_: Mapping, lookup
 
 ### QR codes
 

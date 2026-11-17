@@ -29,6 +29,8 @@ export const PAGES = {
   grid: 'grid/index.html',
   worksheets: 'worksheets/index.html',
   certificates: 'certificates/index.html',
+  stamp: 'stamp/index.html',
+  redact: 'redact/index.html',
 } as const
 
 /**

@@ -85,6 +85,16 @@ export const TOOLS: readonly Tool[] = [
     name: 'Compress a PDF',
     blurb: 'Shrink scanned PDFs to fit email and upload limits, with an optional target size.',
     path: 'compress/',
+    name: 'Stamp and number',
+    blurb: 'Add a MEMO or DRAFT watermark, page numbers, a header and footer with your logo and the date to PDFs.',
+    path: 'stamp/',
+    group: 'PDF',
+  },
+  {
+    name: 'Redact and anonymise',
+    blurb:
+      'Black out names for a moderation sample, on one test or a whole class set, and rename the files to Learner 01, 02 and so on.',
+    path: 'redact/',
     group: 'PDF',
   },
   {

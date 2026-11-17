@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stamp and number · Red Pen</title>
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section id="open-screen" class="open-screen paper">
+        <div class="open-inner">
+          <h1>Stamp and number</h1>
+          <p class="open-hint handwritten">MEMO across every <span class="nowrap">page ✓</span></p>
+          <p class="privacy-note">Your PDFs are processed in your browser and never uploaded.</p>
+          <div class="drop-zone">
+            <p>Drag one or more PDFs here, or</p>
+            <label class="button primary" for="file-input">Choose PDFs</label>
+          </div>
+          <p id="open-error" class="error" role="alert" hidden></p>
+        </div>
+      </section>
+
+      <section id="work-screen" class="workspace stamp-workspace" hidden>
+        <h2>Stamp and number</h2>
+        <div class="toolbar">
+          <label class="button" for="file-input">Add PDFs</label>
+          <span id="summary" class="summary"></span>
+          <span class="spacer"></span>
+          <button type="button" id="download" class="primary">Download</button>
+        </div>
+        <p id="work-error" class="error" role="alert" hidden></p>
+
+        <div class="stamp-layout">
+          <section class="panel preview-panel" aria-labelledby="preview-title">
+            <h3 id="preview-title" class="visually-hidden">Preview</h3>
+            <div class="preview-nav">
+              <select id="preview-file" aria-label="File to preview" hidden></select>
+              <button type="button" id="prev-page" class="icon" aria-label="Previous page">&lsaquo;</button>
+              <span id="preview-page" aria-live="polite"></span>
+              <button type="button" id="next-page" class="icon" aria-label="Next page">&rsaquo;</button>
+            </div>
+            <div class="preview-frame">
+              <canvas id="preview" aria-label="Preview of the stamped page"></canvas>
+            </div>
+            <p id="preview-note" class="preview-note"></p>
+          </section>
+
+          <form id="stamp-form" class="stamp-form" novalidate>
+            <section class="panel" aria-labelledby="files-title">
+              <h3 id="files-title">Files</h3>
+              <ul id="file-list" class="file-list"></ul>
+            </section>
+
+            <fieldset class="panel">
+              <legend>Pages</legend>
+              <div class="choices">
+                <label class="check"><input type="radio" name="scope" value="all" /> Every page</label>
+                <label class="check"><input type="radio" name="scope" value="odd" /> Odd pages</label>
+                <label class="check"><input type="radio" name="scope" value="even" /> Even pages</label>
+                <label class="check"><input type="radio" name="scope" value="range" /> These pages</label>
+              </div>
+              <input
+                id="range"
+                type="text"
+                placeholder="2-9, 11"
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Pages to stamp"
+                aria-describedby="range-error"
+              />
+              <p id="range-error" class="field-error" aria-live="polite" hidden></p>
+            </fieldset>
+
+            <fieldset class="panel">
+              <legend>
+                <label class="check"><input id="wm-on" type="checkbox" /> Watermark</label>
+              </legend>
+              <div class="grid">
+                <label class="field"
+                  ><span>Text</span>
+                  <select id="wm-preset">
+                    <option value="MEMO">MEMO</option>
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="CONFIDENTIAL">CONFIDENTIAL</option>
+                    <option value="DO NOT DISTRIBUTE">DO NOT DISTRIBUTE</option>
+                    <option value="COPY">COPY</option>
+                    <option value="custom">Your own words</option>
+                  </select>
+                </label>
+                <label class="field" id="wm-custom-field"
+                  ><span>Your words</span> <input id="wm-custom" type="text" maxlength="60" autocomplete="off"
+                /></label>
+                <label class="field"
+                  ><span>Direction</span>
+                  <select id="wm-direction">
+                    <option value="diagonal">Diagonal</option>
+                    <option value="horizontal">Across</option>
+                  </select>
+                </label>
+                <label class="field"
+                  ><span>Size</span>
+                  <select id="wm-size">
+                    <option value="fit">Fill the page</option>
+                    <option value="large">Large</option>
+                    <option value="medium">Medium</option>
+                    <option value="small">Small</option>
+                  </select>
+                </label>
+                <label class="field field-colour"><span>Colour</span> <input id="wm-colour" type="color" /></label>
+                <label class="field"
+                  ><span>Strength <output id="wm-opacity-value"></output></span>
+                  <input id="wm-opacity" type="range" min="5" max="100" step="5"
+                /></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="panel">
+              <legend>
+                <label class="check"><input id="num-on" type="checkbox" /> Page numbers</label>
+              </legend>
+              <div class="grid">
+                <label class="field"
+                  ><span>Style</span>
+                  <select id="num-format">
+                    <option value="n">1</option>
+                    <option value="page-n">Page 1</option>
+                    <option value="page-n-of">Page 1 of 9</option>
+                    <option value="n-of">1/9</option>
+                  </select>
+                </label>
+                <label class="field"
+                  ><span>Where</span>
+                  <select id="num-slot" class="slot-select"></select>
+                </label>
+                <label class="field"
+                  ><span>Start at</span> <input id="num-start" type="number" min="0" step="1" inputmode="numeric"
+                /></label>
+              </div>
+              <p class="help">Only the stamped pages are counted, so a cover page can be left out.</p>
+            </fieldset>
+
+            <fieldset class="panel">
+              <legend>Header and footer</legend>
+              <div class="grid">
+                <label class="field field-wide"
+                  ><span>Header</span>
+                  <input
+                    id="header-text"
+                    type="text"
+                    maxlength="200"
+                    placeholder="Sunnyside High School, Mathematics"
+                    autocomplete="off"
+                /></label>
+                <label class="field"
+                  ><span>Header position</span>
+                  <select id="header-align">
+                    <option value="left">Left</option>
+                    <option value="centre">Centre</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label class="field field-wide"
+                  ><span>Footer</span>
+                  <input
+                    id="footer-text"
+                    type="text"
+                    maxlength="200"
+                    placeholder="Grade 10 Term 2 Test"
+                    autocomplete="off"
+                /></label>
+                <label class="field"
+                  ><span>Footer position</span>
+                  <select id="footer-align">
+                    <option value="left">Left</option>
+                    <option value="centre">Centre</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+                <label class="field"
+                  ><span>Today's date</span>
+                  <select id="date-slot" class="slot-select">
+                    <option value="none">Leave out</option>
+                  </select>
+                </label>
+                <label class="field"
+                  ><span>Date style</span>
+                  <select id="date-style">
+                    <option value="long"></option>
+                    <option value="iso"></option>
+                  </select>
+                </label>
+              </div>
+              <div class="logo-row">
+                <img id="logo-preview" alt="Your logo" hidden />
+                <label class="button" for="logo-input" id="logo-choose">Add a logo</label>
+                <button type="button" id="logo-remove" hidden>Remove logo</button>
+                <label class="field" id="logo-slot-field" hidden
+                  ><span>Logo position</span>
+                  <select id="logo-slot">
+                    <option value="top-left">Top left</option>
+                    <option value="top-right">Top right</option>
+                  </select>
+                </label>
+                <label class="field" id="logo-size-field" hidden
+                  ><span>Logo size</span>
+                  <select id="logo-height">
+                    <option value="20">Small</option>
+                    <option value="32">Medium</option>
+                    <option value="48">Large</option>
+                  </select>
+                </label>
+              </div>
+              <p class="help">Several things in the same place are put on one line.</p>
+            </fieldset>
+
+            <fieldset class="panel">
+              <legend>Text style</legend>
+              <div class="grid">
+                <label class="field"
+                  ><span>Font</span>
+                  <select id="font">
+                    <option value="helvetica">Helvetica (plain)</option>
+                    <option value="times">Times (formal)</option>
+                    <option value="courier">Courier (typewriter)</option>
+                  </select>
+                </label>
+                <label class="field"
+                  ><span>Size</span>
+                  <input id="text-size" type="number" min="5" max="36" step="0.5" inputmode="decimal"
+                /></label>
+                <label class="field field-colour"><span>Colour</span> <input id="text-colour" type="color" /></label>
+                <label class="field"
+                  ><span>From the edge (mm)</span>
+                  <input id="margin" type="number" min="0" max="50" step="1" inputmode="numeric"
+                /></label>
+                <label class="check"><input id="bold" type="checkbox" /> Bold</label>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </section>
+
+      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden />
+      <input id="logo-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
+    </main>
+    <script type="module" src="/src/stamp/main.ts"></script>
+  </body>
+</html>
