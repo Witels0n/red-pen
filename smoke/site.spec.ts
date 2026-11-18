@@ -35,7 +35,7 @@ test.describe('landing page', () => {
   test('lists the marker and links to it', async ({ page }) => {
     await page.goto(HOME)
     await expect(page).toHaveTitle('Red Pen: free marking and PDF tools for teachers')
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Less admin, more teaching.')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Less stuff, more teaching.')
     const card = page.locator('.tool-card', { hasText: 'Mark a test' })
     await expect(card).toBeVisible()
     await card.click()
@@ -51,7 +51,7 @@ test.describe('landing page', () => {
   test('explains privacy, install and how to give feedback', async ({ page }) => {
     await page.goto(HOME)
     await expect(page.locator('#privacy')).toContainText('Nothing is uploaded')
-    await expect(page.locator('#privacy li')).toHaveCount(3)
+    await expect(page.locator('#privacy .points li')).toHaveCount(3)
     await expect(page.locator('#install-manual')).toBeVisible() // no install prompt in a test browser
     await expect(page.locator('#install-available')).toBeHidden()
     await expect(page.getByRole('link', { name: 'Suggest a tool' })).toHaveAttribute(

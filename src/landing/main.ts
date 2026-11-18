@@ -1,9 +1,11 @@
 import './landing.css'
 import { mountSiteHeader } from '../shared/site-header'
 import { registerOffline, watchInstall } from '../shared/pwa'
+import { startEggs } from './eggs'
 
 const header = mountSiteHeader()
 registerOffline(header)
+startEggs()
 
 // The tool cards are written into index.html at build time by the seo plugin (seo.ts).
 
