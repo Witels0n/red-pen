@@ -2,7 +2,7 @@
 // Keep the two in step: the unit tests check both.
 
 import type { MarkbookDesign } from './design'
-import { LEVEL_FLOORS, type Column, type Layout, type SummaryKind } from './layout'
+import { ABSENT, LEVEL_FLOORS, type Column, type Layout, type SummaryKind } from './layout'
 
 /** What a teacher types in a mark cell: a number, text such as ABS, or nothing. */
 export type MarkEntry = number | string | null
@@ -30,8 +30,16 @@ function isNumber(v: CellValue): v is number {
   return typeof v === 'number' && Number.isFinite(v)
 }
 
-/** The weighted average of the parts that are numbers, or null when none are (or all weights are 0). */
-function weighted(parts: { value: CellValue; weight: number }[]): number | null {
+/** Text that is not empty: an absence, whatever the teacher typed for it. */
+function isAbsence(v: CellValue): boolean {
+  return typeof v === 'string' && v !== ''
+}
+
+/**
+ * The weighted average of the parts that are numbers. With none (or all weights 0) it is "a"
+ * when a part is an absence, and null when every part is blank.
+ */
+function weighted(parts: { value: CellValue; weight: number }[]): number | typeof ABSENT | null {
   let num = 0
   let den = 0
   for (const p of parts) {
@@ -39,7 +47,8 @@ function weighted(parts: { value: CellValue; weight: number }[]): number | null 
     num += p.value * p.weight
     den += p.weight
   }
-  return den === 0 ? null : num / den
+  if (den !== 0) return num / den
+  return parts.some((p) => isAbsence(p.value)) ? ABSENT : null
 }
 
 /** One learner's row, worked out column by column, exactly as Excel would. */
@@ -55,9 +64,10 @@ export function learnerRow(
     byColumn.set(c, v)
     values.push(v)
   }
+  /** A mark as a fraction of its "out of". An absence stays as it is. */
   const fraction = (c: Column): CellValue => {
     const v = byColumn.get(c) ?? null
-    return isNumber(v) ? v / c.outOf! : null
+    return isNumber(v) ? v / c.outOf! : v
   }
   for (const column of layout.columns) {
     switch (column.kind) {
@@ -85,11 +95,11 @@ export function learnerRow(
             .filter((c) => c.kind === 'mark' && ids.has(c.assessmentId!))
             .map((m) => ({ value: fraction(m), weight: m.weight! })),
         )
-        set(column, avg === null ? null : avg * 100)
+        set(column, isNumber(avg) ? avg * 100 : avg)
         break
       }
       case 'term': {
-        let term: number | null
+        let term: number | typeof ABSENT | null
         if (design.useCategories) {
           term = weighted(
             layout.columns
@@ -100,14 +110,15 @@ export function learnerRow(
           const avg = weighted(
             layout.columns.filter((c) => c.kind === 'mark').map((m) => ({ value: fraction(m), weight: m.weight! })),
           )
-          term = avg === null ? null : avg * 100
+          term = isNumber(avg) ? avg * 100 : avg
         }
         set(column, term)
         break
       }
       case 'final': {
         const term = termOf(layout, byColumn)
-        set(column, term === null ? null : excelRound(term, design.rounding === 'one' ? 1 : 0))
+        const shown = byColumn.get(layout.columns.find((c) => c.kind === 'term')!) ?? null
+        set(column, term === null ? shown : excelRound(term, design.rounding === 'one' ? 1 : 0))
         break
       }
       case 'level': {
@@ -165,7 +176,7 @@ export function summaryValue(
 }
 
 /**
- * Made-up marks for the preview: a spread of results, one learner absent (ABS) for the first
+ * Made-up marks for the preview: a spread of results, one learner absent (a) for the first
  * assessment and one with the last assessment still blank, so the teacher sees both handled.
  */
 export function sampleMarks(design: MarkbookDesign, learners: number): Record<string, MarkEntry>[] {
@@ -179,7 +190,7 @@ export function sampleMarks(design: MarkbookDesign, learners: number): Record<st
     })
     const first = design.assessments[0]
     const last = design.assessments[design.assessments.length - 1]
-    if (k === 1 && first) row[first.id] = 'ABS'
+    if (k === 1 && first) row[first.id] = ABSENT
     if (k === 3 && last && design.assessments.length > 1) row[last.id] = null
     return row
   })

@@ -113,7 +113,7 @@ A spreadsheet of learners' marks per assessment, made by the Markbook builder as
 _Avoid_: Mark sheet, gradebook, register
 
 **Category**:
-A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or ABS is left out and the other weights share its place.
+A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or an absence (the letter "a", or any other text) is left out and the other weights share its place.
 _Avoid_: Section, component (Topic is the MCQ term for a question tag)
 
 ### Question paper grids
