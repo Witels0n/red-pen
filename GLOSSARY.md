@@ -138,6 +138,16 @@ _Avoid_: Cell, statement, indicator
 The sheet of one learner in a Rubric's .xlsx, marked by typing an x in a tick-box cell. Its Status says "Marked" once every criterion has a mark, and only then does the learner count on the Summary sheet.
 _Avoid_: Mark sheet, feedback form
 
+### Moderation
+
+**Moderation form**:
+One of the three Gauteng Department of Education forms a teacher or moderator fills in for a school-based task: **J1** (the pre-assessment moderation tool, before the task is written), **J2** (the post assessment moderation tool, after it is marked) and **J3** (the evidence of school moderation for up to six tasks). Each is a Tool that downloads a PDF laid out like the official form. What is typed is kept in the browser only.
+_Avoid_: Template, report, checklist
+
+**School details**:
+The school, district, subject, grade and names typed on one Moderation form, remembered in the browser and filled in on the next new form.
+_Avoid_: Profile, settings
+
 ### Question paper grids
 
 **Grid**:

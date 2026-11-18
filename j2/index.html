@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Post assessment moderation tool (Annexure J2) to fill in · Red Pen</title>
+    <meta
+      name="description"
+      content="Fill in the Gauteng post assessment moderation tool, Annexure J2, and download it as a PDF laid out like the official form. Nothing is uploaded."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section class="intro paper" aria-labelledby="form-title">
+        <div class="intro-inner">
+          <h1 id="form-title">J2 Post-moderation</h1>
+          <p class="intro-hint handwritten">After the task is marked <span class="nowrap">✓</span></p>
+          <p class="intro-text">
+            Fill in the post assessment moderation tool for a marked task and download it as a PDF laid out like the
+            official Annexure J2, ready to print and sign.
+          </p>
+          <p class="privacy-note">
+            The form is made in your browser and never uploaded. What you type is kept on this device only, so you can
+            come back to it.
+          </p>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <section class="panel" aria-labelledby="start-title">
+          <h2 id="start-title">Start from</h2>
+          <div class="actions">
+            <button type="button" id="start-new">Start a new form</button>
+          </div>
+          <p class="help">A new form keeps your school, district, subject and names, so you only type them once.</p>
+          <div class="row saved-row">
+            <label class="field grow">
+              <span>Saved forms</span>
+              <select id="saved-select"></select>
+            </label>
+            <button type="button" id="load-saved">Open</button>
+            <button type="button" id="delete-saved">Delete</button>
+          </div>
+          <p id="form-status" class="status" role="status"></p>
+        </section>
+
+        <div id="form-fields" class="form-fields"></div>
+
+        <section class="panel" aria-labelledby="look-title">
+          <h2 id="look-title">Logo and label</h2>
+          <div class="logo-row">
+            <span class="button file-button">
+              Add a logo
+              <input id="logo-input" type="file" accept="image/png,image/jpeg" aria-label="Add a logo" />
+            </span>
+            <img id="logo-preview" alt="The logo that prints on the form" hidden />
+            <button type="button" id="logo-remove" hidden>Remove the logo</button>
+          </div>
+          <p class="help">
+            The official form has the department's logo at the top left. Add it once as a PNG or JPEG and it prints on
+            all three moderation forms. It is kept in this browser.
+          </p>
+          <p id="logo-status" class="status" role="status"></p>
+          <label class="field narrow">
+            <span>Label at the top right</span>
+            <input type="text" maxlength="30" data-key="annexure" placeholder="Annexure J 2" />
+          </label>
+        </section>
+
+        <section class="panel" aria-labelledby="download-title">
+          <h2 id="download-title">Download</h2>
+          <div class="actions">
+            <button type="button" id="download" class="primary">Download the PDF</button>
+            <button type="button" id="download-blank">Download a blank form</button>
+          </div>
+          <p id="download-status" class="status" role="status"></p>
+          <div class="save-design">
+            <label class="field grow">
+              <span>Save this form as</span>
+              <input id="save-name" type="text" maxlength="80" />
+            </label>
+            <button type="button" id="save-form">Save form</button>
+          </div>
+          <p class="help">Saved forms stay in this browser, so you can open one again to change it or print it.</p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/src/moderation/j2.ts"></script>
+  </body>
+</html>
