@@ -21,6 +21,11 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+/* Some hidden elements set their own display, which would otherwise win over the attribute. */
+[hidden] {
+  display: none !important;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

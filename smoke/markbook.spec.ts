@@ -90,8 +90,10 @@ test('builds a markbook from a Class list and downloads live formulas, with noth
   expect(strings).toContain('Out of')
   expect(sheet).toContain('<f>IF(ISNUMBER(C4),C4/C$2*100,"")</f>')
   expect(sheet).toContain(
-    '<f>IFERROR((IF(ISNUMBER(G6),G6*G$3,0)+IF(ISNUMBER(J6),J6*J$3,0)+IF(ISNUMBER(M6),M6*M$3,0))/(IF(ISNUMBER(G6),G$3,0)+IF(ISNUMBER(J6),J$3,0)+IF(ISNUMBER(M6),M$3,0)),"")</f>',
+    '<f>IFERROR((IF(ISNUMBER(G6),G6*G$3,0)+IF(ISNUMBER(J6),J6*J$3,0)+IF(ISNUMBER(M6),M6*M$3,0))/(IF(ISNUMBER(G6),G$3,0)+IF(ISNUMBER(J6),J$3,0)+IF(ISNUMBER(M6),M$3,0)),IF(ISTEXT(G6)*(G6',
   )
+  // A learner absent for everything gets "a" instead of a mark.
+  expect(sheet).toContain('>0,"a",""))</f>')
   expect(sheet).toContain('<f>IF(ISNUMBER(N4),IF(N4>=40,"Pass","Fail"),"")</f>')
   expect(sheet).toContain('<f>IFERROR(LOOKUP(N5,{0,30,40,50,60,70,80},{1,2,3,4,5,6,7}),"")</f>')
   expect(sheet).toContain('<f>IFERROR(AVERAGE(N4:N6),"")</f>')
