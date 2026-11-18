@@ -92,6 +92,15 @@ describe('renderToolGroups', () => {
   })
 })
 
+describe('renderToolGroups ids', () => {
+  it('gives every group divider its own id and colour', () => {
+    const html = renderToolGroups(TOOLS, '/red-pen/')
+    const ids = [...html.matchAll(/class="tool-group divider tab-(\d+)" id="([a-z-]+)"/g)]
+    expect(ids.map((m) => Number(m[1]))).toEqual(ids.map((_, i) => i + 1))
+    expect(new Set(ids.map((m) => m[2])).size).toBe(ids.length)
+  })
+})
+
 describe('insertToolHelp', () => {
   const mark = toolForPage('mark/index.html')!
   const openError = '<p id="open-error" class="error" role="alert" hidden></p>'

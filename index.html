@@ -13,8 +13,12 @@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
   </head>
   <body>
-    <main id="landing">
-      <section class="hero paper" aria-labelledby="hero-title">
+    <main id="landing" class="folder">
+      <p class="folder-label" aria-hidden="true">
+        <span>Name:</span> <span class="handwritten">a busy teacher</span><br />
+        <span>Subject:</span> <span class="handwritten">everything</span>
+      </p>
+      <section class="hero paper sheet" aria-labelledby="hero-title">
         <div class="hero-inner">
           <button
             type="button"
@@ -48,176 +52,186 @@
         </div>
       </section>
 
-      <section class="tools" aria-labelledby="tools-title">
-        <h2 id="tools-title" class="visually-hidden">Tools</h2>
-        <div id="tool-groups"></div>
-      </section>
+      <div class="binder" id="binder">
+        <p class="tab-hint handwritten" id="tab-hint" aria-hidden="true" hidden>Pick a tab!</p>
+        <div class="binder-tabs" id="binder-tabs" role="tablist" aria-label="Sections" hidden></div>
+        <section class="tools" aria-labelledby="tools-title">
+          <h2 id="tools-title" class="visually-hidden">Tools</h2>
+          <div id="tool-groups"></div>
+        </section>
 
-      <section class="info" id="privacy" aria-labelledby="privacy-title">
-        <h2 id="privacy-title">How your files stay private</h2>
-        <p>
-          Most free online tools work by sending your file away to be processed somewhere else. Red Pen never does. Here
-          is the difference.
-        </p>
-        <div class="compare" data-reveal>
-          <section class="compare-card" aria-labelledby="compare-usual-title">
-            <h3 id="compare-usual-title">A typical online tool</h3>
-            <svg class="diagram diagram-usual" viewBox="0 0 320 112" aria-hidden="true">
-              <text class="hand" x="262" y="14">a copy stays here</text>
-              <rect class="ink" x="22" y="28" width="64" height="42" rx="4" />
-              <path class="ink" d="M12 78 H96" />
-              <g class="sheet">
-                <rect x="44" y="36" width="20" height="26" rx="2" />
-                <path d="M49 44 H59 M49 49 H59 M49 54 H55" />
-              </g>
-              <path class="ink wire" d="M104 50 H226" />
-              <path class="ink" d="M218 44 l8 6 l-8 6" />
-              <g class="ink server">
-                <rect x="236" y="24" width="56" height="16" rx="3" />
-                <rect x="236" y="44" width="56" height="16" rx="3" />
-                <rect x="236" y="64" width="56" height="16" rx="3" />
-                <path d="M244 32 h0.01 M244 52 h0.01 M244 72 h0.01" />
-              </g>
-              <g class="sheet copy">
-                <rect x="254" y="38" width="20" height="26" rx="2" />
-                <path d="M259 46 H269 M259 51 H269 M259 56 H265" />
-              </g>
-              <text x="54" y="100">Your computer</text>
-              <text x="264" y="100">Their server</text>
+        <section class="info divider tab-privacy" id="privacy" aria-labelledby="privacy-title">
+          <p class="tab" aria-hidden="true"><span>Privacy</span></p>
+          <h2 id="privacy-title">How your files stay private</h2>
+          <p>
+            Most free online tools work by sending your file away to be processed somewhere else. Red Pen never does.
+            Here is the difference.
+          </p>
+          <div class="compare" data-reveal>
+            <section class="compare-card" aria-labelledby="compare-usual-title">
+              <h3 id="compare-usual-title">A typical online tool</h3>
+              <svg class="diagram diagram-usual" viewBox="0 0 320 112" aria-hidden="true">
+                <text class="hand" x="262" y="14">a copy stays here</text>
+                <rect class="ink" x="22" y="28" width="64" height="42" rx="4" />
+                <path class="ink" d="M12 78 H96" />
+                <g class="sheet">
+                  <rect x="44" y="36" width="20" height="26" rx="2" />
+                  <path d="M49 44 H59 M49 49 H59 M49 54 H55" />
+                </g>
+                <path class="ink wire" d="M104 50 H226" />
+                <path class="ink" d="M218 44 l8 6 l-8 6" />
+                <g class="ink server">
+                  <rect x="236" y="24" width="56" height="16" rx="3" />
+                  <rect x="236" y="44" width="56" height="16" rx="3" />
+                  <rect x="236" y="64" width="56" height="16" rx="3" />
+                  <path d="M244 32 h0.01 M244 52 h0.01 M244 72 h0.01" />
+                </g>
+                <g class="sheet copy">
+                  <rect x="254" y="38" width="20" height="26" rx="2" />
+                  <path d="M259 46 H269 M259 51 H269 M259 56 H265" />
+                </g>
+                <text x="54" y="100">Your computer</text>
+                <text x="264" y="100">Their server</text>
+              </svg>
+              <ol>
+                <li>You choose a file, and it is uploaded over the internet to the company's server.</li>
+                <li>
+                  That server is a computer you cannot see, and it could be anywhere in the world. It opens your file
+                  and does the work.
+                </li>
+                <li>The result is sent back for you to download.</li>
+                <li>
+                  A copy of your file is now on someone else's computer. You have to trust their promise about who can
+                  see it, how long it is kept, and that it never leaks.
+                </li>
+              </ol>
+            </section>
+            <section class="compare-card compare-ours" aria-labelledby="compare-ours-title">
+              <h3 id="compare-ours-title">Red Pen</h3>
+              <svg class="diagram diagram-ours" viewBox="0 0 320 112" aria-hidden="true">
+                <text class="hand" x="54" y="14">it stays here</text>
+                <rect class="ink" x="22" y="28" width="64" height="42" rx="4" />
+                <path class="ink" d="M12 78 H96" />
+                <g class="sheet">
+                  <rect x="44" y="36" width="20" height="26" rx="2" />
+                  <path d="M49 44 H59 M49 49 H59 M49 54 H55" />
+                </g>
+                <path class="ink red stay-tick" pathLength="1" d="M62 52 l7 8 l16 -22" />
+                <path class="ink wire faded" d="M104 50 H150" />
+                <path class="ink red no-entry" pathLength="1" d="M158 40 l20 20 M178 40 l-20 20" />
+                <g class="ink server faded">
+                  <rect x="236" y="24" width="56" height="16" rx="3" />
+                  <rect x="236" y="44" width="56" height="16" rx="3" />
+                  <rect x="236" y="64" width="56" height="16" rx="3" />
+                  <path d="M244 32 h0.01 M244 52 h0.01 M244 72 h0.01" />
+                </g>
+                <text x="54" y="100">Your computer</text>
+                <text x="264" y="100">No server needed</text>
+              </svg>
+              <ol>
+                <li>
+                  The first time you visit, your browser downloads the tool itself, the same way it downloads any web
+                  page.
+                </li>
+                <li>You choose a file, and your browser opens it right there on your own device.</li>
+                <li>All the work happens on your computer, and the result is saved straight back to it.</li>
+                <li>
+                  No server ever receives your file. Nothing was sent, so there is nothing for anyone to keep, leak or
+                  sell.
+                </li>
+              </ol>
+            </section>
+          </div>
+          <ol class="points" data-reveal>
+            <li>
+              <b>Your files open in your browser.</b>
+              <span>Every tool works on your own computer. Nothing is uploaded or stored on a server.</span>
+            </li>
+            <li>
+              <b>The site blocks itself from sending data.</b>
+              <span
+                >Each page tells your browser to refuse any connection it tries to make, so this is enforced, not just
+                promised.</span
+              >
+            </li>
+            <li>
+              <b>You can check this yourself.</b>
+              <span>Once a page has loaded, turn off your Wi-Fi and use the tool. It still works.</span>
+              <em class="offline-note handwritten" id="offline-note" hidden
+                >You're offline right now. See? Still works ✓</em
+              >
+            </li>
+          </ol>
+          <p class="aside">
+            For school IT staff: the technical details are in
+            <a
+              href="https://github.com/Witels0n/red-pen/blob/main/docs/adr/0001-client-only-processing.md"
+              target="_blank"
+              rel="noopener"
+              >the privacy decision record</a
+            >.
+          </p>
+        </section>
+
+        <section class="info divider tab-install" id="install" aria-labelledby="install-title">
+          <p class="tab" aria-hidden="true"><span>Install</span></p>
+          <h2 id="install-title">Install Red Pen</h2>
+          <p>Install Red Pen like an app and it works fully offline, even when the school Wi-Fi is down.</p>
+          <p id="install-available" hidden>
+            <button type="button" id="install-button" class="primary">Install Red Pen</button>
+          </p>
+          <p id="install-installed" hidden>Red Pen is installed on this device.</p>
+          <div id="install-manual">
+            <p>Your browser installs it from its own menu:</p>
+            <ul>
+              <li><b>iPhone or iPad (Safari):</b> tap Share, then Add to Home Screen.</li>
+              <li><b>Android (Chrome):</b> tap the ⋮ menu, then Install app or Add to Home screen.</li>
+              <li><b>Computer (Chrome or Edge):</b> click the install icon at the right of the address bar.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="info divider tab-about" id="about" aria-labelledby="about-title" data-reveal>
+          <p class="tab" aria-hidden="true"><span>About</span></p>
+          <h2 id="about-title">About</h2>
+          <p>
+            <span class="handwritten made-by">Made by a teacher (me) for teachers (you).</span>
+            <svg class="gold-star" viewBox="0 0 40 40" role="img" aria-label="A gold star for reading to the end">
+              <title>A gold star for reading to the end</title>
+              <path
+                pathLength="1"
+                d="M20 4 L24.6 15.2 L36.6 16.1 L27.4 23.9 L30.3 35.6 L20 29.2 L9.7 35.6 L12.6 23.9 L3.4 16.1 L15.4 15.2 Z"
+              />
             </svg>
-            <ol>
-              <li>You choose a file, and it is uploaded over the internet to the company's server.</li>
-              <li>
-                That server is a computer you cannot see, and it could be anywhere in the world. It opens your file and
-                does the work.
-              </li>
-              <li>The result is sent back for you to download.</li>
-              <li>
-                A copy of your file is now on someone else's computer. You have to trust their promise about who can see
-                it, how long it is kept, and that it never leaks.
-              </li>
-            </ol>
-          </section>
-          <section class="compare-card compare-ours" aria-labelledby="compare-ours-title">
-            <h3 id="compare-ours-title">Red Pen</h3>
-            <svg class="diagram diagram-ours" viewBox="0 0 320 112" aria-hidden="true">
-              <text class="hand" x="54" y="14">it stays here</text>
-              <rect class="ink" x="22" y="28" width="64" height="42" rx="4" />
-              <path class="ink" d="M12 78 H96" />
-              <g class="sheet">
-                <rect x="44" y="36" width="20" height="26" rx="2" />
-                <path d="M49 44 H59 M49 49 H59 M49 54 H55" />
-              </g>
-              <path class="ink red stay-tick" pathLength="1" d="M62 52 l7 8 l16 -22" />
-              <path class="ink wire faded" d="M104 50 H150" />
-              <path class="ink red no-entry" pathLength="1" d="M158 40 l20 20 M178 40 l-20 20" />
-              <g class="ink server faded">
-                <rect x="236" y="24" width="56" height="16" rx="3" />
-                <rect x="236" y="44" width="56" height="16" rx="3" />
-                <rect x="236" y="64" width="56" height="16" rx="3" />
-                <path d="M244 32 h0.01 M244 52 h0.01 M244 72 h0.01" />
-              </g>
-              <text x="54" y="100">Your computer</text>
-              <text x="264" y="100">No server needed</text>
-            </svg>
-            <ol>
-              <li>
-                The first time you visit, your browser downloads the tool itself, the same way it downloads any web
-                page.
-              </li>
-              <li>You choose a file, and your browser opens it right there on your own device.</li>
-              <li>All the work happens on your computer, and the result is saved straight back to it.</li>
-              <li>
-                No server ever receives your file. Nothing was sent, so there is nothing for anyone to keep, leak or
-                sell.
-              </li>
-            </ol>
-          </section>
-        </div>
-        <ol class="points" data-reveal>
-          <li>
-            <b>Your files open in your browser.</b>
-            <span>Every tool works on your own computer. Nothing is uploaded or stored on a server.</span>
-          </li>
-          <li>
-            <b>The site blocks itself from sending data.</b>
-            <span
-              >Each page tells your browser to refuse any connection it tries to make, so this is enforced, not just
-              promised.</span
+          </p>
+          <p>
+            Red Pen is free and open source. If something doesn't work, or there's a tool you wish you had, let me know.
+          </p>
+          <p>
+            My name is Keith and I'm a teacher. I hope that these tools are useful to you and that you enjoy using them.
+            I will continue to add new tools as I need them, but you are also most welcome to ask for new features and
+            tools yourself and I'll make them when I get time.
+          </p>
+          <p class="parting">
+            I teach half of my learners half as well as I should like; and I teach less than half of them half as well
+            as they deserve.
+          </p>
+          <p class="links">
+            <a
+              href="https://github.com/Witels0n/red-pen/issues/new?template=tool-idea.yml"
+              target="_blank"
+              rel="noopener"
+              >Suggest a tool</a
             >
-          </li>
-          <li>
-            <b>You can check this yourself.</b>
-            <span>Once a page has loaded, turn off your Wi-Fi and use the tool. It still works.</span>
-            <em class="offline-note handwritten" id="offline-note" hidden
-              >You're offline right now. See? Still works ✓</em
+            <a
+              href="https://github.com/Witels0n/red-pen/issues/new?template=bug-report.yml"
+              target="_blank"
+              rel="noopener"
+              >Report a problem</a
             >
-          </li>
-        </ol>
-        <p class="aside">
-          For school IT staff: the technical details are in
-          <a
-            href="https://github.com/Witels0n/red-pen/blob/main/docs/adr/0001-client-only-processing.md"
-            target="_blank"
-            rel="noopener"
-            >the privacy decision record</a
-          >.
-        </p>
-      </section>
-
-      <section class="info" id="install" aria-labelledby="install-title">
-        <h2 id="install-title">Install Red Pen</h2>
-        <p>Install Red Pen like an app and it works fully offline, even when the school Wi-Fi is down.</p>
-        <p id="install-available" hidden>
-          <button type="button" id="install-button" class="primary">Install Red Pen</button>
-        </p>
-        <p id="install-installed" hidden>Red Pen is installed on this device.</p>
-        <div id="install-manual">
-          <p>Your browser installs it from its own menu:</p>
-          <ul>
-            <li><b>iPhone or iPad (Safari):</b> tap Share, then Add to Home Screen.</li>
-            <li><b>Android (Chrome):</b> tap the ⋮ menu, then Install app or Add to Home screen.</li>
-            <li><b>Computer (Chrome or Edge):</b> click the install icon at the right of the address bar.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="info" id="about" aria-labelledby="about-title" data-reveal>
-        <h2 id="about-title">About</h2>
-        <p>
-          <span class="handwritten made-by">Made by a teacher (me) for teachers (you).</span>
-          <svg class="gold-star" viewBox="0 0 40 40" role="img" aria-label="A gold star for reading to the end">
-            <title>A gold star for reading to the end</title>
-            <path
-              pathLength="1"
-              d="M20 4 L24.6 15.2 L36.6 16.1 L27.4 23.9 L30.3 35.6 L20 29.2 L9.7 35.6 L12.6 23.9 L3.4 16.1 L15.4 15.2 Z"
-            />
-          </svg>
-        </p>
-        <p>
-          Red Pen is free and open source. If something doesn't work, or there's a tool you wish you had, let me know.
-        </p>
-        <p>
-          My name is Keith and I'm a teacher. I hope that these tools are useful to you and that you enjoy using them. I
-          will continue to add new tools as I need them, but you are also most welcome to ask for new features and tools
-          yourself and I'll make them when I get time.
-        </p>
-        <p class="parting">
-          I teach half of my learners half as well as I should like; and I teach less than half of them half as well as
-          they deserve.
-        </p>
-        <p class="links">
-          <a href="https://github.com/Witels0n/red-pen/issues/new?template=tool-idea.yml" target="_blank" rel="noopener"
-            >Suggest a tool</a
-          >
-          <a
-            href="https://github.com/Witels0n/red-pen/issues/new?template=bug-report.yml"
-            target="_blank"
-            rel="noopener"
-            >Report a problem</a
-          >
-        </p>
-      </section>
+          </p>
+        </section>
+      </div>
     </main>
     <script type="module" src="/src/landing/main.ts"></script>
   </body>
