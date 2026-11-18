@@ -1,0 +1,165 @@
+/* Rubric builder: the Markbook builder's panels and controls, plus the rubric grid itself. */
+@import '../markbook/styles.css';
+
+.edit-item.level {
+  grid-template-columns: minmax(0, 1fr) 6.5rem auto;
+}
+
+.edit-item.criterion {
+  grid-template-columns: minmax(0, 1fr) 6.5rem minmax(0, 6rem) auto;
+}
+
+.edit-item.criterion.tagged {
+  grid-template-columns: minmax(0, 1fr) 6.5rem minmax(0, 6rem) minmax(0, 12rem) auto;
+}
+
+.edit-item.criterion.unweighted {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.edit-item .derived {
+  align-self: end;
+  padding-bottom: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .edit-item.level,
+  .edit-item.criterion,
+  .edit-item.criterion.tagged {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .edit-item.criterion.unweighted {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .edit-item .cognitive-field {
+    grid-column: 1 / -1;
+  }
+}
+
+.scale-row,
+.weight-tools {
+  margin-top: 1rem;
+  align-items: flex-end;
+}
+
+.weight-tools {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--hairline);
+}
+
+#weights-block {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0;
+}
+
+.chips:empty {
+  display: none;
+}
+
+.chips span {
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 0.9rem;
+}
+
+.chips b {
+  font-weight: 700;
+}
+
+/* ---------- The rubric grid ---------- */
+
+.rubric-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.rubric-grid th,
+.rubric-grid td {
+  padding: 0.5rem;
+  border: 1px solid var(--cell-grid);
+  vertical-align: top;
+  text-align: left;
+}
+
+.rubric-grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--cell-head);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.rubric-grid tbody th {
+  min-width: 9rem;
+  max-width: 14rem;
+  background: var(--cell-calc);
+  font-weight: 700;
+}
+
+.rubric-grid td {
+  min-width: 12rem;
+  background: var(--surface);
+}
+
+.rubric-grid .worth {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.rubric-grid .band {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--red-soft);
+  color: var(--red);
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+}
+
+.rubric-grid textarea {
+  display: block;
+  width: 100%;
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.rubric-grid.wide-cells td {
+  min-width: 18rem;
+}
+
+#marking-block {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+#marking-block > .help {
+  margin: 0;
+}
+
+/* The whole rubric shows at once: it scrolls sideways only. */
+#grid-panel .sheet-scroll {
+  max-height: none;
+}

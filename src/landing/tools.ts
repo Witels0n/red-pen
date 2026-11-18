@@ -1,9 +1,11 @@
 /** A group of tools on the landing page, in display order. */
-export type ToolGroup = 'Set and mark' | 'Marks and results' | 'PDF basics' | 'Print and share' | 'Classroom'
+export type ToolGroup =
+  'Set and mark' | 'Marks and results' | 'Moderation' | 'PDF basics' | 'Print and share' | 'Classroom'
 
 export const TOOL_GROUPS: readonly ToolGroup[] = [
   'Set and mark',
   'Marks and results',
+  'Moderation',
   'PDF basics',
   'Print and share',
   'Classroom',
@@ -157,6 +159,30 @@ export const TOOLS: readonly Tool[] = [
     },
   },
   {
+    name: 'Rubric builder',
+    blurb:
+      'Build an analytic, holistic, single-point or checklist rubric with weighted criteria, then download an Excel file that marks itself.',
+    path: 'rubric/',
+    group: 'Set and mark',
+    help: {
+      steps: [
+        'Choose a style and a set of levels, such as four levels, CAPS codes, SOLO or a Marzano scale.',
+        'Write the criteria and descriptors, and weigh each criterion in marks or percentages.',
+        'Download an Excel file with the rubric to print and a sheet per learner to mark with an x.',
+      ],
+      questions: [
+        {
+          q: 'How do I mark with it in Excel?',
+          a: 'Type an x in the box beside the level a learner reached. The sheet works out the weighted mark, total, percentage and level, and a Summary sheet shows the class average and the criterion that needs the most work.',
+        },
+        {
+          q: 'Which taxonomies can I use?',
+          a: "For the levels: SOLO, Marzano's proficiency scale, the CAPS achievement levels or your own. To tag each criterion: Bloom's revised taxonomy, Marzano's New Taxonomy, Webb's Depth of Knowledge, SOLO or the CAPS cognitive levels.",
+        },
+      ],
+    },
+  },
+  {
     name: 'Markbook builder',
     blurb:
       'Design a markbook with weights, Categories and CAPS levels, then download an Excel file with live formulas.',
@@ -176,6 +202,78 @@ export const TOOLS: readonly Tool[] = [
         {
           q: "Are learners' names saved?",
           a: 'No. Names go into the download only and are not saved with your design.',
+        },
+      ],
+    },
+  },
+  {
+    name: 'J1 Pre-moderation',
+    blurb:
+      'Fill in the pre-assessment moderation tool for a task and download it laid out like the official Annexure J1.',
+    path: 'j1/',
+    group: 'Moderation',
+    help: {
+      steps: [
+        'Type the school, district, subject and the name of the DH or Subject Specialist. They are remembered for next time.',
+        'Comment on each criterion, then choose whether the task is approved.',
+        'Download the PDF, laid out like the official form, and print it to sign.',
+      ],
+      questions: [
+        {
+          q: 'Does it look like the official form?',
+          a: 'Yes. It follows the Gauteng Annexure J1 line for line. Rows grow to fit long comments, and you can add the department logo.',
+        },
+        {
+          q: 'Is what I type saved?',
+          a: 'Only in this browser, so you can come back to a form. Nothing is uploaded.',
+        },
+      ],
+    },
+  },
+  {
+    name: 'J2 Post-moderation',
+    blurb:
+      'Fill in the post assessment moderation tool for a marked task and download it laid out like the official Annexure J2.',
+    path: 'j2/',
+    group: 'Moderation',
+    help: {
+      steps: [
+        'Type the school, subject, grade, task and moderator.',
+        'Comment on each quality indicator, and add the poorly answered questions and your overall impression.',
+        'Download the PDF, laid out like the official form, and print it to sign.',
+      ],
+      questions: [
+        {
+          q: 'What if my comments are long?',
+          a: 'Each row grows to fit its comment and the form runs on to as many pages as it needs, with page numbers.',
+        },
+        {
+          q: 'Can I print it empty and fill it in by hand?',
+          a: 'Yes. Download a blank form gives you the form with nothing typed in.',
+        },
+      ],
+    },
+  },
+  {
+    name: 'J3 Evidence of moderation',
+    blurb:
+      'Record the moderation of up to six SBA tasks, with learners and marks, on the one-page evidence of school moderation form.',
+    path: 'j3/',
+    group: 'Moderation',
+    help: {
+      steps: [
+        'Type the subject, grade, teacher, school and HOD.',
+        'For each task, add the dates, the six learners and the marks from the teacher and the HOD.',
+        'Download the one-page landscape PDF and print it for the signatures.',
+      ],
+      questions: [
+        {
+          q: 'Can I add tasks through the year?',
+          a: 'Yes. Save the form, open it again after each moderation, add the next task and download it again.',
+        },
+        {
+          q: 'What if the subject has more than six tasks?',
+          a: 'Start a second form for the rest, as the official form asks.',
         },
       ],
     },

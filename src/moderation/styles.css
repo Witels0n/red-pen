@@ -1,0 +1,192 @@
+/* Moderation forms: the Markbook builder's panels and controls, plus criteria lists and entry tables. */
+@import '../markbook/styles.css';
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.grid-2,
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel > h2 {
+  text-transform: none;
+}
+
+.criteria {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.criteria .field > span {
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.criteria textarea {
+  min-height: 3.6rem;
+}
+
+.choice {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.choice-legend {
+  font-weight: 700;
+}
+
+.entry-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.entry-table th,
+.entry-table td {
+  padding: 0.3rem;
+  border: 1px solid var(--cell-grid);
+  vertical-align: top;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.entry-table thead th {
+  background: var(--cell-head);
+}
+
+.entry-table td {
+  min-width: 9rem;
+}
+
+.entry-table .field {
+  margin: 0;
+}
+
+.entry-table.marks {
+  margin-top: 0.75rem;
+}
+
+.entry-table.marks th:first-child {
+  width: 2.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.entry-table.marks td:nth-child(n + 3) {
+  width: 6rem;
+  min-width: 4.5rem;
+}
+
+.sheet-scroll {
+  max-height: none;
+}
+
+.moderation {
+  margin-bottom: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.moderation summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.moderation[open] summary {
+  margin-bottom: 0.75rem;
+}
+
+.logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-row img {
+  max-width: 12rem;
+  max-height: 4rem;
+  border: 1px solid var(--hairline);
+  background: #fff;
+}
+
+.file-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.file-button input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* The form's own panels sit in the workspace column like the ones around them. */
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.moderation {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .entry-table.marks td {
+    min-width: 0;
+  }
+
+  .entry-table.marks td:nth-child(n + 3) {
+    width: 4rem;
+    min-width: 3.4rem;
+  }
+}
+
+/* Hidden labels are positioned, so they need an anchor inside any box that scrolls. */
+.entry-table .field {
+  position: relative;
+}
+
+input[type='date'] {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text);
+  font: inherit;
+}

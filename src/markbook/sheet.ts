@@ -168,7 +168,8 @@ function notesSheet(design: MarkbookDesign, layout: Layout, name: string): Markb
     '',
     `Type each learner's marks in the white columns, from row ${layout.firstRow}. Everything else is worked out by formulas.`,
     `Row ${OUT_OF_ROW} holds what each assessment is out of and row ${WEIGHT_ROW} the weights. Change them there and every formula follows.`,
-    'Leave a mark blank, or type ABS, when a learner has no mark yet. It is left out and the other weights share its place.',
+    'Type a when a learner was absent, or leave the mark blank when there is no mark yet. It is left out and the other weights share its place.',
+    'A learner who is absent for everything gets a instead of a mark. Carry that a into a year markbook and it is left out there too.',
     'Type 0 for a learner who wrote and scored nothing.',
   ]
   if (design.useCategories) {

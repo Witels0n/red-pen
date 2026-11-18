@@ -18,6 +18,7 @@ import {
   type SavedDesign,
 } from './design'
 import {
+  ABSENT,
   buildLayout,
   learnerFormula,
   numberFormat,
@@ -437,7 +438,7 @@ function renderPreview(layout: Layout, realRows: number): void {
           const classes = [
             f ? 'calc' : '',
             c.kind === 'name' || c.kind === 'id' ? 'text' : '',
-            typeof v === 'string' && c.kind === 'mark' ? 'absent' : '',
+            typeof v === 'string' && v !== '' && ['mark', 'category', 'term', 'final'].includes(c.kind) ? 'absent' : '',
             v === 'Fail' ? 'fail' : '',
           ]
           return td(display(v, numberFormat(design, c)), classes.filter(Boolean).join(' '), f)
@@ -488,8 +489,8 @@ function renderPreview(layout: Layout, realRows: number): void {
   preview.replaceChildren(el('tbody', {}, ...rows))
   previewCaption.textContent =
     `Made-up marks for ${plural(shown, 'sample learner')} show what the formulas do` +
-    (marks.some((m) => Object.values(m).includes('ABS'))
-      ? ', including an absent learner (ABS) and a blank mark'
+    (marks.some((m) => Object.values(m).includes(ABSENT))
+      ? `, including an absent learner (${ABSENT}) and a blank mark`
       : '') +
     `. The download has ${plural(realRows, 'learner row')} with empty mark cells` +
     (layout.summary.length > 0 && realRows > shown ? ', and its summary covers every row.' : '.')

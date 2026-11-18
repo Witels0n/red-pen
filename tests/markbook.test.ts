@@ -111,17 +111,17 @@ describe('learner formulas', () => {
 
   it('weighs the marks that are there, with out of and weights from rows 2 and 3', () => {
     expect(f('Term mark (%)')).toBe(
-      '=IFERROR((IF(ISNUMBER(C4),C4/C$2*C$3,0)+IF(ISNUMBER(E4),E4/E$2*E$3,0))/(IF(ISNUMBER(C4),C$3,0)+IF(ISNUMBER(E4),E$3,0))*100,"")',
+      '=IFERROR((IF(ISNUMBER(C4),C4/C$2*C$3,0)+IF(ISNUMBER(E4),E4/E$2*E$3,0))/(IF(ISNUMBER(C4),C$3,0)+IF(ISNUMBER(E4),E$3,0))*100,IF(ISTEXT(C4)*(C4<>"")+ISTEXT(E4)*(E4<>"")>0,"a",""))',
     )
   })
 
   it('rounds, levels and passes from the unrounded mark', () => {
-    expect(f('Rounded (%)')).toBe('=IF(ISNUMBER(G4),ROUND(G4,0),"")')
+    expect(f('Rounded (%)')).toBe('=IF(ISNUMBER(G4),ROUND(G4,0),G4)')
     expect(f('Level')).toBe('=IFERROR(LOOKUP(G4,{0,30,40,50,60,70,80},{1,2,3,4,5,6,7}),"")')
     expect(f('Result')).toBe('=IF(ISNUMBER(G4),IF(G4>=50,"Pass","Fail"),"")')
     const one = { ...d, rounding: 'one' as const, passMark: 40 }
     const l = buildLayout(one, 30)
-    expect(learnerFormula(one, l, col(l, 'Rounded (%)'), 5)).toBe('=IF(ISNUMBER(G5),ROUND(G5,1),"")')
+    expect(learnerFormula(one, l, col(l, 'Rounded (%)'), 5)).toBe('=IF(ISNUMBER(G5),ROUND(G5,1),G5)')
     expect(learnerFormula(one, l, col(l, 'Result'), 5)).toBe('=IF(ISNUMBER(G5),IF(G5>=40,"Pass","Fail"),"")')
   })
 
@@ -131,11 +131,13 @@ describe('learner formulas', () => {
     const l = buildLayout(t, 3)
     const g = (header: string) => learnerFormula(t, l, col(l, header), 6)
     expect(g('Tests (%)')).toBe(
-      '=IFERROR((IF(ISNUMBER(C6),C6/C$2*C$3,0)+IF(ISNUMBER(D6),D6/D$2*D$3,0))/(IF(ISNUMBER(C6),C$3,0)+IF(ISNUMBER(D6),D$3,0))*100,"")',
+      '=IFERROR((IF(ISNUMBER(C6),C6/C$2*C$3,0)+IF(ISNUMBER(D6),D6/D$2*D$3,0))/(IF(ISNUMBER(C6),C$3,0)+IF(ISNUMBER(D6),D$3,0))*100,IF(ISTEXT(C6)*(C6<>"")+ISTEXT(D6)*(D6<>"")>0,"a",""))',
     )
-    expect(g('Assignments (%)')).toBe('=IFERROR((IF(ISNUMBER(F6),F6/F$2*F$3,0))/(IF(ISNUMBER(F6),F$3,0))*100,"")')
+    expect(g('Assignments (%)')).toBe(
+      '=IFERROR((IF(ISNUMBER(F6),F6/F$2*F$3,0))/(IF(ISNUMBER(F6),F$3,0))*100,IF(ISTEXT(F6)*(F6<>"")>0,"a",""))',
+    )
     expect(g('Term mark (%)')).toBe(
-      '=IFERROR((IF(ISNUMBER(E6),E6*E$3,0)+IF(ISNUMBER(G6),G6*G$3,0)+IF(ISNUMBER(I6),I6*I$3,0))/(IF(ISNUMBER(E6),E$3,0)+IF(ISNUMBER(G6),G$3,0)+IF(ISNUMBER(I6),I$3,0)),"")',
+      '=IFERROR((IF(ISNUMBER(E6),E6*E$3,0)+IF(ISNUMBER(G6),G6*G$3,0)+IF(ISNUMBER(I6),I6*I$3,0))/(IF(ISNUMBER(E6),E$3,0)+IF(ISNUMBER(G6),G$3,0)+IF(ISNUMBER(I6),I$3,0)),IF(ISTEXT(E6)*(E6<>"")+ISTEXT(G6)*(G6<>"")+ISTEXT(I6)*(I6<>"")>0,"a",""))',
     )
   })
 })
@@ -207,8 +209,33 @@ describe('preview maths', () => {
     expect(absent[3]).toBeNull()
     expect(absent[6]).toBeCloseTo(45)
     expect(absent.slice(7)).toEqual([45, 3, 'Fail'])
+    // Absent for one task and 30% for the other is 30%, not 15%.
+    const half = learnerRow(d, layout, { id: '3', name: '' }, { a1: 'a', a2: 30 })
+    expect(half[6]).toBeCloseTo(30)
     const none = learnerRow(d, layout, { id: '2', name: '' }, { a1: null })
     expect(none.slice(2)).toEqual([null, null, null, null, null, null, null, null])
+  })
+
+  it('gives a as the mark of a learner who was absent for everything, with no level or result', () => {
+    const d = simple()
+    const layout = buildLayout(d, 5)
+    const away = learnerRow(d, layout, { id: '1', name: '' }, { a1: 'a', a2: 'ABS' })
+    expect(away.slice(6)).toEqual(['a', 'a', null, null])
+    // One absence and one blank is still an absence, not an unmarked row.
+    expect(learnerRow(d, layout, { id: '1', name: '' }, { a1: 'a', a2: null })[6]).toBe('a')
+  })
+
+  it('leaves an absent Category out of the weighted mark, and is a when every Category is', () => {
+    const d = presetDesign('term')
+    d.showPercentages = false
+    const layout = buildLayout(d, 1)
+    const at = (kind: string) => layout.columns.findIndex((c) => c.kind === kind)
+    const row = learnerRow(d, layout, { id: '1', name: '' }, { a1: 'a', a2: 'a', a3: 20, a4: 60 })
+    expect(row[layout.columns.findIndex((c) => c.kind === 'category')]).toBe('a')
+    // Assignment 50% (weight 20) and Exam 60% (weight 40): (0.2*50 + 0.4*60) / 0.6
+    expect(row[at('term')]).toBeCloseTo(34 / 0.6)
+    const away = learnerRow(d, layout, { id: '1', name: '' }, { a1: 'a', a2: 'a', a3: 'a', a4: 'a' })
+    expect(away[at('term')]).toBe('a')
   })
 
   it('bands the level on the unrounded mark even when the rounded mark crosses a boundary', () => {
@@ -254,7 +281,7 @@ describe('preview maths', () => {
   it('makes sample marks with one absent learner and one blank mark', () => {
     const marks = sampleMarks(simple(), 5)
     expect(marks).toHaveLength(5)
-    expect(marks[1].a1).toBe('ABS')
+    expect(marks[1].a1).toBe('a')
     expect(marks[3].a2).toBeNull()
     for (const m of [marks[0], marks[2], marks[4]]) {
       expect(m.a1).toBeGreaterThanOrEqual(0)
@@ -350,7 +377,7 @@ describe('buildMarkbook', () => {
     expect(rows[3][1]).toEqual({ value: 'Thandi Mokoena' })
     expect(rows[3][2]).toBeNull()
     expect(rows[3][3]).toEqual({ type: 'Formula', value: 'IF(ISNUMBER(C4),C4/C$2*100,"")', format: '0.0' })
-    expect(rows[4][7]).toEqual({ type: 'Formula', value: 'IF(ISNUMBER(G5),ROUND(G5,0),"")', format: '0' })
+    expect(rows[4][7]).toEqual({ type: 'Formula', value: 'IF(ISNUMBER(G5),ROUND(G5,0),G5)', format: '0' })
     // Row 6 is the gap, then the summary from row 7.
     expect(rows).toHaveLength(3 + 2 + 1 + 5)
     expect(rows[6][1]).toEqual({ value: 'Class average', fontWeight: 'bold' })

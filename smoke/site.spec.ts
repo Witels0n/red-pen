@@ -43,6 +43,15 @@ test.describe('landing page', () => {
     await expect(page.locator('#drop-zone')).toBeVisible()
   })
 
+  test('only tells night owls to go to bed', async ({ page }) => {
+    await page.clock.setFixedTime(new Date(2026, 10, 18, 8, 5))
+    await page.goto(HOME)
+    await expect(page.locator('#night-note')).toBeHidden()
+    await page.clock.setFixedTime(new Date(2026, 10, 18, 23, 30))
+    await page.goto(HOME)
+    await expect(page.locator('#night-note')).toBeVisible()
+  })
+
   test('only shows tool groups that have tools', async ({ page }) => {
     await page.goto(HOME)
     await expect(page.locator('.tool-group h3')).toHaveText(groupTools(TOOLS).map((g) => g.group))
