@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Rubric maker with weights and Excel marking sheets · Red Pen</title>
+    <meta
+      name="description"
+      content="Build an analytic, holistic, single-point or checklist rubric with weighted criteria and SOLO, Marzano or CAPS levels, and download it as an Excel file that marks itself. Nothing is uploaded."
+    />
+    <meta name="theme-color" content="#d3212d" />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <main>
+      <section class="intro paper" aria-labelledby="rubric-title">
+        <div class="intro-inner">
+          <h1 id="rubric-title">Rubric builder</h1>
+          <p class="intro-hint handwritten">Tick the box, Excel adds it <span class="nowrap">up ✓</span></p>
+          <p class="intro-text">
+            Build a rubric, weigh its criteria, then download it as an Excel file: a rubric to print, and a sheet per
+            learner that works out the mark when you type an x in a box.
+          </p>
+          <p class="privacy-note">
+            Everything is made in your browser. Learner names are never uploaded and are not saved with your rubric.
+          </p>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <section class="panel" aria-labelledby="start-title">
+          <h2 id="start-title">Start from</h2>
+          <div class="segmented" role="radiogroup" aria-label="Rubric style" id="style-group">
+            <label><input type="radio" name="style" value="analytic" /><span>Analytic</span></label>
+            <label><input type="radio" name="style" value="holistic" /><span>Holistic</span></label>
+            <label><input type="radio" name="style" value="single-point" /><span>Single-point</span></label>
+            <label><input type="radio" name="style" value="checklist" /><span>Checklist</span></label>
+          </div>
+          <p id="style-help" class="help"></p>
+          <div class="actions">
+            <button type="button" id="start-new">Start a new rubric</button>
+          </div>
+          <div class="row saved-row">
+            <label class="field grow">
+              <span>Saved rubrics</span>
+              <select id="saved-select"></select>
+            </label>
+            <button type="button" id="load-saved">Load</button>
+            <button type="button" id="delete-saved">Delete</button>
+          </div>
+          <p id="start-status" class="status" role="status"></p>
+        </section>
+
+        <section class="panel" aria-labelledby="details-title">
+          <h2 id="details-title">Rubric</h2>
+          <div class="row">
+            <label class="field grow">
+              <span>Title</span>
+              <input id="title" type="text" maxlength="80" />
+            </label>
+            <label class="field grow">
+              <span>Task, grade or date (optional)</span>
+              <input id="task" type="text" maxlength="160" placeholder="Grade 9 Natural Sciences, Term 2" />
+            </label>
+          </div>
+
+          <div id="levels-block">
+            <h3>Levels</h3>
+            <p class="help">
+              Each level is worth a share of a criterion's marks. A criterion out of 8 gives 6 marks at a level worth
+              75%.
+            </p>
+            <ul id="level-list" class="edit-list"></ul>
+            <div class="list-foot">
+              <div class="row">
+                <button type="button" id="add-level">Add a level</button>
+                <button type="button" id="reverse-levels">Reverse the order</button>
+              </div>
+            </div>
+            <label class="check">
+              <input id="show-ranges" type="checkbox" />
+              Give each level a band of marks (for example 8-10) instead of one mark
+            </label>
+            <div class="row scale-row">
+              <label class="field grow">
+                <span>Or use a ready-made scale</span>
+                <select id="scale-select"></select>
+              </label>
+              <button type="button" id="use-scale">Use these levels</button>
+            </div>
+            <p id="scale-help" class="help"></p>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="criteria-title">
+          <h2 id="criteria-title">Criteria and weights</h2>
+          <label class="check" id="scored-row">
+            <input id="scored" type="checkbox" />
+            Give each criterion a mark
+          </label>
+          <div id="weights-block">
+            <div class="row" id="weight-mode-row">
+              <div class="segmented" role="radiogroup" aria-label="How weights are entered">
+                <label><input type="radio" name="weight-mode" value="marks" /><span>Weigh in marks</span></label>
+                <label
+                  ><input type="radio" name="weight-mode" value="percent" /><span>Weigh in percentages</span></label
+                >
+              </div>
+              <label class="field inline" id="total-field">
+                <span>Rubric total</span>
+                <input id="total" type="number" inputmode="decimal" min="1" step="any" />
+              </label>
+            </div>
+            <label class="field narrow" id="taxonomy-field">
+              <span>Cognitive levels</span>
+              <select id="taxonomy"></select>
+            </label>
+          </div>
+          <ul id="criterion-list" class="edit-list"></ul>
+          <div class="list-foot">
+            <button type="button" id="add-criterion">Add a criterion</button>
+            <span id="criterion-total" class="total"></span>
+          </div>
+          <div class="row weight-tools" id="weight-tools">
+            <button type="button" id="share-evenly">Share evenly</button>
+            <label class="field inline">
+              <span>Scale to a total of</span>
+              <input id="scale-total" type="number" inputmode="decimal" min="1" step="any" />
+            </label>
+            <button type="button" id="scale-weights">Scale</button>
+          </div>
+          <p id="weight-help" class="help"></p>
+          <p id="cognitive-summary" class="chips" role="status"></p>
+        </section>
+
+        <section class="panel" id="grid-panel" aria-labelledby="grid-title">
+          <h2 id="grid-title">Descriptors</h2>
+          <p id="grid-help" class="help"></p>
+          <div class="sheet-scroll" tabindex="0" role="region" aria-label="The rubric">
+            <table id="grid" class="rubric-grid"></table>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="marking-title">
+          <h2 id="marking-title">Marking in Excel</h2>
+          <label class="check">
+            <input id="marking" type="checkbox" />
+            Add a sheet per learner, to mark by typing an x in a box
+          </label>
+          <div id="marking-block">
+            <div class="segmented" role="radiogroup" aria-label="Where the learners come from">
+              <label><input type="radio" name="source" value="class" /><span>Class list</span></label>
+              <label><input type="radio" name="source" value="paste" /><span>Paste names</span></label>
+              <label><input type="radio" name="source" value="blank" checked /><span>Blank sheets</span></label>
+            </div>
+            <div class="source" data-source="class" hidden>
+              <label class="field">
+                <span>Class list</span>
+                <select id="class-select"></select>
+              </label>
+              <p id="no-classes" class="help" hidden>
+                No Class lists on this device yet. <a href="../classes/#new">Make one in Class lists</a>, or paste names
+                instead.
+              </p>
+            </div>
+            <div class="source" data-source="paste" hidden>
+              <label class="field">
+                <span>Names, one per line</span>
+                <textarea
+                  id="names-text"
+                  rows="6"
+                  spellcheck="false"
+                  placeholder="Thandi Mokoena&#10;Sipho Dlamini"
+                ></textarea>
+              </label>
+              <p class="help">Pasted names go into the download only. They are not saved in this browser.</p>
+            </div>
+            <div class="source" data-source="blank">
+              <label class="field narrow">
+                <span>Number of sheets</span>
+                <input id="blank-sheets" type="number" inputmode="numeric" min="1" max="120" step="1" value="30" />
+              </label>
+            </div>
+            <p id="learner-summary" class="help"></p>
+            <div class="options" id="mark-options">
+              <label class="check"><input id="show-percent" type="checkbox" /> Show the percentage</label>
+              <label class="field inline">
+                <span>Also report the mark out of</span>
+                <input id="report-out-of" type="number" inputmode="decimal" min="1" step="any" placeholder="none" />
+              </label>
+              <label class="check"><input id="show-level" type="checkbox" /> CAPS achievement level (1 to 7)</label>
+            </div>
+            <label class="check">
+              <input id="show-summary" type="checkbox" />
+              A class Summary sheet, with averages and the criterion that needs the most work
+            </label>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="download-title">
+          <h2 id="download-title">Download</h2>
+          <ul id="problems" class="problems" role="status"></ul>
+          <p id="file-summary" class="help"></p>
+          <div class="actions">
+            <button type="button" id="download" class="primary">Download Excel rubric</button>
+          </div>
+          <p id="download-status" class="status" role="status"></p>
+          <div class="save-design">
+            <label class="field grow">
+              <span>Save this rubric as</span>
+              <input id="save-name" type="text" maxlength="60" />
+            </label>
+            <button type="button" id="save-rubric">Save rubric</button>
+          </div>
+          <p class="help">Rubrics are saved in this browser without learner names, ready to use again.</p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/src/rubric/main.ts"></script>
+  </body>
+</html>

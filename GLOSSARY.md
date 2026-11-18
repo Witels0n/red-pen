@@ -116,6 +116,28 @@ _Avoid_: Mark sheet, gradebook, register
 A group of assessments in a Markbook (for example Tests or Exam) with its own weight. Its average weighs its assessments; the weighted mark weighs the Category averages. A blank mark or an absence (the letter "a", or any other text) is left out and the other weights share its place.
 _Avoid_: Section, component (Topic is the MCQ term for a question tag)
 
+### Rubrics
+
+**Rubric**:
+A set of criteria for judging one piece of work, made in the Rubric builder in one of four styles: analytic (a descriptor per criterion per level), holistic (one scale for the whole piece), single-point (only the expected standard is described) or checklist (each item is there or not). Saved in the browser without learner names and downloaded as an .xlsx.
+_Avoid_: Marking grid, matrix, scoring guide
+
+**Criterion**:
+One thing a Rubric judges (for example "Structure"), with its weight in marks or as a percentage of the total. In a checklist it is called an item.
+_Avoid_: Dimension, strand, row
+
+**Level**:
+One step of a Rubric's scale (for example "Proficient"), worth a share of a criterion's marks. Levels come from a ready-made scale (four levels, CAPS achievement levels, SOLO, Marzano's proficiency scale) or are the teacher's own.
+_Avoid_: Band (a band is the range of marks of a level), column, grade
+
+**Descriptor**:
+The words saying what work looks like for one criterion at one level.
+_Avoid_: Cell, statement, indicator
+
+**Learner sheet**:
+The sheet of one learner in a Rubric's .xlsx, marked by typing an x in a tick-box cell. Its Status says "Marked" once every criterion has a mark, and only then does the learner count on the Summary sheet.
+_Avoid_: Mark sheet, feedback form
+
 ### Question paper grids
 
 **Grid**:

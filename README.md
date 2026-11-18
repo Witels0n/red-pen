@@ -30,6 +30,7 @@ site works offline and can be installed as an app.
 | Tool | What it does |
 | --- | --- |
 | **Marks analysis** | Pasted or imported marks (or MCQ results) as bands, box plots, stats and insights per assessment and across them; a one-page PDF report and CSVs. |
+| **Rubric builder** | Builds an analytic, holistic, single-point or checklist rubric with weighted criteria and level scales (SOLO, Marzano, CAPS), and downloads an .xlsx with the rubric to print, a marking sheet per learner and a class summary. |
 | **Markbook builder** | Designs a markbook (assessments, weights, Categories, CAPS levels, class summary) and downloads an .xlsx with live Excel formulas. |
 
 ### PDF basics

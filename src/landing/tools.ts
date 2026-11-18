@@ -157,6 +157,30 @@ export const TOOLS: readonly Tool[] = [
     },
   },
   {
+    name: 'Rubric builder',
+    blurb:
+      'Build an analytic, holistic, single-point or checklist rubric with weighted criteria, then download an Excel file that marks itself.',
+    path: 'rubric/',
+    group: 'Set and mark',
+    help: {
+      steps: [
+        'Choose a style and a set of levels, such as four levels, CAPS codes, SOLO or a Marzano scale.',
+        'Write the criteria and descriptors, and weigh each criterion in marks or percentages.',
+        'Download an Excel file with the rubric to print and a sheet per learner to mark with an x.',
+      ],
+      questions: [
+        {
+          q: 'How do I mark with it in Excel?',
+          a: 'Type an x in the box beside the level a learner reached. The sheet works out the weighted mark, total, percentage and level, and a Summary sheet shows the class average and the criterion that needs the most work.',
+        },
+        {
+          q: 'Which taxonomies can I use?',
+          a: "For the levels: SOLO, Marzano's proficiency scale, the CAPS achievement levels or your own. To tag each criterion: Bloom's revised taxonomy, Marzano's New Taxonomy, Webb's Depth of Knowledge, SOLO or the CAPS cognitive levels.",
+        },
+      ],
+    },
+  },
+  {
     name: 'Markbook builder',
     blurb:
       'Design a markbook with weights, Categories and CAPS levels, then download an Excel file with live formulas.',

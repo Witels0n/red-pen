@@ -34,6 +34,7 @@ export const PAGES = {
   stamp: 'stamp/index.html',
   redact: 'redact/index.html',
   marks: 'marks/index.html',
+  rubric: 'rubric/index.html',
 } as const
 
 /**
