@@ -46,12 +46,25 @@ export function toolForPage(file: string, tools: readonly Tool[] = TOOLS): Tool 
   return tools.find((t) => `${t.path}index.html` === file)
 }
 
-/** The landing page's tool cards as plain HTML, so crawlers and link previews see every link. */
+/** The id of a tool group's divider on the landing page, e.g. "Set and mark" becomes "set-and-mark". */
+export function groupId(group: string): string {
+  return group
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/**
+ * The landing page's tool cards as plain HTML, so crawlers and link previews see every link.
+ * Each group is a coloured divider in the folder, its name written on the divider's tab
+ * (src/landing/binder.ts turns the dividers into tabs to click through).
+ */
 export function renderToolGroups(tools: readonly Tool[], base: string): string {
   return groupTools(tools)
     .map(
-      ({ group, tools }) =>
-        `<section class="tool-group"><h3>${escapeHtml(group)}</h3><div class="tool-grid" data-reveal>` +
+      ({ group, tools }, i) =>
+        `<section class="tool-group divider tab-${i + 1}" id="${groupId(group)}">` +
+        `<h3 class="tab"><span>${escapeHtml(group)}</span></h3><div class="tool-grid" data-reveal>` +
         tools
           .map(
             (t) =>

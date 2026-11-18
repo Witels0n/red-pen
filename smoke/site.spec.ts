@@ -57,12 +57,37 @@ test.describe('landing page', () => {
     await expect(page.locator('.tool-group h3')).toHaveText(groupTools(TOOLS).map((g) => g.group))
   })
 
+  test('flips between dividers by their tabs, one at a time', async ({ page }) => {
+    await page.goto(HOME)
+    const tabs = page.getByRole('tab')
+    await expect(tabs).toHaveCount(groupTools(TOOLS).length + 3)
+    await expect(page.getByRole('tabpanel')).toHaveCount(1)
+    await expect(tabs.first()).toHaveAttribute('aria-selected', 'true')
+
+    await page.getByRole('tab', { name: 'Privacy' }).click()
+    await expect(page.locator('#privacy')).toBeVisible()
+    await expect(page.locator('#set-and-mark')).toBeHidden()
+    await expect(page).toHaveURL(/#privacy$/)
+
+    await page.keyboard.press('ArrowRight')
+    await expect(page.getByRole('tab', { name: 'Install' })).toBeFocused()
+    await expect(page.locator('#install')).toBeVisible()
+
+    await page.getByRole('button', { name: 'Next: About →' }).click()
+    await expect(page.locator('#about')).toBeVisible()
+
+    await page.goto(`${HOME}#classroom`)
+    await expect(page.getByRole('tab', { name: 'Classroom' })).toHaveAttribute('aria-selected', 'true')
+  })
+
   test('explains privacy, install and how to give feedback', async ({ page }) => {
     await page.goto(HOME)
     await expect(page.locator('#privacy')).toContainText('Nothing is uploaded')
     await expect(page.locator('#privacy .points li')).toHaveCount(3)
+    await page.getByRole('tab', { name: 'Install' }).click()
     await expect(page.locator('#install-manual')).toBeVisible() // no install prompt in a test browser
     await expect(page.locator('#install-available')).toBeHidden()
+    await page.getByRole('tab', { name: 'About' }).click()
     await expect(page.getByRole('link', { name: 'Suggest a tool' })).toHaveAttribute(
       'href',
       /github\.com\/Witels0n\/red-pen\/issues\/new/,
