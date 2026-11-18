@@ -116,6 +116,10 @@ button:focus-visible {
 }
 
 .score {
+  appearance: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
   position: absolute;
   top: 3rem;
   right: max(24px, env(safe-area-inset-right, 0px));
@@ -131,8 +135,56 @@ button:focus-visible {
   transform: rotate(8deg);
 }
 
+/* A sticky note under the 10/10, with a line from a scholar of teaching (src/landing/eggs.ts). */
+.score-note {
+  position: absolute;
+  z-index: 2;
+  top: calc(3rem + 6.5rem + 1rem);
+  right: max(24px, env(safe-area-inset-right, 0px));
+  width: min(20rem, 60vw);
+  margin: 0;
+  padding: 0.9rem 1rem 0.8rem;
+  border: 1.5px solid var(--edge);
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: 4px 4px 0 var(--edge);
+  transform: rotate(-1.5deg);
+  pointer-events: none;
+}
+
+.score-note blockquote {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.score-note figcaption {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.night-note {
+  display: inline-block;
+  margin: 1.2rem 0 0 0.3rem;
+  font-size: 1.3rem;
+  transform: rotate(-1.5deg);
+}
+
+.burst-tick {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  font-size: 1.8rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
 @media (max-width: 760px) {
-  .score {
+  .score,
+  .score-note {
     display: none;
   }
 }
@@ -218,6 +270,69 @@ button:focus-visible {
     animation: stamp 450ms 650ms cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
   }
 
+  .score-note:not([hidden]) {
+    animation: note-in 260ms cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+  }
+
+  .score:hover {
+    rotate: 4deg;
+    scale: 1.06;
+  }
+
+  .score {
+    transition:
+      rotate 160ms ease,
+      scale 160ms ease;
+  }
+
+  /* Cards lean like loose pages when picked up, alternating left and right. */
+  .tool-card:hover {
+    transform: translateY(-3px) rotate(-0.6deg);
+  }
+
+  .tool-card:nth-child(even):hover {
+    transform: translateY(-3px) rotate(0.6deg);
+  }
+
+  /* The diagrams act out the story once they scroll into view, and again on hover. */
+  .motion .compare.is-seen .copy {
+    animation: send-copy 2.6s 600ms cubic-bezier(0.5, 0, 0.3, 1) 2 backwards;
+  }
+
+  .motion .compare.is-seen .compare-card:hover .copy {
+    animation: send-copy-again 2.6s cubic-bezier(0.5, 0, 0.3, 1);
+  }
+
+  .motion .compare.is-seen .diagram-usual .hand {
+    animation: rise 400ms 5.6s backwards;
+  }
+
+  .motion .compare.is-seen .no-entry {
+    animation: pen-draw 450ms 900ms ease-out backwards;
+  }
+
+  .motion .compare.is-seen .stay-tick {
+    animation: pen-draw 450ms 1500ms ease-out backwards;
+  }
+
+  .motion .compare.is-seen .compare-card:hover .stay-tick {
+    animation: pen-draw-again 450ms ease-out;
+  }
+
+  /* The gold star draws itself, then fills in. */
+  .motion #about:not(.is-seen) .gold-star path {
+    stroke-dashoffset: 1;
+    fill-opacity: 0;
+  }
+
+  .motion #about.is-seen .gold-star path {
+    animation: star-draw 1100ms 500ms ease-out backwards;
+  }
+
+  .gold-star:hover {
+    animation: star-spin 700ms cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
   /* Hovering a card ticks it again. */
   .tool-card:hover .tick path,
   .tool-card:focus-visible .tick path {
@@ -229,6 +344,72 @@ button:focus-visible {
   from {
     opacity: 0;
     transform: scale(1.7) rotate(-14deg);
+  }
+}
+
+@keyframes note-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) rotate(3deg) scale(0.92);
+  }
+}
+
+@keyframes send-copy {
+  0% {
+    opacity: 0;
+    transform: translateX(-210px);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(-210px);
+  }
+  75%,
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* The same journey under another name, so hovering restarts it. */
+@keyframes send-copy-again {
+  0% {
+    opacity: 0;
+    transform: translateX(-210px);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(-210px);
+  }
+  75%,
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pen-draw-again {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes star-draw {
+  0% {
+    stroke-dashoffset: 1;
+    fill-opacity: 0;
+  }
+  70% {
+    stroke-dashoffset: 0;
+    fill-opacity: 0;
+  }
+}
+
+@keyframes star-spin {
+  to {
+    transform: rotate(144deg) scale(1);
+  }
+  50% {
+    transform: rotate(80deg) scale(1.25);
   }
 }
 
@@ -290,6 +471,114 @@ button:focus-visible {
   color: var(--text-muted);
 }
 
+.offline-note {
+  font-size: 1.3rem;
+  font-style: normal;
+  line-height: 1.2;
+}
+
+/* Side by side: how an upload tool handles a file, and how Red Pen does. */
+.compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.compare-card {
+  min-width: 0;
+  padding: 1.1rem 1.1rem 1rem;
+  border: 1.5px solid var(--hairline);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.compare-ours {
+  border-color: var(--red);
+  box-shadow: 4px 4px 0 var(--red);
+}
+
+.compare-card h3 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.compare-card ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding-left: 1.3rem;
+  color: var(--text-muted);
+}
+
+.compare-card ol li:last-child {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin-inline: auto;
+}
+
+.diagram .ink,
+.diagram .sheet {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.diagram .sheet rect {
+  fill: var(--surface);
+}
+
+.diagram .sheet path {
+  stroke-width: 1.5;
+}
+
+.diagram .server path {
+  stroke-width: 4;
+}
+
+.diagram .wire {
+  stroke-dasharray: 5 6;
+}
+
+.diagram .red {
+  stroke: var(--red);
+  stroke-width: 4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.diagram .copy {
+  stroke: var(--red);
+}
+
+.diagram .faded {
+  opacity: 0.3;
+}
+
+.diagram text {
+  fill: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.diagram text.hand {
+  fill: var(--red);
+  font-family: var(--font-hand);
+  font-size: 14px;
+}
+
 .aside {
   font-size: 0.95rem;
   color: var(--text-muted);
@@ -319,6 +608,29 @@ button:focus-visible {
 
 .made-by {
   font-size: 1.6rem;
+}
+
+.gold-star {
+  --gold: #e3a008;
+  width: 2rem;
+  height: 2rem;
+  margin-left: 0.4rem;
+  vertical-align: -0.35rem;
+  transform-origin: center;
+}
+
+.gold-star path {
+  fill: var(--gold);
+  fill-opacity: 0.85;
+  stroke: var(--gold);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.parting {
+  font-style: italic;
 }
 
 .links {
